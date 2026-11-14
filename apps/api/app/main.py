@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 
+from app.api.v1.routes import router
 from app.core.config import settings
+from app.services.earth_engine.adapters import ADAPTERS
+from app.services.earth_engine.client import auth_mode
 from app.services.statistics.trend_core import ALGORITHM_VERSION, COMPATIBILITY
 
 app = FastAPI(
@@ -17,6 +20,8 @@ def health() -> dict:
         "version": app.version,
         "algorithm_version": ALGORITHM_VERSION,
         "earth_engine_configured": settings.ee_project is not None,
+        "earth_engine_auth_mode": auth_mode()
+        or ("service_account" if settings.ee_service_account_file else "user") + " (no inicializado)",
     }
 
 
@@ -27,5 +32,10 @@ def capabilities() -> dict:
         "estimators": COMPATIBILITY,
         "confidence_levels": [0.90, 0.95, 0.99],
         "granularities": ["month", "year"],
-        "datasets": [],  # F2: registro de adaptadores GEE
+        "datasets": sorted(ADAPTERS),
+        "seasonality": ["none", "monthly_anomaly"],
+        "temporal_aggregations": ["total", "mean"],
     }
+
+
+app.include_router(router)

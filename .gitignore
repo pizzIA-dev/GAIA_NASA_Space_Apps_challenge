@@ -21,3 +21,10 @@ dist/
 *.zip
 # Herramientas de agentes de terceros
 .aider*
+
+# Referencias históricas locales (NinoDetect) — solo validación, nunca runtime
+data/_local_reference/
+# Claves de cuentas de servicio GCP (guardarlas FUERA del repo; esto es una red de seguridad)
+nasa-pizzia-*.json
+*-credentials*.json
+secrets/
