@@ -6,7 +6,7 @@
 ## Commits
 - `5cefce7` F0 — repo, CLAUDE.md, motor estadístico, CSV→pendiente explicada.
 - `5a060d4` F2 — cliente EE, `AnalysisSpec`+hashes, IMERG, runner con caché, `/analyses`, golden v13.1.
-- **Sin commit:** geografías geoBoundaries + fronteras oficiales Perú (IGN).
+- `e1f3c8c` F2 — geografías geoBoundaries v6 + fronteras oficiales Perú (IGN), ingesta y manifiesto.
 
 ## Qué funciona (verificado con datos reales)
 - **Earth Engine** vía cuenta de servicio `earth-trend-backend@nasa-pizzia.iam.gserviceaccount.com` (clave fuera del repo,
