@@ -1,0 +1,23 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+# Node
+node_modules/
+.next/
+dist/
+# Secretos y datos locales
+.env
+.env.*
+!.env.example
+*service-account*.json
+*.pem
+.cache/
+*.parquet
+# Notebooks históricos / blobs (no son dependencia del producto)
+*.zip
+# Herramientas de agentes de terceros
+.aider*

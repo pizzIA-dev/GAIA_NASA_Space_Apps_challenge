@@ -1,0 +1,17 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "mcp": {
+        "servers": {
+            "obsidian-vault": {
+                "type": "local",
+                "command": [
+                    "npx",
+                    "-y",
+                    "@modelcontextprotocol/server-filesystem",
+                    "D:/Obsidian_vaults/NASA_Space_Apps_challenge"
+                ],
+                "protocol": "2026-07-28"
+            }
+        }
+    }
+}
