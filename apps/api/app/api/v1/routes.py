@@ -1,14 +1,16 @@
 from __future__ import annotations
 
-from dataclasses import asdict
+from typing import Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 
 from app.schemas.analysis import AnalysisSpec
 from app.services.analyses import runner
-from app.services.earth_engine.adapters import catalog
 from app.services.earth_engine.client import EarthEngineUnavailable
+from app.services.geographies import geoboundaries as gb
+from app.services.geographies import registry as reg
+from app.services.geographies.peru_ign import BoundariesNotIngested
 from app.services.statistics.trend_core import IncompatibleMethodError
 
 router = APIRouter(prefix="/api/v1")
@@ -31,27 +33,63 @@ def get_adapters():
     return runner.ADAPTERS
 
 
-@router.get("/catalog/datasets", tags=["catalog"])
-def list_datasets() -> list[dict]:
-    return [asdict(d) for d in catalog()]
+def get_geographies() -> reg.GeographyRegistry:
+    return reg.registry
 
 
-@router.get("/catalog/variables", tags=["catalog"])
-def list_variables(dataset_id: str | None = None) -> list[dict]:
-    out = []
-    for d in catalog():
-        if dataset_id and d.dataset_id != dataset_id:
-            continue
-        for v in d.variables:
-            out.append({**asdict(v), "dataset_id": d.dataset_id, "status": d.status})
-    return out
+@router.get("/geographies/boundary-sets", tags=["geographies"])
+def list_boundary_sets(geos=Depends(get_geographies)):
+    return {"items": geos.boundary_sets(), "default_by_country": reg.OFFICIAL_DEFAULT}
+
+
+@router.get("/geographies/countries", tags=["geographies"])
+def list_countries(request: Request, geos=Depends(get_geographies)):
+    try:
+        return {"boundary_set_id": gb.BOUNDARY_SET_ID, "attribution": gb.ATTRIBUTION,
+                "items": [c.to_dict() for c in geos.countries()]}
+    except EarthEngineUnavailable as e:
+        return problem(503, "source_unavailable", str(e), request)
+
+
+@router.get("/geographies/search", tags=["geographies"])
+def search_geographies(request: Request, q: str = Query(..., min_length=2, max_length=80),
+                       country: str | None = Query(None, min_length=3, max_length=3),
+                       level: Literal["ADM0", "ADM1", "ADM2", "ADM3"] | None = None,
+                       boundary_set_id: str | None = None,
+                       limit: int = Query(20, ge=1, le=100), geos=Depends(get_geographies)):
+    """Busca por nombre (sin acentos) o UBIGEO. Perú usa por defecto la fuente oficial IGN (ADM1–ADM3);
+    geoBoundaries se pide con `boundary_set_id=geoboundaries-gbopen-6.0.0`. Sin `country`, solo países."""
+    try:
+        used, items = geos.search(q, country=country, level=level, boundary_set_id=boundary_set_id, limit=limit)
+        return {"boundary_set_id": used, "attribution": geos.attribution(used), "items": items}
+    except gb.GeographyNotFound as e:
+        return problem(404, "unknown_country_or_boundary_set", f"No soportado: {e}", request)
+    except EarthEngineUnavailable as e:
+        return problem(503, "source_unavailable", str(e), request)
+
+
+@router.get("/geographies/{geo_id}", tags=["geographies"])
+def get_geography(geo_id: str, request: Request,
+                  geometry: Literal["none", "simplified"] = "none", geos=Depends(get_geographies)):
+    try:
+        g = geos.get(geo_id)
+        out = {**g.to_dict(), "attribution": geos.attribution(g.boundary_set_id),
+               "children": [c.to_dict() for c in geos.children(g)]}
+        if geometry == "simplified":
+            out["geometry"] = geos.geometry_geojson(geo_id)
+            out["geometry_note"] = "Simplificada solo para visualización; el análisis usa la geometría original"
+        return out
+    except gb.GeographyNotFound:
+        return problem(404, "unknown_geography", f"geo_id no encontrado: {geo_id}", request)
+    except (EarthEngineUnavailable, BoundariesNotIngested) as e:
+        return problem(503, "source_unavailable", str(e), request)
 
 
 @router.post("/analyses", tags=["analyses"])
-def create_analysis(spec: AnalysisSpec, request: Request,
-                    store=Depends(get_store), adapters=Depends(get_adapters)):
+def create_analysis(spec: AnalysisSpec, request: Request, store=Depends(get_store),
+                    adapters=Depends(get_adapters), geos=Depends(get_geographies)):
     try:
-        return runner.run_analysis(spec, store=store, adapters=adapters)
+        return runner.run_analysis(spec, store=store, adapters=adapters, geographies=geos)
     except runner.AnalysisError as e:
         return problem(e.status, e.code, e.detail, request)
     except IncompatibleMethodError as e:

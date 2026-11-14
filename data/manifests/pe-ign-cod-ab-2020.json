@@ -1,0 +1,27 @@
+{
+  "boundary_set_id": "pe-ign-cod-ab-2020",
+  "title": "Peru - Subnational Administrative Boundaries (COD-AB)",
+  "producer": "Instituto Geográfico Nacional (IGN), Perú",
+  "publisher": "OCHA ROLAC / Humanitarian Data Exchange",
+  "license": "CC BY-IGO (Creative Commons Attribution for Intergovernmental Organisations)",
+  "dataset_page": "https://data.humdata.org/dataset/cod-ab-per",
+  "url": "https://data.humdata.org/dataset/54fc7f4d-f4c0-4892-91f6-2fe7c1ecf363/resource/63647792-0951-40d2-a30e-4a0e60f7a176/download/per_admin_boundaries.geojson.zip",
+  "sha256": "2f0ec51b7a0899b407546aa644621e1c3255cba59fdda76fcde6975ca6baafb3",
+  "valid_on": "2020-07-14",
+  "source_version": "v01",
+  "hdx_last_modified": "2026-01-26",
+  "files": [
+    "per_admin1.geojson",
+    "per_admin2.geojson",
+    "per_admin3.geojson"
+  ],
+  "unit_counts": {
+    "ADM1": 25,
+    "ADM2": 196,
+    "ADM3": 1873
+  },
+  "invalid_geometries": [],
+  "geometry_policy": "sin simplificar; CRS84; solo validación y medición",
+  "ingested_at": "2026-11-14T23:45:11.934541+00:00",
+  "script": "scripts/ingest_pe_boundaries.py"
+}

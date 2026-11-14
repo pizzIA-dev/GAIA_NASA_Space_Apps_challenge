@@ -68,7 +68,7 @@ class DatasetAdapter(ABC):
     info: DatasetInfo
 
     @abstractmethod
-    def extract(self, variable_id: str, geometry: dict[str, Any], start: date, end_exclusive: date) -> list[dict]:
+    def extract(self, variable_id: str, geometry: Any, start: date, end_exclusive: date) -> list[dict]:
         """Devuelve filas (§11.4) mensuales, una por mes esperado, con value=None si falta."""
 
     def availability(self) -> dict:
@@ -103,12 +103,12 @@ class IMERGMonthly(DatasetAdapter):
         notes=("Útil para lluvia regional; no resuelve microcuencas ni calles.",),
     )
 
-    def extract(self, variable_id: str, geometry: dict[str, Any], start: date, end_exclusive: date) -> list[dict]:
+    def extract(self, variable_id: str, geometry: Any, start: date, end_exclusive: date) -> list[dict]:
         var = self.info.variable(variable_id)
         if var is None:
             raise KeyError(variable_id)
         ee = get_ee()
-        geom = ee.Geometry(geometry)
+        geom = geometry.to_ee(ee) if hasattr(geometry, "to_ee") else ee.Geometry(geometry)
         band = var.band
         reducer = ee.Reducer.mean().combine(ee.Reducer.count(), sharedInputs=True)
         col = ee.ImageCollection(self.info.ee_collection_id).filterDate(

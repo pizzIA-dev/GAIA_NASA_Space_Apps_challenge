@@ -28,3 +28,5 @@ data/_local_reference/
 nasa-pizzia-*.json
 *-credentials*.json
 secrets/
+# Descargas crudas de fuentes externas (reproducibles con scripts/; no versionar)
+data/_downloads/
