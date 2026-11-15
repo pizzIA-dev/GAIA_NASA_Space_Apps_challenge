@@ -1,0 +1,248 @@
+{
+  "case": "trujillo-el-nino",
+  "ingested_at": "2026-11-15T04:48:48.630699+00:00",
+  "script": "scripts/ingest_case_trujillo.py",
+  "sinpad_files": [
+    {
+      "file": "BD_2003-2025_EMERGENCIAS.csv",
+      "sha256": "a1fe63f0a7c836b8ff7dd1c87271d3bd3144f8444e41f93b7db205c85fef2687",
+      "rows": 142139
+    },
+    {
+      "file": "BD_2026_Semestre_I.csv",
+      "sha256": "acb09730fd53ee65175a1584bb043d0259c6932cc979f7bc6e452d670be52280",
+      "rows": 9352
+    }
+  ],
+  "icen_sha256": "14b3469df9397cb30359945f90a81768ae7fe86924ff66dbccc97d4e06af01a5",
+  "counts": {
+    "province_records": 318,
+    "focal_records": 24,
+    "focal_2017_2025": 16,
+    "duplicates_by_code": 0,
+    "dates_not_day_precision": 0
+  },
+  "episodes_since_2000": [
+    {
+      "id": "LN-COSTERO-2001",
+      "kind": "la_nina_costera",
+      "start": "2001-07",
+      "end": "2001-12",
+      "months": 6,
+      "peak_icen": -1.09,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "EN-COSTERO-2002",
+      "kind": "el_nino_costero",
+      "start": "2002-03",
+      "end": "2002-05",
+      "months": 3,
+      "peak_icen": 0.81,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "LN-COSTERO-2003",
+      "kind": "la_nina_costera",
+      "start": "2003-05",
+      "end": "2003-07",
+      "months": 3,
+      "peak_icen": -1.3,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "LN-COSTERO-2004",
+      "kind": "la_nina_costera",
+      "start": "2004-04",
+      "end": "2004-07",
+      "months": 4,
+      "peak_icen": -1.11,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "LN-COSTERO-2005",
+      "kind": "la_nina_costera",
+      "start": "2005-09",
+      "end": "2005-12",
+      "months": 4,
+      "peak_icen": -1.23,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "EN-COSTERO-2006",
+      "kind": "el_nino_costero",
+      "start": "2006-08",
+      "end": "2006-12",
+      "months": 5,
+      "peak_icen": 0.94,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "LN-COSTERO-2007",
+      "kind": "la_nina_costera",
+      "start": "2007-04",
+      "end": "2007-12",
+      "months": 9,
+      "peak_icen": -1.64,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "EN-COSTERO-2008",
+      "kind": "el_nino_costero",
+      "start": "2008-06",
+      "end": "2008-09",
+      "months": 4,
+      "peak_icen": 1.13,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "EN-COSTERO-2009",
+      "kind": "el_nino_costero",
+      "start": "2009-06",
+      "end": "2009-09",
+      "months": 4,
+      "peak_icen": 0.75,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "LN-COSTERO-2010",
+      "kind": "la_nina_costera",
+      "start": "2010-07",
+      "end": "2010-12",
+      "months": 6,
+      "peak_icen": -1.25,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "EN-COSTERO-2012",
+      "kind": "el_nino_costero",
+      "start": "2012-04",
+      "end": "2012-06",
+      "months": 3,
+      "peak_icen": 0.94,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "LN-COSTERO-2013",
+      "kind": "la_nina_costera",
+      "start": "2013-03",
+      "end": "2013-09",
+      "months": 7,
+      "peak_icen": -1.66,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "EN-COSTERO-2014",
+      "kind": "el_nino_costero",
+      "start": "2014-05",
+      "end": "2014-11",
+      "months": 7,
+      "peak_icen": 1.21,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "EN-COSTERO-2015-16",
+      "kind": "el_nino_costero",
+      "start": "2015-04",
+      "end": "2016-05",
+      "months": 14,
+      "peak_icen": 2.23,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "EN-COSTERO-2017",
+      "kind": "el_nino_costero",
+      "start": "2017-01",
+      "end": "2017-04",
+      "months": 4,
+      "peak_icen": 1.31,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "LN-COSTERO-2017-18",
+      "kind": "la_nina_costera",
+      "start": "2017-10",
+      "end": "2018-05",
+      "months": 8,
+      "peak_icen": -1.3,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "EN-COSTERO-2018-19",
+      "kind": "el_nino_costero",
+      "start": "2018-11",
+      "end": "2019-01",
+      "months": 3,
+      "peak_icen": 0.87,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "LN-COSTERO-2020-21",
+      "kind": "la_nina_costera",
+      "start": "2020-06",
+      "end": "2021-04",
+      "months": 11,
+      "peak_icen": -1.19,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "LN-COSTERO-2021-22",
+      "kind": "la_nina_costera",
+      "start": "2021-10",
+      "end": "2022-11",
+      "months": 14,
+      "peak_icen": -1.51,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "EN-COSTERO-2023-24",
+      "kind": "el_nino_costero",
+      "start": "2023-03",
+      "end": "2024-02",
+      "months": 12,
+      "peak_icen": 2.92,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "LN-COSTERO-2024",
+      "kind": "la_nina_costera",
+      "start": "2024-05",
+      "end": "2024-07",
+      "months": 3,
+      "peak_icen": -0.97,
+      "ongoing": false,
+      "derived": true
+    },
+    {
+      "id": "EN-COSTERO-2026",
+      "kind": "el_nino_costero",
+      "start": "2026-03",
+      "end": "2026-09",
+      "months": 7,
+      "peak_icen": 4.5,
+      "ongoing": true,
+      "derived": true
+    }
+  ],
+  "attribution": "Eventos: INDECI/SINPAD (ODC-BY). ICEN: IGP/ENFEN. Coincidencia temporal ≠ causalidad."
+}

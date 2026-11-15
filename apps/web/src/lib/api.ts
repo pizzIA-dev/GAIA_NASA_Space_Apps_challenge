@@ -1,4 +1,4 @@
-import type { CompareResult, Dataset, FeatureCollection, Geography, Problem, Run, Seasonal, Variable } from "./types";
+import type { CaseEnfen, CaseEvents, CompareResult, Dataset, FeatureCollection, Geography, Problem, Run, Seasonal, Variable } from "./types";
 
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1").replace(/\/$/, "");
 
@@ -36,6 +36,9 @@ export const api = {
     call<{ items: Geography[]; boundary_set_id: string }>(`geographies/search?q=${encodeURIComponent(q)}&country=${country}&limit=12`),
   geography: (geoId: string) => call<Geography & { children: Geography[]; attribution: string }>(`geographies/${encodeURIComponent(geoId)}`),
   features: (geoId: string) => call<FeatureCollection>(`geographies/${encodeURIComponent(geoId)}/features`),
+  caseEvents: (geoId: string, from: number, to: number) =>
+    call<CaseEvents>(`cases/trujillo-el-nino/events?geo_id=${encodeURIComponent(geoId)}&year_from=${from}&year_to=${to}`),
+  caseEnfen: (from: number, to: number) => call<CaseEnfen>(`cases/trujillo-el-nino/enfen?year_from=${from}&year_to=${to}`),
   seasonal: (runId: string) => call<Seasonal>(`analyses/${encodeURIComponent(runId)}/seasonal`),
   analyze: (spec: object) => call<Run>("analyses", { method: "POST", body: JSON.stringify(spec) }),
   compare: (specs: object[], familyId?: string) =>

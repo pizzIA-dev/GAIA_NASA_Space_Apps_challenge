@@ -14,6 +14,7 @@ export interface StudyState {
   method: Method;
   start: number;
   end: number; // año final inclusivo
+  context: boolean; // capa de contexto local (eventos SINPAD + episodios ENFEN) cuando el territorio la tiene
 }
 
 export const DEFAULT_STUDY: StudyState = {
@@ -25,6 +26,7 @@ export const DEFAULT_STUDY: StudyState = {
   method: "sen",
   start: 2003,
   end: 2024,
+  context: false,
 };
 
 interface Store extends StudyState {
@@ -33,15 +35,15 @@ interface Store extends StudyState {
 
 export const useStudy = create<Store>((set) => ({ ...DEFAULT_STUDY, set: (patch) => set(patch) }));
 
-const KEYS: (keyof StudyState)[] = ["focus", "selected", "datasetId", "variableId", "view", "method", "start", "end"];
+const KEYS: (keyof StudyState)[] = ["focus", "selected", "datasetId", "variableId", "view", "method", "start", "end", "context"];
 
 export function readStudyFromUrl(search: string): Partial<StudyState> {
   const q = new URLSearchParams(search);
-  const out: Record<string, string | number> = {};
+  const out: Record<string, string | number | boolean> = {};
   for (const k of KEYS) {
     const v = q.get(k);
     if (v == null) continue;
-    out[k] = k === "start" || k === "end" ? Number(v) : v;
+    out[k] = k === "start" || k === "end" ? Number(v) : k === "context" ? v === "true" : v;
   }
   return out as Partial<StudyState>;
 }

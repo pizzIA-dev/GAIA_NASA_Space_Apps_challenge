@@ -94,3 +94,20 @@ export interface Seasonal {
   extremes: { year: number; month: number; label: string; value: number; anomaly: number }[];
   n_months: number; n_missing: number; note: string;
 }
+
+export interface CaseEvent {
+  sinpad_code: string; date: string | null; date_precision: string; date_raw: string; year: number;
+  hazard: "huaico" | "inundacion" | null; hazard_sinpad: string; focal: boolean; ubigeo: string; district: string;
+  geo_id: string | null; damages: Record<string, number | null>;
+  enfen: { context: string; episode_id: string | null; icen_month: number | null };
+  causal_attribution: { status: string; evidence_url: string | null };
+  display_class: "atribucion_verificada" | "coincidencia_el_nino" | "fuera_de_el_nino"; source: string;
+}
+
+export interface EnfenEpisode {
+  id: string; kind: "el_nino_costero" | "la_nina_costera"; start: string; end: string; months: number;
+  peak_icen: number; ongoing: boolean; derived: boolean;
+}
+
+export interface CaseEvents { case_id: string; count: number; items: CaseEvent[]; legend: Record<string, string>; note: string }
+export interface CaseEnfen { source: Record<string, unknown>; rule: { status: string; note: string; warm_threshold_gt: number; min_consecutive_months: number }; episodes: EnfenEpisode[] }

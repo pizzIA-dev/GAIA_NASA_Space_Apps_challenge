@@ -11,6 +11,7 @@ import { buildSpec, METHOD_LABEL, readStudyFromUrl, studyToUrl, useStudy, type M
 import type { CompareResult, Dataset, Geography, Run, Variable } from "@/lib/types";
 import { useResolvedTheme } from "@/lib/theme";
 import { TerritoryMap, type UnitResult } from "./TerritoryMap";
+import { CaseEventsPanel } from "./CaseEventsPanel";
 import { SeasonalPanel } from "./SeasonalPanel";
 import { TrendChart } from "./TrendChart";
 
@@ -37,7 +38,7 @@ export function Explorer() {
     if (!hydrated.current) { study.set(readStudyFromUrl(params.toString())); hydrated.current = true; return; }
     router.replace(`${pathname}${studyToUrl(study)}`, { scroll: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [study.focus, study.selected, study.datasetId, study.variableId, study.view, study.method, study.start, study.end]);
+  }, [study.focus, study.selected, study.datasetId, study.variableId, study.view, study.method, study.start, study.end, study.context]);
 
   const variables = useQuery({ queryKey: ["variables"], queryFn: api.variables });
   const datasets = useQuery({ queryKey: ["datasets"], queryFn: api.datasets });
@@ -68,6 +69,14 @@ export function Explorer() {
     results[u.geo_id] = { geoId: u.geo_id, st: it?.statistics, error: it?.error?.code };
   });
   const mapDone = unitFamily.data ? units.length : 0;
+
+  // Capa de contexto local: solo donde existe un caso con fuente nacional conectada (plan §9.3).
+  const hasCase = study.selected.startsWith("pe-ign2020:1301");
+  const showCase = hasCase && study.context;
+  const caseEvents = useQuery({ queryKey: ["case-events", study.selected, study.start, study.end],
+    queryFn: () => api.caseEvents(study.selected, study.start, study.end), enabled: showCase });
+  const caseEnfen = useQuery({ queryKey: ["case-enfen", study.start, study.end],
+    queryFn: () => api.caseEnfen(study.start, study.end), enabled: showCase });
 
   const selectedGeo: Geography | undefined =
     study.selected === study.focus ? focus.data : units.find((u) => u.geo_id === study.selected);
@@ -132,6 +141,16 @@ export function Explorer() {
           </div>
           <p className="hint">IC 95 % del mismo estimador y prueba compatible. Los cálculos los hace la API, igual que desde Python.</p>
         </section>
+        {hasCase && (
+          <section>
+            <h2>Contexto local</h2>
+            <label className="check">
+              <input type="checkbox" checked={study.context} onChange={(e) => study.set({ context: e.target.checked })} />
+              Eventos SINPAD y episodios El Niño Costero (caso Trujillo)
+            </label>
+            <p className="hint">Registros oficiales de emergencias y contexto ENFEN. Coincidencia temporal no es causa.</p>
+          </section>
+        )}
       </aside>
 
       <main className="main">
@@ -157,7 +176,8 @@ export function Explorer() {
                   }} />
               </div>
             </div>
-            <TrendChart run={main.data} unit={unit} anomaly={anomaly} theme={theme} onReady={(c) => { chartRef.current = c; }} />
+            <TrendChart run={main.data} unit={unit} anomaly={anomaly} theme={theme} onReady={(c) => { chartRef.current = c; }}
+              events={showCase ? caseEvents.data?.items : undefined} episodes={showCase ? caseEnfen.data?.episodes : undefined} />
             <p className="legend-line">
               <span className="lg series-k" />{anomaly ? "anomalía mensual" : "valor anual"}
               <span className="lg trend-k" />tendencia {main.data.statistics.estimator === "ols" ? "OLS" : "Theil–Sen"}
@@ -189,6 +209,10 @@ export function Explorer() {
             {dataset && <Provenance dataset={dataset} attribution={features.data?.attribution} />}
           </section>
         </div>
+        {showCase && caseEvents.data && (
+          <CaseEventsPanel data={caseEvents.data} enfen={caseEnfen.data} place={selectedGeo?.name ?? "el territorio"} />
+        )}
+        {showCase && caseEvents.error && <p className="state" role="alert">{(caseEvents.error as ApiError).problem.detail}</p>}
         {main.data && <SeasonalPanel runId={main.data.run_id} theme={theme} place={selectedGeo?.name ?? "el territorio"} />}
       </main>
     </div>

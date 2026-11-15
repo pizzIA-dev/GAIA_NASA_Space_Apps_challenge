@@ -97,6 +97,21 @@ code { background: var(--paper-2); padding: 1px 6px; border-radius: 3px; font-si
 .table th, .table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
 .table thead th { color: var(--muted); font-weight: 600; }
 .glossary { display: grid; gap: 10px; } .glossary dt { font-weight: 600; } .glossary dd { margin: 2px 0 0; max-width: 72ch; color: var(--muted); }
+/* Contexto local: eventos SINPAD y episodios ENFEN (colores reservados, plan §8.1) */
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: var(--text-small); cursor: pointer; }
+.check input { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--accent); }
+.case-events { margin-top: 20px; }
+.event-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: var(--text-caption); color: var(--muted); margin: 8px 0 10px; }
+.event-legend > span { display: inline-flex; align-items: center; gap: 5px; }
+.swatch { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -1px; border: 1px solid var(--event-stroke); }
+.ev-coincidence { background: var(--event-coincidence); fill: var(--event-coincidence); stroke: var(--event-stroke); }
+.ev-outside { background: var(--event-outside); fill: var(--event-outside); stroke: var(--event-stroke); }
+.ev-verified { background: var(--event-verified); fill: var(--event-verified); stroke: var(--event-stroke); }
+.band-nino { background: var(--episode-nino); border-color: var(--rule); }
+.band-nina { background: var(--episode-nina); border-color: var(--rule); }
+.events-table td small { font-size: var(--text-caption); }
+@media (max-width: 780px) { .events-table { display: block; overflow-x: auto; } }
+
 /* Ciclo estacional */
 .seasonal { margin-top: 20px; }
 .seasonal h3 { font-size: var(--text-small); font-weight: 600; color: var(--muted); margin: 8px 0 4px; }
