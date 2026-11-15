@@ -80,7 +80,7 @@
 - **CI** (`.github/workflows/ci.yml`, runbook `docs/runbooks/ci.md`): jobs api (ruff+pytest, instala desde pyproject),
   web (contraste, tsc, build) y e2e (Playwright Chromium, **Earth Engine deshabilitado**, caché sembrada con fixtures NASA
   reales `scientific/fixtures/e2e`, 3 MB, generados con `scripts/e2e_fixtures.py`). Reproducido en local (venv limpio
-  79/79, `npm ci` + build OK, e2e 12/12 sin EE). **No ejecutado aún en GitHub: el repo no tiene remoto.**
+  79/79, `npm ci` + build OK, e2e 12/12 sin EE). **CI #1 en verde en GitHub (3 min).** Flujo: rama + PR + CI + merge (ver CLAUDE.md).
 - API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
 - Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
 - **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
@@ -90,7 +90,7 @@
 `data/_downloads/` (descargas crudas) y `.cache/` (índices, geometrías, extracciones, runs) son regenerables.
 
 ## Siguiente
-1. Subir el repo a GitHub (decisión del usuario) para que corra el CI; prueba con lector de pantalla (NVDA).
+1. Prueba con lector de pantalla (NVDA).
 2. **F4 restante:** Atlas (mapas de tendencia por variable), brush temporal, heatmap año×mes y climatología en la web,
    diferencia de pendientes con IC (bootstrap conjunto) para comparaciones.
 3. **F5 caso Trujillo:** ingesta SINPAD/ENFEN, capa de eventos (colores reservados), cartografía INEI con Alto Trujillo.
