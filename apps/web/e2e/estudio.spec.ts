@@ -11,6 +11,10 @@ async function drag(page: import("@playwright/test").Page, from: import("@playwr
   await from.scrollIntoViewIfNeeded();
   const a = (await from.boundingBox())!;
   const b = (await to.boundingBox())!;
+  const vh = page.viewportSize()!.height;
+  if (a.y < 0 || a.y + a.height > vh || b.y < 0 || b.y + b.height > vh) {
+    throw new Error(`Origen (y=${Math.round(a.y)}) o destino (y=${Math.round(b.y)}) fuera de la ventana (${vh}px)`);
+  }
   await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2);
   await page.mouse.down();
   await page.mouse.move(a.x + a.width / 2 + 12, a.y + a.height / 2 + 12, { steps: 4 });
@@ -36,6 +40,9 @@ test("compara Huanchaco y Moche con los mismos números que /analyses/compare", 
 });
 
 test("arrastrar una variable al hueco crea un panel y a un panel lo reemplaza", async ({ page }) => {
+  // Ventana alta: origen (columna izquierda) y destino (hueco bajo el panel) visibles a la vez, sin desplazar la
+  // página durante el arrastre (con las fuentes de Linux la página es más alta y el desplazamiento los separaba).
+  await page.setViewportSize({ width: 1440, height: 1800 });
   await page.goto("/estudio");
   await expect(page.locator(".studio-panel")).toHaveCount(1);
   const ndvi = page.locator(".chip.draggable", { hasText: "índice de vegetación" });
