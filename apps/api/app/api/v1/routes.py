@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+import time
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 from typing import Literal
@@ -380,13 +381,32 @@ ATLAS_METHODS = {
 }
 
 
+EE_TRANSIENT = ("Too many concurrent aggregations", "Computation timed out", "Too Many Requests")
+ATLAS_RETRY_WAITS_S = (5.0, 15.0)
+
+
+def _execute_with_retry(p: runner.PreparedRun, waits: tuple[float, ...] = ATLAS_RETRY_WAITS_S) -> dict:
+    """Reintenta solo errores TRANSITORIOS de Earth Engine (límite de agregaciones concurrentes, etc.). Los errores
+    de datos o de método se propagan al primer intento. Medido: NDVI 25 departamentos con 6 en paralelo → 2 fallos."""
+    for wait in (*waits, None):
+        try:
+            return runner.execute(p)
+        except (runner.AnalysisError, IncompatibleMethodError):
+            raise
+        except Exception as e:
+            if wait is None or not any(t in str(e) for t in EE_TRANSIENT):
+                raise
+            time.sleep(wait)
+    raise AssertionError("inalcanzable")
+
+
 def _atlas_unit(slot: dict) -> dict:
     u = slot["unit"]
     base = {"geo_id": u.geo_id, "name": u.name, "admin_level": u.admin_level, "area_km2": u.area_km2}
     if "error" in slot:
         return base | {"status": "failed", "error": slot["error"]}
     try:
-        run = runner.execute(slot["prepared"])
+        run = _execute_with_retry(slot["prepared"])
     except runner.AnalysisError as e:
         return base | {"status": "failed", "error": {"status": e.status, "code": e.code, "detail": e.detail}}
     except IncompatibleMethodError as e:
