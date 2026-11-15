@@ -463,6 +463,20 @@ def get_case_enfen(case_id: str, year_from: int | None = Query(None, ge=1950), y
     return trujillo.enfen(year_from, year_to)
 
 
+@router.get("/cases/{case_id}/backtest", tags=["cases"])
+def get_case_backtest(case_id: str):
+    """Escena 5 (plan §9.2): ¿habría dado una alerta? Reglas de lluvia diaria IMERG por distrito, umbrales fijados en
+    2017–2021 y evaluados fuera de muestra en 2022–2025 (VP/FP/FN/VN, POD con IC de Wilson, falsas alarmas).
+
+    Precalculado a partir de datos versionados: no consulta Earth Engine. Anticipación POTENCIAL retrospectiva.
+    """
+    _case(case_id)
+    try:
+        return trujillo.backtest_result()
+    except FileNotFoundError as e:
+        raise Problem(503, "case_not_ingested", str(e)) from e
+
+
 class AssociationRequest(BaseModel):
     """Escena 4 del caso (plan §9.2): ¿relación o coincidencia? Panel distrito × mes con y sin registros."""
 

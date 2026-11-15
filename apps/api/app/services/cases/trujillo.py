@@ -109,3 +109,62 @@ def summary() -> dict:
         "limitations": LIMITATIONS,
         "ingested_at": manifest["ingested_at"],
     }
+
+
+# ---------------------------------------------------------------- escena 5: evaluación retrospectiva de alertas
+
+DAILY_RAIN = "imerg_daily_districts.csv.gz"
+BACKTEST_PRIMARY = (95.0, 3, 3)  # declarada ANTES de ver resultados (ADR-0009): P95 de la lluvia de 3 días, horizonte 3 días
+BACKTEST_GRID = {"percentiles": [90.0, 95.0, 99.0], "windows": [1, 3, 7], "horizons": [1, 3, 7]}
+BACKTEST_TRAIN = ("2017-01-01", "2021-12-31")
+BACKTEST_TEST = ("2022-01-01", "2025-12-31")
+
+
+@lru_cache(maxsize=1)
+def daily_rain() -> tuple[dict[str, list], str]:
+    """Lluvia diaria IMERG V07 por distrito IGN (scripts/ingest_case_trujillo_daily.py). Devuelve (series, procedencia)."""
+    import gzip
+    from datetime import date
+
+    p = DATA / DAILY_RAIN
+    if not p.is_file():
+        raise FileNotFoundError(f"Falta {p}. Ejecuta scripts/ingest_case_trujillo_daily.py")
+    out: dict[str, list] = {}
+    with gzip.open(p, "rt", encoding="utf-8") as fh:
+        prov = fh.readline().lstrip("# ").strip()
+        fh.readline()
+        for line in fh:
+            u, d, v, n = line.rstrip("\n").split(",")
+            out.setdefault(u, []).append((date.fromisoformat(d), float(v) if v else None, int(n)))
+    return out, prov
+
+
+@lru_cache(maxsize=1)
+def backtest_result() -> dict:
+    from datetime import date
+
+    from app.services.cases.backtest import Panel, backtest
+
+    rain, provenance = daily_rain()
+    panel = Panel(rain)
+    sinpad, _, _ = _load()
+    used, excluded = [], []
+    for e in sinpad["events"]:
+        if not e["focal"] or not e["date"]:
+            continue
+        d = date.fromisoformat(e["date"])
+        if not (panel.start <= d <= panel.end):
+            continue
+        row = {"date": e["date"], "district": e["district"], "ubigeo": e["ubigeo"], "hazard": e["hazard"]}
+        if e["ubigeo"] in rain and e.get("date_precision") == "dia":
+            used.append({"unit": e["ubigeo"], "date": d, "label": f"{e['district']} · {e['hazard']}"})
+        else:
+            excluded.append(row | {"reason": "sin polígono IGN" if e["ubigeo"] not in rain else "fecha no diaria"})
+    names = {e["ubigeo"]: e["district"] for e in sinpad["events"]}
+    out = backtest(panel, used, train=tuple(map(date.fromisoformat, BACKTEST_TRAIN)),
+                   test=tuple(map(date.fromisoformat, BACKTEST_TEST)), percentiles=BACKTEST_GRID["percentiles"],
+                   windows=BACKTEST_GRID["windows"], horizons=BACKTEST_GRID["horizons"], primary=BACKTEST_PRIMARY,
+                   events_excluded=excluded)
+    return out | {"case_id": CASE_ID, "source": {"dataset": "NASA GPM IMERG V07 Final (semihoraria → diaria)",
+                                                "provenance": provenance, "file": f"data/case-trujillo/{DAILY_RAIN}"},
+                  "unit_names": names, "primary_declared_before_results": True}

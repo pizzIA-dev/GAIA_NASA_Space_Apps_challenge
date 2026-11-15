@@ -1,6 +1,6 @@
 # ESTADO DEL PROYECTO — leer al inicio de cada sesión
 
-**Última actualización:** 2026-11-14 (sesión 2) · **Fase actual:** F2 ✅ cerrada (backend + API + SDK + notebook 01).
+**Última actualización:** 2026-11-15 (sesión 3) · **Fase actual:** F2 ✅ cerrada (backend + API + SDK + notebook 01).
 **F1 en curso:** dirección A elegida; app Next.js con pantalla Explorar funcional contra la API real. 5 datasets NASA, fronteras global + Perú oficial, coste/tokens/límites.
 
 ## Commits
@@ -100,8 +100,13 @@
 - **Historia guiada** `/historias/trujillo-el-nino` (config declarativa `apps/web/src/stories/trujillo-el-nino.json`):
   6 escenas con números de la API en tiempo real — (1) lluvia no concluyente, **NDVI aumento**, SST océano +0,44 °C/década
   no concluyente; (2) 11/11 distritos negativos, 0 con evidencia tras BH; 6 menores que un píxel; (3) 22 registros, 11
-  durante El Niño, marzo 2017 = 140 mm; (4) asociación; (5) alerta «en preparación» (falta IMERG diario y motor
-  retrospectivo); (6) límites y conciliación. Playwright 29 (axe incluye la historia), fixtures 29 series.
+  durante El Niño, marzo 2017 = 140 mm; (4) asociación; (5) alerta (ver abajo); (6) límites y conciliación. Playwright 29 (axe incluye la historia), fixtures 29 series.
+- **Escena 5 «¿Habría dado una alerta?»** (ADR-0009): IMERG V07 diario por distrito IGN y día local de Lima
+  (`scripts/ingest_case_trujillo_daily.py` → `data/case-trujillo/imerg_daily_districts.csv.gz`, 36 157 filas, 48/48
+  semihoras todos los días; idéntico a v12, r = 1,000). Motor `services/cases/backtest.py` + `GET /cases/{id}/backtest`
+  (umbral 2017–2021, prueba 2022–2025, VP/FP/FN/VN, POD Wilson, azar esperado, 27 combinaciones). Regla principal
+  P95/3 d/3 d: **0 de 3 anticipados, 755 falsas alarmas (17 por distrito-año)** — resultado nulo publicado, coincide
+  con v13.1. Tests backend 106, Playwright historia + axe verdes.
 - API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
 - Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
 - **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
@@ -114,7 +119,7 @@
 1. Prueba con lector de pantalla (NVDA).
 2. **F4 restante:** Atlas (mapas de tendencia por variable), brush temporal,
    diferencia de pendientes con IC (bootstrap conjunto) para comparaciones.
-3. **F5 restante:** escena 5 (IMERG diario + evaluación retrospectiva con falsos positivos), umbral ENFEN (PDF NT
+3. **F5 restante:** umbral ENFEN (PDF NT
    01-2024, el usuario decidió seguir sin él), cartografía INEI con Alto Trujillo.
 4. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).
 5. MK corregido por autocorrelación, Kendall estacional. Docker pospuesto (no necesario aún).
