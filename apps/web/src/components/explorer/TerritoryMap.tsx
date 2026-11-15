@@ -105,7 +105,7 @@ export function TerritoryMap({ fc, results, selected, pixelKm2, onSelect }: Prop
     <div
       ref={ref}
       className="map"
-      role="img"
+      role="group"
       aria-label="Mapa de unidades coloreadas por pendiente; usa la lista de territorios para elegir con teclado"
     />
   );

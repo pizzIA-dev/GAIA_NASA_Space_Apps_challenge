@@ -146,8 +146,9 @@ function VariableChip({ id, label, source, inUse, canAdd, onAdd }:
         {...listeners} {...attributes} aria-roledescription="variable arrastrable">
         {label} <small>{source}</small>
       </button>
-      <button type="button" className="btn small" onClick={onAdd} disabled={inUse || !canAdd}
-        aria-label={`Añadir panel de ${label}`}>{inUse ? "En uso" : "Añadir panel"}</button>
+      <button type="button" className="btn small" onClick={onAdd} disabled={inUse || !canAdd}>
+        {inUse ? "En uso" : "Añadir panel"}<span className="sr-only"> {inUse ? `: ${label}` : `de ${label}`}</span>
+      </button>
     </div>
   );
 }
