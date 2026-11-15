@@ -33,3 +33,8 @@ data/_downloads/
 # Artefactos de build de paquetes Python
 *.egg-info/
 build/
+# Web: archivos generados en build/dev
+apps/web/public/maplibre/
+apps/web/src/styles/tokens.css
+apps/web/next-env.d.ts
+*.tsbuildinfo

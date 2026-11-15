@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.routes import Problem, problem_response, router
 from app.core.config import settings
@@ -38,6 +39,13 @@ def capabilities() -> dict:
     }
 
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=list(settings.allowed_origins),
+    allow_methods=["GET", "POST", "DELETE"],
+    allow_headers=["Authorization", "Content-Type", "Idempotency-Key"],
+    expose_headers=["Retry-After"],
+)
 app.include_router(router)
 
 

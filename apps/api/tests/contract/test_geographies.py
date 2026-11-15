@@ -179,6 +179,7 @@ def test_analysis_by_district_warns_small_support(tmp_path, pe_geos):
         assert c.post("/api/v1/analyses", json=spec).status_code == 422
         d = c.get("/api/v1/geographies/pe-ign2020:1301", params={"geometry": "simplified"}).json()
         assert {ch["geo_id"] for ch in d["children"]} == {"pe-ign2020:130101", "pe-ign2020:130111"}
+        assert d["path"] == ["Perú", "La Libertad"]
         assert d["geometry"]["type"] == "Polygon"
     finally:
         app.dependency_overrides.clear()
@@ -192,3 +193,23 @@ def test_all_null_series_explains_spatial_support(tmp_path, pe_geos):
         run_analysis(spec, RunStore(tmp_path), {"nasa-gpm-imerg-monthly-v07": FakeIMERG(missing=set(range(264)))},
                      pe_geos)
     assert e.value.status == 422 and "mucho menor que una celda" in e.value.detail
+
+
+def test_features_endpoint_returns_self_and_children(tmp_path, pe_geos):
+    app.dependency_overrides[routes.get_geographies] = lambda: pe_geos
+    try:
+        fc = TestClient(app).get("/api/v1/geographies/pe-ign2020:1301/features").json()
+        assert fc["type"] == "FeatureCollection"
+        roles = {f["properties"]["geo_id"]: f["properties"]["role"] for f in fc["features"]}
+        assert roles == {"pe-ign2020:1301": "self", "pe-ign2020:130101": "child", "pe-ign2020:130111": "child"}
+        assert all(f["geometry"]["type"] in ("Polygon", "MultiPolygon") for f in fc["features"])
+    finally:
+        app.dependency_overrides.clear()
+
+
+def test_cors_allows_local_web_origin_only():
+    c = TestClient(app)
+    ok = c.options("/api/v1/health", headers={"Origin": "http://localhost:3000", "Access-Control-Request-Method": "GET"})
+    assert ok.headers.get("access-control-allow-origin") == "http://localhost:3000"
+    bad = c.options("/api/v1/health", headers={"Origin": "https://evil.example", "Access-Control-Request-Method": "GET"})
+    assert "access-control-allow-origin" not in bad.headers

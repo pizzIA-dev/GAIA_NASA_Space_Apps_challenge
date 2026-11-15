@@ -25,6 +25,17 @@ variables de entorno (ver `.env.example` y `docs/runbooks/earth-engine-service-a
 Fronteras oficiales del Perú (una vez por máquina): `python scripts/ingest_pe_boundaries.py` (descarga 45 MB de HDX,
 verifica SHA256).
 
+## Web (Next.js) — desarrollo local
+
+```bash
+cd apps/web
+npm install
+npm run dev        # http://localhost:3000/explorar  (requiere la API en :8000)
+```
+
+La web no calcula estadística: construye la misma especificación que el SDK y la envía a `POST /api/v1/analyses`.
+Tokens de diseño: `packages/design-tokens/tokens.json` (dirección «Cuaderno de campo», ADR-0006).
+
 ## Datasets NASA disponibles
 
 IMERG V07 mensual (precipitación) · GLDAS Noah 2.1 (humedad del suelo, temperatura) · MERRA-2 (T2M, vapor, viento) ·

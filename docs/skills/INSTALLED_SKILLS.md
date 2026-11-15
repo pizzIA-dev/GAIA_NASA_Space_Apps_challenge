@@ -5,7 +5,7 @@ No fueron instaladas por el agente; su auditoría formal (scripts, permisos, lic
 
 | Skill | Origen | Uso previsto | Auditoría |
 |---|---|---|---|
-| frontend-design | anthropics/skills | F1 UI editorial | pendiente |
+| frontend-design | anthropics/skills | F1 UI editorial | ✅ 2026-11-14: solo instrucciones (SKILL.md + LICENSE), sin scripts. **Usada** como guía de dirección visual |
 | vercel-react-best-practices | vercel-labs/agent-skills | F1/F4 Next.js | pendiente |
 | python-best-practices | alleneubank/claude-code | backend | pendiente |
 | python-performance-optimization | wshobson/agents | backend | pendiente |
@@ -13,6 +13,7 @@ No fueron instaladas por el agente; su auditoría formal (scripts, permisos, lic
 | scientific-toolkit-skill | zLanqing/codex-claude-academic-skills | estadística | pendiente |
 | analytics-data-analysis | Mindrally/skills | análisis | pendiente |
 | vercel-react-native-skills | vercel-labs/agent-skills | no aplica al MVP web | descartar |
-| ui-ux-pro-max, obsidian-*, cybersecurity-analyst, find-skills, myskillcommitter | sin entrada en lock | varios | pendiente |
+| ui-ux-pro-max | sin entrada en lock | checklist UX/a11y | ✅ 2026-11-14: scripts Python solo leen CSV locales (sin red, subprocess ni eval); `--persist` escribe MASTER.md. **Usada** solo como checklist, sin persistir |
+| obsidian-*, cybersecurity-analyst, find-skills, myskillcommitter | sin entrada en lock | varios | pendiente |
 
 Ninguna skill es dependencia runtime del producto.

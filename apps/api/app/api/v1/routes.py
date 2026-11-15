@@ -93,12 +93,32 @@ def get_geography(geo_id: str, request: Request,
                   geometry: Literal["none", "simplified"] = "none", geos=Depends(get_geographies)):
     try:
         g = geos.get(geo_id)
-        out = {**g.to_dict(), "attribution": geos.attribution(g.boundary_set_id),
+        out = {**g.to_dict(), "path": geos.path(g), "attribution": geos.attribution(g.boundary_set_id),
                "children": [c.to_dict() for c in geos.children(g)]}
         if geometry == "simplified":
             out["geometry"] = geos.geometry_geojson(geo_id)
             out["geometry_note"] = "Simplificada solo para visualización; el análisis usa la geometría original"
         return out
+    except gb.GeographyNotFound:
+        return problem(404, "unknown_geography", f"geo_id no encontrado: {geo_id}", request)
+    except (EarthEngineUnavailable, BoundariesNotIngested) as e:
+        return problem(503, "source_unavailable", str(e), request)
+
+
+@router.get("/geographies/{geo_id}/features", tags=["geographies"])
+def geography_features(geo_id: str, request: Request, geos=Depends(get_geographies)):
+    """GeoJSON FeatureCollection del territorio y sus unidades hijas (geometría simplificada, solo visualización)."""
+    try:
+        g = geos.get(geo_id)
+        units = [("self", g), *[("child", c) for c in geos.children(g)]]
+        features = [{
+            "type": "Feature", "id": u.geo_id,
+            "properties": {"geo_id": u.geo_id, "name": u.name, "admin_level": u.admin_level, "area_km2": u.area_km2,
+                           "role": role, "boundary_set_id": u.boundary_set_id},
+            "geometry": geos.geometry_geojson(u.geo_id),
+        } for role, u in units]
+        return {"type": "FeatureCollection", "features": features, "attribution": geos.attribution(g.boundary_set_id),
+                "geometry_note": "Simplificada solo para visualización; el análisis usa la geometría original"}
     except gb.GeographyNotFound:
         return problem(404, "unknown_geography", f"geo_id no encontrado: {geo_id}", request)
     except (EarthEngineUnavailable, BoundariesNotIngested) as e:

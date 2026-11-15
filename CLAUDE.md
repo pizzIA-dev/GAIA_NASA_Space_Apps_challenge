@@ -25,6 +25,7 @@ Google Earth Engine (NASA Space Apps 2026 — "Be An Earth System Trend Detectiv
 | Pruebas científicas §16 | 1368 |
 | Skills §18 | 1494 |
 | Orden de arranque §22 | 1724 |
+| IA/navegación §4 · Arte/UX §5 | 168 · 207 |
 | Decisiones cerradas Anexo A / Entregables API-SDK Anexo D | 1781 / 1845 |
 
 ## Reglas que no se negocian
@@ -36,8 +37,11 @@ Google Earth Engine (NASA Space Apps 2026 — "Be An Earth System Trend Detectiv
 - UI editorial/cartográfica propia; prohibido look de "dashboard IA" (glassmorphism, degradado púrpura, tarjetas genéricas).
 
 ## Entorno (verificado 2026-11-14)
-Windows 11 · Python 3.13.5 · Node 24 / npm 11 · git 2.37. **No instalados:** uv, pnpm, docker, gcloud, earthengine-api.
-Backend usa venv en `apps/api/.venv` (pip). Ejecutar tests: `apps/api/.venv/Scripts/python -m pytest apps/api/tests`.
+Windows 11 · Python 3.13.5 · Node 24 / npm 11 · git 2.37. **No instalados:** uv, pnpm, docker, gcloud (no necesarios).
+Backend: venv `apps/api/.venv` (pip). Tests: `cd apps/api && .venv/Scripts/python -m pytest -q`.
+Web: `apps/web` (npm; Next 16, TS 5.9). `npm --prefix apps/web run dev` (genera tokens y copia worker MapLibre) ·
+`npx tsc --noEmit` · `npx next build`. Servidores para el panel del navegador: `.claude/launch.json` (api, web).
+Earth Engine: cuenta de servicio (ruta en `.env`, clave fuera del repo); diagnóstico `scripts/check_ee_auth.py`.
 
 ## Documentación
 - `ESTADO_PROYECTO.md` — estado vivo: qué está hecho, qué sigue, bloqueos. **Actualizar al cerrar cada sesión.**

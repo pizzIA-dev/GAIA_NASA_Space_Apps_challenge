@@ -73,6 +73,17 @@ class GeographyRegistry:
             raise GeographyNotFound(chosen)
         return chosen, self.gb.search(q, country=iso, level=level, limit=limit)
 
+    def path(self, geo: Geography) -> list[str]:
+        """Ancestros legibles (sin incluir el propio territorio), p. ej. ["Perú", "La Libertad"]."""
+        if geo.boundary_set_id == pe.BOUNDARY_SET_ID:
+            return self.pe.path(geo)
+        by_id = {g.geo_id: g for g in self.gb.country(geo.iso3)}
+        out, cur = [], by_id.get(geo.parent_id) if geo.parent_id else None
+        while cur is not None:
+            out.append(cur.name)
+            cur = by_id.get(cur.parent_id) if cur.parent_id else None
+        return list(reversed(out))
+
     def geometry_geojson(self, geo_id: str) -> dict:
         return self.pe.geometry_geojson(geo_id) if self._is_pe(geo_id) else self.gb.geometry_geojson(geo_id)
 

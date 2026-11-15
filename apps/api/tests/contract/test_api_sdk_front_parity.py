@@ -115,6 +115,6 @@ def test_openapi_exposes_all_implemented_v1_endpoints():
         "/api/v1/geographies/boundary-sets", "/api/v1/geographies/countries", "/api/v1/geographies/search",
         "/api/v1/geographies/{geo_id}", "/api/v1/analyses", "/api/v1/analyses/{run_id}",
         "/api/v1/analyses/{run_id}/statistics", "/api/v1/analyses/{run_id}/series", "/api/v1/analyses/{run_id}/manifest",
-        "/api/v1/analyses/estimate-cost", "/api/v1/me", "/api/v1/me/api-keys", "/api/v1/me/api-keys/{key_id}",
+        "/api/v1/analyses/estimate-cost", "/api/v1/geographies/{geo_id}/features", "/api/v1/me", "/api/v1/me/api-keys", "/api/v1/me/api-keys/{key_id}",
     }
     assert required <= paths, required - paths

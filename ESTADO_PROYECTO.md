@@ -1,12 +1,14 @@
 # ESTADO DEL PROYECTO — leer al inicio de cada sesión
 
 **Última actualización:** 2026-11-14 (sesión 2) · **Fase actual:** F2 ✅ cerrada (backend + API + SDK + notebook 01).
-Próximo: F1 (UI Next.js). 5 datasets NASA, fronteras global + Perú oficial, coste/tokens/límites.
+**F1 en curso:** dirección A elegida; app Next.js con pantalla Explorar funcional contra la API real. 5 datasets NASA, fronteras global + Perú oficial, coste/tokens/límites.
 
 ## Commits
 - `5cefce7` F0 — repo, CLAUDE.md, motor estadístico, CSV→pendiente explicada.
 - `5a060d4` F2 — cliente EE, `AnalysisSpec`+hashes, IMERG, runner con caché, `/analyses`, golden v13.1.
 - `e1f3c8c` F2 — geografías geoBoundaries v6 + fronteras oficiales Perú (IGN), ingesta y manifiesto.
+- `3c32d82` F2 — adaptadores GLDAS/MERRA-2/NDVI/SST, SDK, notebook 01, coste/tokens/límites.
+- (lista completa: `git log --oneline`)
 
 ## Qué funciona (verificado con datos reales)
 - **Earth Engine** vía cuenta de servicio `earth-trend-backend@nasa-pizzia.iam.gserviceaccount.com` (clave fuera del repo,
@@ -53,15 +55,26 @@ Próximo: F1 (UI Next.js). 5 datasets NASA, fronteras global + Perú oficial, co
   413 too_large; 429 + Retry-After (20/h anónimo, 200/h token, solo extracciones nuevas); 503 source_busy (2 simultáneas).
   `AUTH_MODE=required` para exigir token. Runner dividido en `prepare()`/`execute()`. SDK: `estimate_cost()`, `me()`.
   Verificado en vivo (token creado, usado y revocado).
-- **71 tests verdes** (`cd apps/api && .venv/Scripts/python -m pytest -q`).
+- **F1 web** (`apps/web`, ADR-0006): dirección **A «Cuaderno de campo»** elegida por el usuario. Tokens únicos en
+  `packages/design-tokens/tokens.json` → `tokens.css` (claro + oscuro derivado; ámbar/darkorange reservados a eventos).
+  Next.js 16 + React 19 + TS 5.9 estricto, TanStack Query, Zustand (estado ↔ URL), ECharts (serie + tendencia + abanico IC),
+  MapLibre sin teselas externas (worker servido desde `public/maplibre/`, copiado por `npm run assets`).
+  **/explorar funcional:** búsqueda de territorio, lista de unidades hijas con pendientes, 9 variables del catálogo, periodo,
+  serie anual/anomalía mensual, 3 métodos, veredicto en frase, mapa de pendientes (auto para productos mensuales; botón para
+  el resto), calidad, run_id y procedencia. Verificado en navegador (1440/390 px, sin errores de consola, build de
+  producción OK). Hallazgo vía web: NDVI Laredo +0,016/década, IC [+0,002; +0,030], p=0,04 → evidencia de aumento.
+- API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
+- Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
+- **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
 
 ## Datos locales (no versionados)
 `NinoDetect_TODOS_LOS_ZIPS_FINAL.zip` (raíz) → tablas en `data/_local_reference/`. Solo validación, nunca runtime.
 `data/_downloads/` (descargas crudas) y `.cache/` (índices, geometrías, extracciones, runs) son regenerables.
 
 ## Siguiente
-1. F1 (UI Next.js) — antes auditar skills (frontend-design, react, ui-ux-pro-max) y registrar en
-   docs/skills/INSTALLED_SKILLS.md; dos propuestas visuales; AppShell, selector geográfico, catálogo, serie + mapa.
+1. **F1 restante:** pruebas Playwright (E2E + paridad web↔API), revisión a 1024/768 px, contraste WCAG medido,
+   selector de tema claro/oscuro, exportación (PNG/SVG/CSV/JSON), páginas Fuentes y Métodos con contenido real.
+   Mejora: el mapa de unidades hace N POST; un `POST /analyses/compare` o batch reduciría llamadas.
 2. MK corregido por autocorrelación, Kendall estacional. Docker pospuesto (no necesario aún).
 
 ## Pendiente para el caso Trujillo (F5)
