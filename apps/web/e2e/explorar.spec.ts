@@ -41,13 +41,13 @@ test("elegir un distrito y cambiar de método recalcula y queda en la URL", asyn
   await expect(page).toHaveURL(/selected=pe-ign2020%3A130106/);
   await expect(page.locator(".verdict h1")).toContainText("distrito de Laredo");
   const senId = await runId(page);
-  await page.getByRole("button", { name: "OLS con IC HAC" }).click();
+  await page.getByRole("button", { name: "OLS (n efectivo)" }).click();
   await expect(page).toHaveURL(/method=ols/);
   await expect(page.locator(".runrow code")).not.toHaveText(senId);
   const olsId = await runId(page);
   const st = await (await request.get(`${API}/analyses/${olsId}/statistics`)).json();
   expect(st.estimator).toBe("ols");
-  expect(st.test_method).toBe("ols_hac_t");
+  expect(st.test_method).toBe("ols_ar1_t");
 });
 
 test("un análisis pesado sin token muestra el motivo y el coste, no un error genérico", async ({ page }) => {

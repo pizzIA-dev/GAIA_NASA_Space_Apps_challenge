@@ -16,7 +16,7 @@ import { TrendChart } from "../explorer/TrendChart";
 
 type Scene = (typeof story.scenes)[number];
 const P = story.period;
-const SEN = { estimator: "theil_sen", interval_method: "theil_sen_analytic", significance_test: "mann_kendall" };
+const SEN = { estimator: "theil_sen", interval_method: "theil_sen_ar1", significance_test: "mann_kendall_ar1" };
 
 function specFor(v: { dataset_id: string; variable_id: string; where: string }) {
   return {

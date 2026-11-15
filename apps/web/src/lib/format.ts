@@ -32,7 +32,8 @@ export function verdictOf(st: Statistics): { kind: VerdictKind; label: string; p
 }
 
 export const TEST_LABEL: Record<string, string> = {
-  mann_kendall: "Mann–Kendall", ols_hac_t: "t con errores HAC", ols_t: "t clásica", none: "sin prueba",
+  mann_kendall: "Mann–Kendall", mann_kendall_ar1: "Mann–Kendall (n efectivo)", ols_hac_t: "t con errores HAC",
+  ols_ar1_t: "t (n efectivo)", ols_t: "t clásica", none: "sin prueba",
 };
 
 /** p/q legibles: nunca «0,00» (sugiere certeza); por debajo de 0,001 se escribe «< 0,001». */

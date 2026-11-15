@@ -26,7 +26,7 @@ test("compara Huanchaco y Moche con los mismos números que /analyses/compare", 
     data: { dataset_id: "nasa-gpm-imerg-monthly-v07", variable_id: "precipitation_mm_month" },
     geography: { geo_ids: [g] },
     time: { start: "2003-01-01", end_exclusive: "2025-01-01", granularity: "year" },
-    statistics: { estimator: "theil_sen", interval_method: "theil_sen_analytic", significance_test: "mann_kendall" },
+    statistics: { estimator: "theil_sen", interval_method: "theil_sen_ar1", significance_test: "mann_kendall_ar1" },
   }));
   const fam = await (await request.post(`${API}/analyses/compare`, { data: { specs, multiple_testing: "BH_FDR" } })).json();
   const q = new Intl.NumberFormat("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(fam.items[0].statistics.q_value);
@@ -58,16 +58,16 @@ test("alternativa sin arrastrar: añadir, mover y quitar paneles con botones", a
 });
 
 test("en una familia de comparaciones el veredicto usa q (BH-FDR), no p", async ({ page }) => {
-  // Caso real: NDVI de Laredo tiene p ≈ 0,04 sola, pero q ≈ 0,06 al compararla con Huanchaco y Moche.
-  await page.goto("/estudio?panels=nasa-modis-mod13q1-061/ndvi&geos=pe-ign2020:130104,pe-ign2020:130107,pe-ign2020:130106");
-  const laredo = page.locator(".compare-table tbody tr", { hasText: "Laredo" });
-  await expect(laredo).toBeVisible();
-  const [p, q] = await Promise.all([laredo.locator("td").nth(2).textContent(), laredo.locator("td").nth(3).textContent()]);
+  // Caso real (motor 0.2, n efectivo AR(1)): NDVI de Víctor Larco Herrera tiene p ≈ 0,02 sola, pero q ≈ 0,09 al
+  // compararla con Huanchaco, El Porvenir y La Esperanza (familia de 4).
+  await page.goto("/estudio?panels=nasa-modis-mod13q1-061/ndvi&geos=pe-ign2020:130111,pe-ign2020:130104,pe-ign2020:130102,pe-ign2020:130105");
+  const vlh = page.locator(".compare-table tbody tr", { hasText: "Victor Larco" });
+  await expect(vlh).toBeVisible();
+  const [p, q] = await Promise.all([vlh.locator("td").nth(2).textContent(), vlh.locator("td").nth(3).textContent()]);
   const num = (s: string | null) => Number((s ?? "").replace("<", "").replace(",", ".").trim());
   expect(num(p)).toBeLessThan(0.05);
   expect(num(q)).toBeGreaterThanOrEqual(0.05);
-  await expect(laredo.locator(".tag")).toHaveText("no concluyente");
-  await expect(page.locator(".compare-table tbody tr", { hasText: "Moche" }).locator(".tag")).toHaveText("evidencia de disminución");
+  await expect(vlh.locator(".tag")).toHaveText("no concluyente");
 });
 
 test("diferencia de pendientes A − B con IC propio: el texto coincide con la API", async ({ page }) => {

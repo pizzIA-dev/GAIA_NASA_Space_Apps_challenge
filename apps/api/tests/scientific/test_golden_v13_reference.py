@@ -36,7 +36,9 @@ def test_annual_precip_trend_matches_v13(data, ubigeo):
     times = [f"{y}-01-01" for y in annual.index]
     ref = t[(t.ubigeo == ubigeo) & (t.variable == "precip_mm")].iloc[0]
 
-    sen = estimate_trend(times, annual.tolist(), TrendSettings(time_unit="year"))
+    # Reproducción del método del estudio previo (IC analítico + MK clásico), no del valor por defecto actual.
+    sen = estimate_trend(times, annual.tolist(), TrendSettings(
+        interval_method="theil_sen_analytic", significance_test="mann_kendall", time_unit="year"))
     hac = estimate_trend(times, annual.tolist(), TrendSettings(
         estimator="ols", interval_method="hac_newey_west", significance_test="ols_hac_t", time_unit="year"))
 

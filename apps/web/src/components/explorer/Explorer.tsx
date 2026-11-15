@@ -173,7 +173,7 @@ export function Explorer() {
                 <ExportMenu run={main.data} unit={unit} chartRef={chartRef}
                   caption={{
                     title: `${cleanQuantity(variable?.physical_quantity ?? "")}, ${selectedGeo?.name ?? ""} (${study.start}–${study.end}${anomaly ? ", anomalía mensual" : ""})`,
-                    subtitle: `${dataset?.title ?? ""} · ${main.data.statistics.estimator === "ols" ? "OLS-HAC" : "Theil–Sen"} ${signed(main.data.statistics.estimate, digitsFor(main.data.statistics.estimate))} ${unitPerDecade(main.data.statistics.estimate_unit)} · run_id ${main.data.run_id}`,
+                    subtitle: `${dataset?.title ?? ""} · ${main.data.statistics.estimator === "ols" ? "OLS" : "Theil–Sen"} ${signed(main.data.statistics.estimate, digitsFor(main.data.statistics.estimate))} ${unitPerDecade(main.data.statistics.estimate_unit)} · run_id ${main.data.run_id}`,
                   }} />
               </div>
             </div>
@@ -282,7 +282,11 @@ function Verdict({ run, geo, quantity, anomaly, start, end }:
         </dl>
       )}
       <p className="method-note">
-        {st.estimator === "ols" ? "Regresión OLS con errores robustos HAC (Newey–West)" : "Pendiente de Theil–Sen"}.
+        {st.estimator === "ols" ? "Regresión OLS" : "Pendiente de Theil–Sen"}
+        {st.ci_method === "ar1_effective_n" || st.ci_method === "theil_sen_ar1"
+          ? "; el intervalo y la prueba usan el tamaño muestral efectivo, porque años consecutivos se parecen entre sí (autocorrelación)"
+          : st.ci_method === "moving_block_bootstrap" ? "; intervalo por bootstrap de bloques de años consecutivos"
+          : st.ci_method === "hac_newey_west" ? " con errores robustos HAC (Newey–West)" : ""}.
         El intervalo es una propiedad del procedimiento bajo sus supuestos, no la probabilidad de que el valor real esté dentro.
         Describe el periodo elegido: no es un pronóstico.
       </p>

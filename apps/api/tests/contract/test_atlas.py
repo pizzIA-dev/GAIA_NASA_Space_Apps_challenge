@@ -51,8 +51,8 @@ def test_atlas_bh_fdr_quota_and_shared_cache(ctx):
     spec = {"data": {"dataset_id": BODY["dataset_id"], "variable_id": BODY["variable_id"]},
             "geography": {"geo_ids": ["pe-ign2020:130101"]},
             "time": {"start": "2003-01-01", "end_exclusive": "2025-01-01", "granularity": "year"},
-            "statistics": {"estimator": "theil_sen", "interval_method": "theil_sen_analytic",
-                           "significance_test": "mann_kendall"}}
+            "statistics": {"estimator": "theil_sen", "interval_method": "theil_sen_ar1",
+                           "significance_test": "mann_kendall_ar1"}}
     run = c.post("/api/v1/analyses", json=spec).json()
     assert run["run_id"] == ok[0]["run_id"] and run["cache_hit"] is True
 

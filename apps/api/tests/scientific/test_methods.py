@@ -117,9 +117,49 @@ def test_null_trend_is_usually_not_significant():
 
 def test_autocorrelation_warning_for_uncorrected_mk():
     times, y = monthly_series(seed=8, ar=0.8)
-    r = estimate_trend(times, y)
+    r = estimate_trend(times, y, TrendSettings(interval_method="theil_sen_analytic", significance_test="mann_kendall"))
     assert r.autocorrelation_lag1 > 0.5
     assert any("Mann–Kendall" in w for w in r.warnings)
+
+
+def test_default_corrects_for_autocorrelation_and_is_less_confident():
+    """Con autocorrelación fuerte, el valor por defecto (n efectivo AR(1)) da un IC más ancho y un p mayor que el
+    método clásico, y lo dice en `autocorrelation_adjustment`."""
+    times, y = monthly_series(seed=8, ar=0.8)
+    classic = estimate_trend(times, y, TrendSettings(interval_method="theil_sen_analytic", significance_test="mann_kendall"))
+    default = estimate_trend(times, y)
+    assert default.estimate == pytest.approx(classic.estimate)
+    assert (default.ci_upper - default.ci_lower) > 1.5 * (classic.ci_upper - classic.ci_lower)
+    assert default.p_value > classic.p_value
+    assert "n efectivo AR(1)" in default.autocorrelation_adjustment
+
+
+@pytest.mark.parametrize("method", [
+    {"estimator": "theil_sen", "interval_method": "theil_sen_ar1", "significance_test": "mann_kendall_ar1"},
+    {"estimator": "ols", "interval_method": "ar1_effective_n", "significance_test": "ols_ar1_t"},
+    {"estimator": "theil_sen", "interval_method": "moving_block_bootstrap", "significance_test": "mann_kendall_ar1"},
+])
+def test_short_annual_series_coverage_and_type1_near_nominal(method):
+    """Simulación (plan §16): n = 22 años, AR(1) φ = 0,3. Antes de ADR-0012: cobertura 80–89 %, error tipo I 13–21 %."""
+    rng = np.random.default_rng(11)
+    years = [f"{y}-01-01" for y in range(2003, 2025)]
+    s = TrendSettings(**method, time_unit="year", resamples=400, block_length=3, min_coverage_fraction=0.0)
+    hits = rej = 0
+    reps = 300
+    for k in range(reps):
+        def ar1(slope):
+            e = np.zeros(22)
+            e[0] = rng.normal(0, 1 / np.sqrt(1 - 0.09))
+            for i in range(1, 22):
+                e[i] = 0.3 * e[i - 1] + rng.normal()
+            return list(slope * np.arange(22) + 3 * e)
+        s.seed = k
+        r = estimate_trend(years, ar1(0.5), s)
+        hits += r.ci_lower <= 0.5 <= r.ci_upper
+        p = estimate_trend(years, ar1(0.0), s).p_value
+        rej += p < 0.05
+    assert hits / reps >= 0.90
+    assert rej / reps <= 0.095
 
 
 def test_benjamini_hochberg_matches_statsmodels_and_keeps_none():

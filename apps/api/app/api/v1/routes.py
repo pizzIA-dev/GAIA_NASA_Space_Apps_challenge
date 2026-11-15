@@ -376,9 +376,9 @@ class AtlasRequest(BaseModel):
     method: Literal["sen", "ols"] = "sen"
 
 
-ATLAS_METHODS = {
-    "sen": {"estimator": "theil_sen", "interval_method": "theil_sen_analytic", "significance_test": "mann_kendall"},
-    "ols": {"estimator": "ols", "interval_method": "hac_newey_west", "significance_test": "ols_hac_t"},
+ATLAS_METHODS = {  # = presets «sen» y «ols» de la web (misma especificación → caché compartida). ADR-0012.
+    "sen": {"estimator": "theil_sen", "interval_method": "theil_sen_ar1", "significance_test": "mann_kendall_ar1"},
+    "ols": {"estimator": "ols", "interval_method": "ar1_effective_n", "significance_test": "ols_ar1_t"},
 }
 
 
