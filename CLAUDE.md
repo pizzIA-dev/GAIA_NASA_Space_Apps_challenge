@@ -45,7 +45,7 @@ Earth Engine: cuenta de servicio (ruta en `.env`, clave fuera del repo); diagnó
 CI: `.github/workflows/ci.yml` sin EE (fixtures reales en `scientific/fixtures/e2e`); ver `docs/runbooks/ci.md`.
 
 ## Flujo git (acordado con el usuario 2026-11-14)
-- Remoto `github.com/RoAlro/NASA_Space_Apps_challenge` (privado). **Nunca push directo a `main`.**
+- Remoto `github.com/pizzIA-dev/NASA_Space_Apps_challenge` (privado, organización pizzIA-dev; antes RoAlro, redirige). **Nunca push directo a `main`.**
 - Cada tarea: rama corta (`feat/…`, `fix/…`, `chore/…`) → PR con `gh pr create` → CI verde → `gh pr merge --squash --delete-branch`.
 - Autorización permanente del usuario para abrir PR y hacer merge con CI en verde. Nunca merge en rojo.
 - `gh` en `C:/Program Files/GitHub CLI` (en Bash: `export PATH="$PATH:/c/Program Files/GitHub CLI"`).
