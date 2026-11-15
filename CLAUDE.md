@@ -51,9 +51,10 @@ CI: `.github/workflows/ci.yml` sin EE (fixtures reales en `scientific/fixtures/e
 
 ## Flujo git (actualizado por el usuario 2026-11-15)
 - Remoto `github.com/pizzIA-dev/NASA_Space_Apps_challenge` (privado, organización pizzIA-dev).
-- **Push directo a `main`, sin PR** (decisión del usuario para entregar más rápido). Antes de cada push: pytest y, si
-  se tocó la web, `npx tsc --noEmit` + `npx playwright test` en local. CI corre tras el push como aviso: si falla,
-  se corrige con otro commit. Antes de cambios estructurales: tag de recuperación.
+- El usuario pidió push directo, pero GitHub aplica el ruleset «main protegida» (PR + checks API/SDK, Web y E2E):
+  rama → PR → `gh pr merge --squash --delete-branch` cuando los 3 estén en verde. Pruebas locales antes de subir.
+- Publicación: web https://gaia-chi-five.vercel.app (`cd apps/web && npx vercel deploy --prod`), API
+  https://gaia-api-sk9y.onrender.com (Render Free, auto-deploy desde `main`). Guía: `docs/runbooks/despliegue-gratuito.md`.
 - `gh` en `C:/Program Files/GitHub CLI` (en Bash: `export PATH="$PATH:/c/Program Files/GitHub CLI"`).
 
 ## Documentación

@@ -4,7 +4,7 @@
 corresponde a la plataforma (el caso Trujillo/ENFEN lo trabajan los usuarios). **Realineación UX (ADR-0013):** la
 portada es el **Panel ambiental** (territorio mundial + periodo + variables + método + nivel de confianza). Módulos
 opcionales: Explorar (detalle), Análisis avanzado (`/estudio`), Atlas, Casos de estudio. Tag de recuperación
-`pre-dashboard-2026-11-15`. **Git:** push directo a `main` tras pruebas locales (sin PR, decisión del usuario).
+`pre-dashboard-2026-11-15`. **Git:** el ruleset «main protegida» exige PR + 3 checks (API/SDK, Web, E2E): rama → PR → merge.
 
 ## Commits
 - `5cefce7` F0 — repo, CLAUDE.md, motor estadístico, CSV→pendiente explicada.
@@ -145,9 +145,11 @@ opcionales: Explorar (detalle), Análisis avanzado (`/estudio`), Atlas, Casos de
    Kendall estacional y dependencia de largo plazo (ENSO) más allá de AR(1) (ver ADR-0012, «Límites»).
 3. ✅ Resuelto 2026-11-15: umbral «ligero» ampliado (ADR-0005): las 4 variables por defecto se calculan sin token
    (1–3 min la primera vez, luego en caché); el Panel muestra tiempo estimado/transcurrido y reintenta si EE está ocupado.
-4. **F6 despliegue gratuito preparado (ADR-0014):** Vercel Hobby (web, CLI) + Render Free (API, `render.yaml`) +
-   Earth Engine no comercial. Guía paso a paso en `docs/runbooks/despliegue-gratuito.md`. **Pendiente del usuario:**
-   cuentas Render/Vercel sin tarjeta, clave dedicada de EE como Secret File, `vercel login`. Luego: verificación en vivo.
+4. ✅ **GaIA publicada (2026-11-15, US$ 0):** web https://gaia-chi-five.vercel.app (Vercel Hobby, CLI desde
+   `apps/web`) · API https://gaia-api-sk9y.onrender.com (Render Free, auto-deploy desde `main`, clave de EE como Secret
+   File) · Earth Engine no comercial. Verificado en vivo: 4 variables del Panel (IMERG/NDVI desde caché; MERRA-2/GLDAS
+   calculados por EE), CORS solo para el dominio de Vercel, SDK = web (run_0448d8681b81d7d6a3ff, −15,8 mm/década).
+   Redesplegar la web: `cd apps/web && npx vercel deploy --prod`. Pendiente: revocar la clave de API de Render usada.
 5. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).
 6. Kendall estacional. Docker pospuesto (no necesario aún).
 
