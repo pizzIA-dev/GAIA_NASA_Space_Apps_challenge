@@ -30,3 +30,6 @@ nasa-pizzia-*.json
 secrets/
 # Descargas crudas de fuentes externas (reproducibles con scripts/; no versionar)
 data/_downloads/
+# Artefactos de build de paquetes Python
+*.egg-info/
+build/

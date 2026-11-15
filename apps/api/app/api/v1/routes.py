@@ -1,12 +1,16 @@
 from __future__ import annotations
 
+from dataclasses import asdict
 from typing import Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import JSONResponse
 
+from app.core.limits import ExtractionGate, RateLimited, SlidingWindowLimiter
+from app.core.security import ApiKeyStore, Identity, InvalidToken
 from app.schemas.analysis import AnalysisSpec
-from app.services.analyses import runner
+from app.services.analyses import cost, runner
+from app.services.earth_engine.adapters import catalog
 from app.services.earth_engine.client import EarthEngineUnavailable
 from app.services.geographies import geoboundaries as gb
 from app.services.geographies import registry as reg
@@ -35,6 +39,22 @@ def get_adapters():
 
 def get_geographies() -> reg.GeographyRegistry:
     return reg.registry
+
+
+@router.get("/catalog/datasets", tags=["catalog"])
+def list_datasets() -> list[dict]:
+    return [asdict(d) for d in catalog()]
+
+
+@router.get("/catalog/variables", tags=["catalog"])
+def list_variables(dataset_id: str | None = None) -> list[dict]:
+    out = []
+    for d in catalog():
+        if dataset_id and d.dataset_id != dataset_id:
+            continue
+        for v in d.variables:
+            out.append({**asdict(v), "dataset_id": d.dataset_id, "status": d.status})
+    return out
 
 
 @router.get("/geographies/boundary-sets", tags=["geographies"])
@@ -85,23 +105,161 @@ def get_geography(geo_id: str, request: Request,
         return problem(503, "source_unavailable", str(e), request)
 
 
-@router.post("/analyses", tags=["analyses"])
-def create_analysis(spec: AnalysisSpec, request: Request, store=Depends(get_store),
-                    adapters=Depends(get_adapters), geos=Depends(get_geographies)):
+class Problem(Exception):
+    """Error HTTP tipado → application/problem+json (manejador registrado en app.main)."""
+
+    def __init__(self, status: int, code: str, detail: str, retry_after: int | None = None, extra: dict | None = None):
+        super().__init__(detail)
+        self.status, self.code, self.detail, self.retry_after, self.extra = status, code, detail, retry_after, extra
+
+
+def problem_response(request: Request, p: Problem) -> JSONResponse:
+    resp = problem(p.status, p.code, p.detail, request)
+    if p.extra:
+        import json as _json
+
+        body = _json.loads(resp.body) | p.extra
+        resp = JSONResponse(status_code=p.status, media_type="application/problem+json", content=body)
+    if p.retry_after is not None:
+        resp.headers["Retry-After"] = str(p.retry_after)
+    return resp
+
+
+_key_store = ApiKeyStore(runner.settings.api_keys_file)
+_limiter = SlidingWindowLimiter(3600.0)
+_gate = ExtractionGate(runner.settings.max_concurrent_extractions)
+
+
+def get_key_store() -> ApiKeyStore:
+    return _key_store
+
+
+def get_limiter() -> SlidingWindowLimiter:
+    return _limiter
+
+
+def get_gate() -> ExtractionGate:
+    return _gate
+
+
+def get_identity(request: Request, keys: ApiKeyStore = Depends(get_key_store)) -> Identity:
+    auth = request.headers.get("Authorization", "")
+    if auth.lower().startswith("bearer "):
+        try:
+            return keys.verify(auth[7:].strip())
+        except InvalidToken as e:
+            raise Problem(401, "token_invalid", str(e)) from e
+    host = request.client.host if request.client else "unknown"
+    return Identity("anonymous", f"anon:{host}", None, ("catalog:read", "runs:read"))
+
+
+def _extraction_limit(identity: Identity) -> int:
+    s = runner.settings
+    return s.anon_extractions_per_hour if identity.is_anonymous else s.key_extractions_per_hour
+
+
+@router.get("/me", tags=["access"])
+def me(identity: Identity = Depends(get_identity), limiter=Depends(get_limiter)):
+    s = runner.settings
+    lim = _extraction_limit(identity)
+    return {
+        "kind": identity.kind, "key_id": None if identity.is_anonymous else identity.subject, "name": identity.name,
+        "scopes": list(identity.scopes), "auth_mode": s.auth_mode,
+        "limits": {"new_extractions_per_hour": lim, "remaining_this_hour": limiter.remaining(identity.subject, lim),
+                   "allowed_tiers": ["cached", "light"] if identity.is_anonymous else ["cached", "light", "heavy"],
+                   "max_roi_area_km2": s.max_roi_area_km2},
+    }
+
+
+@router.get("/me/api-keys", tags=["access"])
+def my_api_keys(identity: Identity = Depends(get_identity), keys=Depends(get_key_store)):
+    if identity.is_anonymous:
+        raise Problem(401, "token_required", "Envía Authorization: Bearer <token>")
+    return {"items": [r.public() for r in keys.list() if r.key_id == identity.subject]}
+
+
+@router.delete("/me/api-keys/{key_id}", tags=["access"])
+def revoke_my_api_key(key_id: str, identity: Identity = Depends(get_identity), keys=Depends(get_key_store)):
+    if identity.is_anonymous:
+        raise Problem(401, "token_required", "Envía Authorization: Bearer <token>")
+    if key_id != identity.subject:
+        raise Problem(403, "scope_forbidden", "Solo puedes revocar tu propia clave")
+    keys.revoke(key_id)
+    return {"key_id": key_id, "revoked": True}
+
+
+def _prepare(spec: AnalysisSpec, store, adapters, geos) -> runner.PreparedRun:
     try:
-        return runner.run_analysis(spec, store=store, adapters=adapters, geographies=geos)
+        return runner.prepare(spec, store=store, adapters=adapters, geographies=geos)
     except runner.AnalysisError as e:
-        return problem(e.status, e.code, e.detail, request)
+        raise Problem(e.status, e.code, e.detail) from e
     except IncompatibleMethodError as e:
-        return problem(409, "incompatible_method", str(e), request)
+        raise Problem(409, "incompatible_method", str(e)) from e
     except EarthEngineUnavailable as e:
-        return problem(503, "source_unavailable", str(e), request)
+        raise Problem(503, "source_unavailable", str(e)) from e
+
+
+def _authorize(identity: Identity, est: cost.CostEstimate) -> None:
+    """Política de acceso (plan §12.3): explorar sin registro; lo pesado requiere token; nada ilimitado."""
+    if est.tier == "too_large":
+        raise Problem(413, "area_too_large", est.reason, extra={"cost": est.to_dict()})
+    if identity.is_anonymous:
+        if runner.settings.auth_mode == "required" and est.tier != "cached":
+            raise Problem(401, "token_required", "Este servidor exige token para nuevos análisis",
+                          extra={"cost": est.to_dict()})
+        if est.tier == "heavy":
+            raise Problem(401, "token_required",
+                          f"Análisis pesado (~{est.estimated_seconds:.0f} s estimados, {est.source_images:,} imágenes "
+                          "fuente): requiere token de API. Alternativas sin token: periodo más corto o producto mensual.",
+                          extra={"cost": est.to_dict()})
+    elif not identity.has("analyses:write") and est.tier != "cached":
+        raise Problem(403, "scope_forbidden", "El token no tiene el scope analyses:write")
+
+
+@router.post("/analyses/estimate-cost", tags=["analyses"])
+def estimate_cost(spec: AnalysisSpec, identity: Identity = Depends(get_identity), store=Depends(get_store),
+                  adapters=Depends(get_adapters), geos=Depends(get_geographies)):
+    """Complejidad estimada del análisis y si tu identidad puede ejecutarlo (no consume cupo ni toca Earth Engine)."""
+    p = _prepare(spec, store, adapters, geos)
+    est = cost.estimate(p)
+    try:
+        _authorize(identity, est)
+        allowed, why = True, None
+    except Problem as e:
+        allowed, why = False, {"status": e.status, "code": e.code, "detail": e.detail}
+    return {"run_id": p.run_id, "analysis_spec_hash": p.s_hash, "cost": est.to_dict(), "allowed": allowed,
+            "denied": why}
+
+
+@router.post("/analyses", tags=["analyses"])
+def create_analysis(spec: AnalysisSpec, identity: Identity = Depends(get_identity), store=Depends(get_store),
+                    adapters=Depends(get_adapters), geos=Depends(get_geographies), limiter=Depends(get_limiter),
+                    gate=Depends(get_gate)):
+    p = _prepare(spec, store, adapters, geos)
+    est = cost.estimate(p)
+    _authorize(identity, est)
+    if p.needs_extraction:
+        try:
+            limiter.check_and_add(identity.subject, _extraction_limit(identity))
+        except RateLimited as e:
+            raise Problem(429, "quota_exceeded", e.detail, retry_after=e.retry_after) from e
+    try:
+        run = runner.execute(p, extraction_gate=gate.slot())
+    except RateLimited as e:
+        raise Problem(503, "source_busy", e.detail, retry_after=e.retry_after) from e
+    except runner.AnalysisError as e:
+        raise Problem(e.status, e.code, e.detail) from e
+    except IncompatibleMethodError as e:
+        raise Problem(409, "incompatible_method", str(e)) from e
+    except EarthEngineUnavailable as e:
+        raise Problem(503, "source_unavailable", str(e)) from e
+    return run | {"cost": est.to_dict()}
 
 
 def _run(run_id: str, store) -> dict:
     run = store.get("runs", run_id)
     if run is None:
-        raise HTTPException(404, f"run no encontrado: {run_id}")
+        raise Problem(404, "unknown_run", f"run no encontrado: {run_id}")
     return run
 
 

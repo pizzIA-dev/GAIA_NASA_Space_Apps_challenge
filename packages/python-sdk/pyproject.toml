@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "earth-trend-client"
+version = "0.1.0"
+description = "SDK Python oficial de Earth Trend Studio (nombre provisional): tendencias del sistema terrestre con datos NASA vía API REST, sin credenciales de Earth Engine en el cliente."
+requires-python = ">=3.10"
+dependencies = ["httpx>=0.27"]
+
+[project.optional-dependencies]
+pandas = ["pandas>=2.0"]
+plot = ["pandas>=2.0", "matplotlib>=3.8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

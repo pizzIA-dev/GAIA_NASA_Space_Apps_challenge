@@ -45,7 +45,9 @@ class TimeSpec(_Strict):
     start: date
     end_exclusive: date
     granularity: Literal["month", "year"] = "month"
-    temporal_aggregation: Literal["total", "mean"] = "total"
+    temporal_aggregation: Literal["total", "mean"] | None = Field(
+        None, description="None = la agregación por defecto de la variable (total para precipitación, media para el resto)"
+    )
 
     @model_validator(mode="after")
     def _order(self) -> TimeSpec:

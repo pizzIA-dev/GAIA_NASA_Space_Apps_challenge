@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 
 from app.api.v1 import routes
 from app.main import app
+from app.schemas.analysis import AnalysisSpec
 from app.services.analyses.runner import RunStore
 from app.services.geographies import geoboundaries as gb
 from app.services.geographies import peru_ign as pe
@@ -181,3 +182,13 @@ def test_analysis_by_district_warns_small_support(tmp_path, pe_geos):
         assert d["geometry"]["type"] == "Polygon"
     finally:
         app.dependency_overrides.clear()
+
+
+def test_all_null_series_explains_spatial_support(tmp_path, pe_geos):
+    from app.services.analyses.runner import AnalysisError, run_analysis
+
+    spec = AnalysisSpec.model_validate(make_spec() | {"geography": {"geo_ids": ["pe-ign2020:130111"]}})
+    with pytest.raises(AnalysisError) as e:
+        run_analysis(spec, RunStore(tmp_path), {"nasa-gpm-imerg-monthly-v07": FakeIMERG(missing=set(range(264)))},
+                     pe_geos)
+    assert e.value.status == 422 and "mucho menor que una celda" in e.value.detail

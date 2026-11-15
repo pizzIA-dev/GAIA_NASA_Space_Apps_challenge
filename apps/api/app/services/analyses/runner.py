@@ -7,6 +7,7 @@ cambiar IC o método reutiliza la serie ya extraída sin volver a Earth Engine.
 from __future__ import annotations
 
 import json
+from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from pathlib import Path
@@ -111,9 +112,29 @@ def to_granularity(rows: list[dict], spec: AnalysisSpec) -> tuple[pd.DataFrame, 
     return df, warnings
 
 
-def run_analysis(spec: AnalysisSpec, store: RunStore | None = None,
-                 adapters: dict[str, DatasetAdapter] | None = None,
-                 geographies: GeographyRegistry | None = None) -> dict:
+@dataclass
+class PreparedRun:
+    """Análisis validado y normalizado, listo para ejecutarse. Permite decidir cuotas/costes antes de tocar EE."""
+
+    spec: AnalysisSpec
+    adapter: DatasetAdapter
+    var: Any
+    s_hash: str
+    run_id: str
+    store: RunStore
+    cached_run: dict | None
+    geo: ResolvedGeography | None = None
+    x_key: str | None = None
+    extraction_cached: bool = False
+
+    @property
+    def needs_extraction(self) -> bool:
+        return self.cached_run is None and not self.extraction_cached
+
+
+def prepare(spec: AnalysisSpec, store: RunStore | None = None,
+            adapters: dict[str, DatasetAdapter] | None = None,
+            geographies: GeographyRegistry | None = None) -> PreparedRun:
     store = store or RunStore(settings.cache_dir)
     adapters = adapters if adapters is not None else ADAPTERS
     adapter = adapters.get(spec.data.dataset_id)
@@ -122,6 +143,11 @@ def run_analysis(spec: AnalysisSpec, store: RunStore | None = None,
     var = adapter.info.variable(spec.data.variable_id)
     if var is None:
         raise AnalysisError(404, "unknown_variable", f"Variable no disponible: {spec.data.variable_id}")
+    if spec.time.temporal_aggregation is None:
+        # Normalizar ANTES del hash: omitirla y declarar la agregación por defecto producen el mismo run_id.
+        spec = spec.model_copy(update={
+            "time": spec.time.model_copy(update={"temporal_aggregation": var.temporal_aggregations[0]})
+        })
     if spec.time.temporal_aggregation not in var.temporal_aggregations:
         raise AnalysisError(409, "incompatible_method",
                             f"Agregación '{spec.time.temporal_aggregation}' no válida para {var.variable_id}")
@@ -131,23 +157,39 @@ def run_analysis(spec: AnalysisSpec, store: RunStore | None = None,
 
     s_hash = spec_hash(spec, ALGORITHM_VERSION)
     run_id = "run_" + s_hash.split(":")[1][:20]
-    cached = store.get("runs", run_id)
-    if cached:
-        cached["cache_hit"] = True
-        return cached
+    p = PreparedRun(spec, adapter, var, s_hash, run_id, store, store.get("runs", run_id))
+    if p.cached_run is None:
+        p.geo = resolve_geometry(spec, geographies)
+        p.x_key = extraction_key(spec, adapter.info.version)
+        p.extraction_cached = store.get("extractions", p.x_key) is not None
+    return p
 
-    geo = resolve_geometry(spec, geographies)
-    x_key = extraction_key(spec, adapter.info.version)
+
+def execute(p: PreparedRun, extraction_gate=None) -> dict:
+    """Ejecuta un PreparedRun. `extraction_gate` (context manager) limita extracciones concurrentes en EE."""
+    if p.cached_run is not None:
+        return {**p.cached_run, "cache_hit": True}
+    spec, adapter, var, geo, store, x_key = p.spec, p.adapter, p.var, p.geo, p.store, p.x_key
     extraction = store.get("extractions", x_key)
     extraction_cache_hit = extraction is not None
     if extraction is None:
-        rows = adapter.extract(var.variable_id, geo.geometry, spec.time.start, spec.time.end_exclusive)
+        with extraction_gate or nullcontext():
+            rows = adapter.extract(var.variable_id, geo.geometry, spec.time.start, spec.time.end_exclusive)
         extraction = {"key": x_key, "rows": rows, "geometry_hash": geo.geometry_hash}
         store.put("extractions", x_key, extraction)
     rows = extraction["rows"]
     if not rows or all(r["value"] is None for r in rows):
+        area = geo.info.get("area_km2")
+        pixel_km2 = (adapter.info.native_scale_m / 1000.0) ** 2
+        cause = (
+            f" El territorio ({area:.0f} km²) es mucho menor que una celda de {adapter.info.nominal_resolution} "
+            f"(~{pixel_km2:.0f} km²) o cae en una celda enmascarada (p. ej., océano en productos terrestres). "
+            "Prueba con la unidad administrativa superior o un ROI mayor; no se extrapola desde celdas vecinas."
+            if area is not None and area < pixel_km2
+            else " Revisa que el producto cubra este territorio (p. ej., SST solo sobre océano)."
+        )
         raise AnalysisError(422, "insufficient_coverage",
-                            "Sin píxeles válidos en el ROI para el periodo: cobertura insuficiente")
+                            "Sin píxeles válidos en el territorio para el periodo: cobertura insuficiente." + cause)
 
     series, transform_warnings = to_granularity(rows, spec)
     st = spec.statistics
@@ -171,11 +213,11 @@ def run_analysis(spec: AnalysisSpec, store: RunStore | None = None,
     stats["warnings"] = support_warnings + transform_warnings + stats["warnings"]
 
     run = {
-        "run_id": run_id,
+        "run_id": p.run_id,
         "status": "succeeded",
         "cache_hit": False,
         "extraction_cache_hit": extraction_cache_hit,
-        "analysis_spec_hash": s_hash,
+        "analysis_spec_hash": p.s_hash,
         "request": spec.model_dump(mode="json"),
         "statistics": stats,
         "series": [
@@ -201,5 +243,12 @@ def run_analysis(spec: AnalysisSpec, store: RunStore | None = None,
         "compute": {"engine": "earth_engine", "algorithm_version": ALGORITHM_VERSION,
                     "completed_at": datetime.now(UTC).isoformat()},
     }
-    store.put("runs", run_id, run)
+    store.put("runs", p.run_id, run)
     return run
+
+
+def run_analysis(spec: AnalysisSpec, store: RunStore | None = None,
+                 adapters: dict[str, DatasetAdapter] | None = None,
+                 geographies: GeographyRegistry | None = None) -> dict:
+    """Atajo sin políticas de cuota (scripts, pruebas, SDK local)."""
+    return execute(prepare(spec, store, adapters, geographies))

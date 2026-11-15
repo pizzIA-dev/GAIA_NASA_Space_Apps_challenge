@@ -1,0 +1,38 @@
+### Earth Trend Studio — API v1, REST crudo (VS Code REST Client / JetBrains HTTP Client)
+### Servidor local: cd apps/api && .venv/Scripts/python -m uvicorn app.main:app
+@base = http://localhost:8000/api/v1
+@token = {{$dotenv EARTH_TREND_API_TOKEN}}
+
+### 1. Métodos disponibles
+GET {{base}}/catalog/capabilities
+
+### 2. Variables NASA disponibles
+GET {{base}}/catalog/variables
+
+### 3. Buscar un territorio (Perú usa por defecto la cartografía oficial IGN)
+GET {{base}}/geographies/search?q=trujillo&country=PER&level=ADM2
+
+### 4. Tendencia anual de precipitación IMERG en la provincia de Trujillo (Theil–Sen + Mann–Kendall)
+POST {{base}}/analyses
+Content-Type: application/json
+Authorization: Bearer {{token}}
+Idempotency-Key: ejemplo-trujillo-imerg-anual
+
+{
+  "data": {"dataset_id": "nasa-gpm-imerg-monthly-v07", "variable_id": "precipitation_mm_month"},
+  "geography": {"geo_ids": ["pe-ign2020:1301"]},
+  "time": {"start": "2003-01-01", "end_exclusive": "2025-01-01", "granularity": "year",
+           "temporal_aggregation": "total"},
+  "statistics": {"estimator": "theil_sen", "interval_method": "theil_sen_analytic",
+                 "significance_test": "mann_kendall", "confidence_level": 0.95, "time_unit": "decade"}
+}
+
+### 5. Recursos del run (reemplaza RUN_ID por el run_id de la respuesta anterior)
+@run = RUN_ID
+GET {{base}}/analyses/{{run}}/statistics
+
+###
+GET {{base}}/analyses/{{run}}/series
+
+###
+GET {{base}}/analyses/{{run}}/manifest

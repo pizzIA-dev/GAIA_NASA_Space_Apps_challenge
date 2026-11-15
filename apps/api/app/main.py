@@ -1,6 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 
-from app.api.v1.routes import router
+from app.api.v1.routes import Problem, problem_response, router
 from app.core.config import settings
 from app.services.earth_engine.adapters import ADAPTERS
 from app.services.earth_engine.client import auth_mode
@@ -39,3 +39,8 @@ def capabilities() -> dict:
 
 
 app.include_router(router)
+
+
+@app.exception_handler(Problem)
+async def _problem_handler(request: Request, exc: Problem):
+    return problem_response(request, exc)
