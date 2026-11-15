@@ -74,7 +74,11 @@ def resolve_geometry(spec: AnalysisSpec, geographies: GeographyRegistry | None =
         raise AnalysisError(422, "boundary_set_mismatch",
                             f"{g.geo_ids[0]} pertenece a {geo.boundary_set_id}, no a {g.boundary_set_id}")
     ref = reg.ref(geo)
-    return ResolvedGeography(ref, sha256_of(ref.identity()),
+    try:
+        identity = ref.identity()
+    except BoundariesNotIngested as exc:
+        raise AnalysisError(503, "source_unavailable", str(exc)) from exc
+    return ResolvedGeography(ref, sha256_of(identity),
                              {"kind": "boundary", **geo.to_dict(), "attribution": reg.attribution(geo.boundary_set_id)})
 
 

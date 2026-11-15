@@ -1,0 +1,5203 @@
+{
+ "source": {
+  "url": "http://met.igp.gob.pe/datos/ICEN.txt",
+  "publisher": "Instituto Geofísico del Perú (IGP) — serie oficial ICEN (ENFEN, 2024)",
+  "reference": "ENFEN (2024). Definición operacional de los eventos El Niño Costero y La Niña Costera en el Perú. Nota Técnica ENFEN 01-2024.",
+  "reference_url": "https://enfen.imarpe.gob.pe/download/nota-tecnica-enfen-01-2024-definicion-operacional-de-los-eventos-el-nino-costero-y-la-nina-costera-en-el-peru/",
+  "sha256": "14b3469df9397cb30359945f90a81768ae7fe86924ff66dbccc97d4e06af01a5",
+  "header": [
+   "% Índice Costero El Niño (ICEN; ENFEN, 2024)",
+   "% Versión oficial",
+   "%Referencia",
+   "%ENFEN (2024). Definición operacional de los eventos El Niño Costero y La Niña Costera en el Perú. Nota Técnica.",
+   "% yy   mm   ICEN"
+  ]
+ },
+ "rule": {
+  "warm_threshold_gt": 0.5,
+  "cold_threshold_lt": -0.7,
+  "min_consecutive_months": 3,
+  "status": "umbral_citado_pendiente_de_verificacion",
+  "note": "Neutro −0,7 ≤ ICEN ≤ +0,5 y duración mínima de 3 meses según documentos ENFEN que citan la NT 01-2024. Episodios DERIVADOS por la plataforma, no lista oficial transcrita. Magnitud no clasificada."
+ },
+ "ingested_at": "2026-11-15T04:48:48.630699+00:00",
+ "episodes": [
+  {
+   "id": "LN-COSTERO-1950",
+   "kind": "la_nina_costera",
+   "start": "1950-01",
+   "end": "1950-07",
+   "months": 7,
+   "peak_icen": -1.25,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1951",
+   "kind": "el_nino_costero",
+   "start": "1951-05",
+   "end": "1951-12",
+   "months": 8,
+   "peak_icen": 2.13,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1953",
+   "kind": "el_nino_costero",
+   "start": "1953-02",
+   "end": "1953-10",
+   "months": 9,
+   "peak_icen": 1.6,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1954",
+   "kind": "la_nina_costera",
+   "start": "1954-01",
+   "end": "1954-12",
+   "months": 12,
+   "peak_icen": -2.23,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1955-56",
+   "kind": "la_nina_costera",
+   "start": "1955-03",
+   "end": "1956-01",
+   "months": 11,
+   "peak_icen": -1.26,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1957-58",
+   "kind": "el_nino_costero",
+   "start": "1957-03",
+   "end": "1958-07",
+   "months": 17,
+   "peak_icen": 2.81,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1962",
+   "kind": "la_nina_costera",
+   "start": "1962-03",
+   "end": "1962-05",
+   "months": 3,
+   "peak_icen": -1.34,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1963",
+   "kind": "el_nino_costero",
+   "start": "1963-08",
+   "end": "1963-10",
+   "months": 3,
+   "peak_icen": 0.7,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1964",
+   "kind": "la_nina_costera",
+   "start": "1964-03",
+   "end": "1964-09",
+   "months": 7,
+   "peak_icen": -1.34,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1965-66",
+   "kind": "el_nino_costero",
+   "start": "1965-03",
+   "end": "1966-01",
+   "months": 11,
+   "peak_icen": 2.1,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1966",
+   "kind": "la_nina_costera",
+   "start": "1966-04",
+   "end": "1966-07",
+   "months": 4,
+   "peak_icen": -1.03,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1967-68",
+   "kind": "la_nina_costera",
+   "start": "1967-08",
+   "end": "1968-06",
+   "months": 11,
+   "peak_icen": -1.24,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1968",
+   "kind": "el_nino_costero",
+   "start": "1968-09",
+   "end": "1968-11",
+   "months": 3,
+   "peak_icen": 0.56,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1969-70",
+   "kind": "el_nino_costero",
+   "start": "1969-03",
+   "end": "1970-01",
+   "months": 11,
+   "peak_icen": 1.64,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1970",
+   "kind": "la_nina_costera",
+   "start": "1970-04",
+   "end": "1970-10",
+   "months": 7,
+   "peak_icen": -1.57,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1970-71",
+   "kind": "la_nina_costera",
+   "start": "1970-12",
+   "end": "1971-03",
+   "months": 4,
+   "peak_icen": -1.01,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1971",
+   "kind": "la_nina_costera",
+   "start": "1971-05",
+   "end": "1971-10",
+   "months": 6,
+   "peak_icen": -0.88,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1972-73",
+   "kind": "el_nino_costero",
+   "start": "1972-02",
+   "end": "1973-02",
+   "months": 13,
+   "peak_icen": 2.45,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1973-74",
+   "kind": "la_nina_costera",
+   "start": "1973-05",
+   "end": "1974-01",
+   "months": 9,
+   "peak_icen": -1.1,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1974-75",
+   "kind": "la_nina_costera",
+   "start": "1974-11",
+   "end": "1975-01",
+   "months": 3,
+   "peak_icen": -0.88,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1975-76",
+   "kind": "la_nina_costera",
+   "start": "1975-07",
+   "end": "1976-01",
+   "months": 7,
+   "peak_icen": -1.69,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1976",
+   "kind": "el_nino_costero",
+   "start": "1976-04",
+   "end": "1976-12",
+   "months": 9,
+   "peak_icen": 1.85,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1982-83",
+   "kind": "el_nino_costero",
+   "start": "1982-07",
+   "end": "1983-11",
+   "months": 17,
+   "peak_icen": 4.32,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1985",
+   "kind": "la_nina_costera",
+   "start": "1985-03",
+   "end": "1985-09",
+   "months": 7,
+   "peak_icen": -1.18,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1986",
+   "kind": "la_nina_costera",
+   "start": "1986-04",
+   "end": "1986-06",
+   "months": 3,
+   "peak_icen": -0.92,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1986-87",
+   "kind": "el_nino_costero",
+   "start": "1986-12",
+   "end": "1987-12",
+   "months": 13,
+   "peak_icen": 1.63,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1988",
+   "kind": "la_nina_costera",
+   "start": "1988-04",
+   "end": "1988-11",
+   "months": 8,
+   "peak_icen": -1.44,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1991-92",
+   "kind": "el_nino_costero",
+   "start": "1991-08",
+   "end": "1992-06",
+   "months": 11,
+   "peak_icen": 1.99,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1993",
+   "kind": "el_nino_costero",
+   "start": "1993-03",
+   "end": "1993-09",
+   "months": 7,
+   "peak_icen": 1.26,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1994",
+   "kind": "la_nina_costera",
+   "start": "1994-03",
+   "end": "1994-07",
+   "months": 5,
+   "peak_icen": -1.0,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1994-95",
+   "kind": "el_nino_costero",
+   "start": "1994-11",
+   "end": "1995-01",
+   "months": 3,
+   "peak_icen": 0.68,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1995",
+   "kind": "la_nina_costera",
+   "start": "1995-04",
+   "end": "1995-06",
+   "months": 3,
+   "peak_icen": -1.18,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1996-97",
+   "kind": "la_nina_costera",
+   "start": "1996-03",
+   "end": "1997-01",
+   "months": 11,
+   "peak_icen": -1.64,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-1997-98",
+   "kind": "el_nino_costero",
+   "start": "1997-04",
+   "end": "1998-08",
+   "months": 17,
+   "peak_icen": 4.08,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-1999",
+   "kind": "la_nina_costera",
+   "start": "1999-10",
+   "end": "1999-12",
+   "months": 3,
+   "peak_icen": -1.08,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-2001",
+   "kind": "la_nina_costera",
+   "start": "2001-07",
+   "end": "2001-12",
+   "months": 6,
+   "peak_icen": -1.09,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-2002",
+   "kind": "el_nino_costero",
+   "start": "2002-03",
+   "end": "2002-05",
+   "months": 3,
+   "peak_icen": 0.81,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-2003",
+   "kind": "la_nina_costera",
+   "start": "2003-05",
+   "end": "2003-07",
+   "months": 3,
+   "peak_icen": -1.3,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-2004",
+   "kind": "la_nina_costera",
+   "start": "2004-04",
+   "end": "2004-07",
+   "months": 4,
+   "peak_icen": -1.11,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-2005",
+   "kind": "la_nina_costera",
+   "start": "2005-09",
+   "end": "2005-12",
+   "months": 4,
+   "peak_icen": -1.23,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-2006",
+   "kind": "el_nino_costero",
+   "start": "2006-08",
+   "end": "2006-12",
+   "months": 5,
+   "peak_icen": 0.94,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-2007",
+   "kind": "la_nina_costera",
+   "start": "2007-04",
+   "end": "2007-12",
+   "months": 9,
+   "peak_icen": -1.64,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-2008",
+   "kind": "el_nino_costero",
+   "start": "2008-06",
+   "end": "2008-09",
+   "months": 4,
+   "peak_icen": 1.13,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-2009",
+   "kind": "el_nino_costero",
+   "start": "2009-06",
+   "end": "2009-09",
+   "months": 4,
+   "peak_icen": 0.75,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-2010",
+   "kind": "la_nina_costera",
+   "start": "2010-07",
+   "end": "2010-12",
+   "months": 6,
+   "peak_icen": -1.25,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-2012",
+   "kind": "el_nino_costero",
+   "start": "2012-04",
+   "end": "2012-06",
+   "months": 3,
+   "peak_icen": 0.94,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-2013",
+   "kind": "la_nina_costera",
+   "start": "2013-03",
+   "end": "2013-09",
+   "months": 7,
+   "peak_icen": -1.66,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-2014",
+   "kind": "el_nino_costero",
+   "start": "2014-05",
+   "end": "2014-11",
+   "months": 7,
+   "peak_icen": 1.21,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-2015-16",
+   "kind": "el_nino_costero",
+   "start": "2015-04",
+   "end": "2016-05",
+   "months": 14,
+   "peak_icen": 2.23,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-2017",
+   "kind": "el_nino_costero",
+   "start": "2017-01",
+   "end": "2017-04",
+   "months": 4,
+   "peak_icen": 1.31,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-2017-18",
+   "kind": "la_nina_costera",
+   "start": "2017-10",
+   "end": "2018-05",
+   "months": 8,
+   "peak_icen": -1.3,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-2018-19",
+   "kind": "el_nino_costero",
+   "start": "2018-11",
+   "end": "2019-01",
+   "months": 3,
+   "peak_icen": 0.87,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-2020-21",
+   "kind": "la_nina_costera",
+   "start": "2020-06",
+   "end": "2021-04",
+   "months": 11,
+   "peak_icen": -1.19,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-2021-22",
+   "kind": "la_nina_costera",
+   "start": "2021-10",
+   "end": "2022-11",
+   "months": 14,
+   "peak_icen": -1.51,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-2023-24",
+   "kind": "el_nino_costero",
+   "start": "2023-03",
+   "end": "2024-02",
+   "months": 12,
+   "peak_icen": 2.92,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "LN-COSTERO-2024",
+   "kind": "la_nina_costera",
+   "start": "2024-05",
+   "end": "2024-07",
+   "months": 3,
+   "peak_icen": -0.97,
+   "ongoing": false,
+   "derived": true
+  },
+  {
+   "id": "EN-COSTERO-2026",
+   "kind": "el_nino_costero",
+   "start": "2026-03",
+   "end": "2026-09",
+   "months": 7,
+   "peak_icen": 4.5,
+   "ongoing": true,
+   "derived": true
+  }
+ ],
+ "series": [
+  {
+   "year": 1950,
+   "month": 1,
+   "icen": -0.75
+  },
+  {
+   "year": 1950,
+   "month": 2,
+   "icen": -1.07
+  },
+  {
+   "year": 1950,
+   "month": 3,
+   "icen": -1.25
+  },
+  {
+   "year": 1950,
+   "month": 4,
+   "icen": -1.18
+  },
+  {
+   "year": 1950,
+   "month": 5,
+   "icen": -1.22
+  },
+  {
+   "year": 1950,
+   "month": 6,
+   "icen": -1.05
+  },
+  {
+   "year": 1950,
+   "month": 7,
+   "icen": -0.8
+  },
+  {
+   "year": 1950,
+   "month": 8,
+   "icen": -0.67
+  },
+  {
+   "year": 1950,
+   "month": 9,
+   "icen": -0.49
+  },
+  {
+   "year": 1950,
+   "month": 10,
+   "icen": -0.77
+  },
+  {
+   "year": 1950,
+   "month": 11,
+   "icen": -0.71
+  },
+  {
+   "year": 1950,
+   "month": 12,
+   "icen": -0.53
+  },
+  {
+   "year": 1951,
+   "month": 1,
+   "icen": -0.3
+  },
+  {
+   "year": 1951,
+   "month": 2,
+   "icen": -0.23
+  },
+  {
+   "year": 1951,
+   "month": 3,
+   "icen": -0.18
+  },
+  {
+   "year": 1951,
+   "month": 4,
+   "icen": 0.26
+  },
+  {
+   "year": 1951,
+   "month": 5,
+   "icen": 1.09
+  },
+  {
+   "year": 1951,
+   "month": 6,
+   "icen": 1.84
+  },
+  {
+   "year": 1951,
+   "month": 7,
+   "icen": 2.13
+  },
+  {
+   "year": 1951,
+   "month": 8,
+   "icen": 1.74
+  },
+  {
+   "year": 1951,
+   "month": 9,
+   "icen": 1.32
+  },
+  {
+   "year": 1951,
+   "month": 10,
+   "icen": 1.16
+  },
+  {
+   "year": 1951,
+   "month": 11,
+   "icen": 1.0
+  },
+  {
+   "year": 1951,
+   "month": 12,
+   "icen": 0.7
+  },
+  {
+   "year": 1952,
+   "month": 1,
+   "icen": 0.41
+  },
+  {
+   "year": 1952,
+   "month": 2,
+   "icen": 0.25
+  },
+  {
+   "year": 1952,
+   "month": 3,
+   "icen": -0.07
+  },
+  {
+   "year": 1952,
+   "month": 4,
+   "icen": -0.28
+  },
+  {
+   "year": 1952,
+   "month": 5,
+   "icen": -0.46
+  },
+  {
+   "year": 1952,
+   "month": 6,
+   "icen": -0.45
+  },
+  {
+   "year": 1952,
+   "month": 7,
+   "icen": -0.56
+  },
+  {
+   "year": 1952,
+   "month": 8,
+   "icen": -0.7
+  },
+  {
+   "year": 1952,
+   "month": 9,
+   "icen": -0.54
+  },
+  {
+   "year": 1952,
+   "month": 10,
+   "icen": -0.44
+  },
+  {
+   "year": 1952,
+   "month": 11,
+   "icen": -0.13
+  },
+  {
+   "year": 1952,
+   "month": 12,
+   "icen": -0.06
+  },
+  {
+   "year": 1953,
+   "month": 1,
+   "icen": 0.23
+  },
+  {
+   "year": 1953,
+   "month": 2,
+   "icen": 0.63
+  },
+  {
+   "year": 1953,
+   "month": 3,
+   "icen": 1.25
+  },
+  {
+   "year": 1953,
+   "month": 4,
+   "icen": 1.6
+  },
+  {
+   "year": 1953,
+   "month": 5,
+   "icen": 1.54
+  },
+  {
+   "year": 1953,
+   "month": 6,
+   "icen": 1.11
+  },
+  {
+   "year": 1953,
+   "month": 7,
+   "icen": 0.79
+  },
+  {
+   "year": 1953,
+   "month": 8,
+   "icen": 0.71
+  },
+  {
+   "year": 1953,
+   "month": 9,
+   "icen": 0.61
+  },
+  {
+   "year": 1953,
+   "month": 10,
+   "icen": 0.51
+  },
+  {
+   "year": 1953,
+   "month": 11,
+   "icen": 0.22
+  },
+  {
+   "year": 1953,
+   "month": 12,
+   "icen": -0.35
+  },
+  {
+   "year": 1954,
+   "month": 1,
+   "icen": -0.75
+  },
+  {
+   "year": 1954,
+   "month": 2,
+   "icen": -1.0
+  },
+  {
+   "year": 1954,
+   "month": 3,
+   "icen": -1.42
+  },
+  {
+   "year": 1954,
+   "month": 4,
+   "icen": -1.93
+  },
+  {
+   "year": 1954,
+   "month": 5,
+   "icen": -2.23
+  },
+  {
+   "year": 1954,
+   "month": 6,
+   "icen": -2.09
+  },
+  {
+   "year": 1954,
+   "month": 7,
+   "icen": -1.7
+  },
+  {
+   "year": 1954,
+   "month": 8,
+   "icen": -1.54
+  },
+  {
+   "year": 1954,
+   "month": 9,
+   "icen": -1.31
+  },
+  {
+   "year": 1954,
+   "month": 10,
+   "icen": -1.23
+  },
+  {
+   "year": 1954,
+   "month": 11,
+   "icen": -1.13
+  },
+  {
+   "year": 1954,
+   "month": 12,
+   "icen": -0.72
+  },
+  {
+   "year": 1955,
+   "month": 1,
+   "icen": -0.65
+  },
+  {
+   "year": 1955,
+   "month": 2,
+   "icen": -0.64
+  },
+  {
+   "year": 1955,
+   "month": 3,
+   "icen": -0.79
+  },
+  {
+   "year": 1955,
+   "month": 4,
+   "icen": -1.06
+  },
+  {
+   "year": 1955,
+   "month": 5,
+   "icen": -1.16
+  },
+  {
+   "year": 1955,
+   "month": 6,
+   "icen": -1.17
+  },
+  {
+   "year": 1955,
+   "month": 7,
+   "icen": -1.01
+  },
+  {
+   "year": 1955,
+   "month": 8,
+   "icen": -0.94
+  },
+  {
+   "year": 1955,
+   "month": 9,
+   "icen": -1.11
+  },
+  {
+   "year": 1955,
+   "month": 10,
+   "icen": -1.2
+  },
+  {
+   "year": 1955,
+   "month": 11,
+   "icen": -1.26
+  },
+  {
+   "year": 1955,
+   "month": 12,
+   "icen": -1.1
+  },
+  {
+   "year": 1956,
+   "month": 1,
+   "icen": -0.93
+  },
+  {
+   "year": 1956,
+   "month": 2,
+   "icen": -0.61
+  },
+  {
+   "year": 1956,
+   "month": 3,
+   "icen": -0.51
+  },
+  {
+   "year": 1956,
+   "month": 4,
+   "icen": -0.42
+  },
+  {
+   "year": 1956,
+   "month": 5,
+   "icen": -0.41
+  },
+  {
+   "year": 1956,
+   "month": 6,
+   "icen": -0.04
+  },
+  {
+   "year": 1956,
+   "month": 7,
+   "icen": 0.19
+  },
+  {
+   "year": 1956,
+   "month": 8,
+   "icen": 0.08
+  },
+  {
+   "year": 1956,
+   "month": 9,
+   "icen": -0.33
+  },
+  {
+   "year": 1956,
+   "month": 10,
+   "icen": -0.54
+  },
+  {
+   "year": 1956,
+   "month": 11,
+   "icen": -0.64
+  },
+  {
+   "year": 1956,
+   "month": 12,
+   "icen": -0.83
+  },
+  {
+   "year": 1957,
+   "month": 1,
+   "icen": -0.51
+  },
+  {
+   "year": 1957,
+   "month": 2,
+   "icen": 0.21
+  },
+  {
+   "year": 1957,
+   "month": 3,
+   "icen": 1.18
+  },
+  {
+   "year": 1957,
+   "month": 4,
+   "icen": 2.05
+  },
+  {
+   "year": 1957,
+   "month": 5,
+   "icen": 2.53
+  },
+  {
+   "year": 1957,
+   "month": 6,
+   "icen": 2.81
+  },
+  {
+   "year": 1957,
+   "month": 7,
+   "icen": 2.38
+  },
+  {
+   "year": 1957,
+   "month": 8,
+   "icen": 1.92
+  },
+  {
+   "year": 1957,
+   "month": 9,
+   "icen": 1.47
+  },
+  {
+   "year": 1957,
+   "month": 10,
+   "icen": 1.25
+  },
+  {
+   "year": 1957,
+   "month": 11,
+   "icen": 1.16
+  },
+  {
+   "year": 1957,
+   "month": 12,
+   "icen": 0.97
+  },
+  {
+   "year": 1958,
+   "month": 1,
+   "icen": 0.82
+  },
+  {
+   "year": 1958,
+   "month": 2,
+   "icen": 0.77
+  },
+  {
+   "year": 1958,
+   "month": 3,
+   "icen": 1.01
+  },
+  {
+   "year": 1958,
+   "month": 4,
+   "icen": 1.05
+  },
+  {
+   "year": 1958,
+   "month": 5,
+   "icen": 0.95
+  },
+  {
+   "year": 1958,
+   "month": 6,
+   "icen": 0.77
+  },
+  {
+   "year": 1958,
+   "month": 7,
+   "icen": 0.56
+  },
+  {
+   "year": 1958,
+   "month": 8,
+   "icen": 0.35
+  },
+  {
+   "year": 1958,
+   "month": 9,
+   "icen": 0.22
+  },
+  {
+   "year": 1958,
+   "month": 10,
+   "icen": 0.22
+  },
+  {
+   "year": 1958,
+   "month": 11,
+   "icen": 0.19
+  },
+  {
+   "year": 1958,
+   "month": 12,
+   "icen": -0.07
+  },
+  {
+   "year": 1959,
+   "month": 1,
+   "icen": -0.15
+  },
+  {
+   "year": 1959,
+   "month": 2,
+   "icen": 0.15
+  },
+  {
+   "year": 1959,
+   "month": 3,
+   "icen": 0.52
+  },
+  {
+   "year": 1959,
+   "month": 4,
+   "icen": 0.64
+  },
+  {
+   "year": 1959,
+   "month": 5,
+   "icen": 0.38
+  },
+  {
+   "year": 1959,
+   "month": 6,
+   "icen": 0.19
+  },
+  {
+   "year": 1959,
+   "month": 7,
+   "icen": -0.05
+  },
+  {
+   "year": 1959,
+   "month": 8,
+   "icen": -0.13
+  },
+  {
+   "year": 1959,
+   "month": 9,
+   "icen": -0.09
+  },
+  {
+   "year": 1959,
+   "month": 10,
+   "icen": 0.28
+  },
+  {
+   "year": 1959,
+   "month": 11,
+   "icen": 0.41
+  },
+  {
+   "year": 1959,
+   "month": 12,
+   "icen": 0.36
+  },
+  {
+   "year": 1960,
+   "month": 1,
+   "icen": 0.14
+  },
+  {
+   "year": 1960,
+   "month": 2,
+   "icen": 0.15
+  },
+  {
+   "year": 1960,
+   "month": 3,
+   "icen": -0.07
+  },
+  {
+   "year": 1960,
+   "month": 4,
+   "icen": -0.2
+  },
+  {
+   "year": 1960,
+   "month": 5,
+   "icen": -0.52
+  },
+  {
+   "year": 1960,
+   "month": 6,
+   "icen": -0.55
+  },
+  {
+   "year": 1960,
+   "month": 7,
+   "icen": -0.56
+  },
+  {
+   "year": 1960,
+   "month": 8,
+   "icen": -0.27
+  },
+  {
+   "year": 1960,
+   "month": 9,
+   "icen": -0.18
+  },
+  {
+   "year": 1960,
+   "month": 10,
+   "icen": -0.05
+  },
+  {
+   "year": 1960,
+   "month": 11,
+   "icen": -0.05
+  },
+  {
+   "year": 1960,
+   "month": 12,
+   "icen": 0.25
+  },
+  {
+   "year": 1961,
+   "month": 1,
+   "icen": 0.59
+  },
+  {
+   "year": 1961,
+   "month": 2,
+   "icen": 0.49
+  },
+  {
+   "year": 1961,
+   "month": 3,
+   "icen": 0.25
+  },
+  {
+   "year": 1961,
+   "month": 4,
+   "icen": -0.14
+  },
+  {
+   "year": 1961,
+   "month": 5,
+   "icen": -0.16
+  },
+  {
+   "year": 1961,
+   "month": 6,
+   "icen": -0.38
+  },
+  {
+   "year": 1961,
+   "month": 7,
+   "icen": -0.5
+  },
+  {
+   "year": 1961,
+   "month": 8,
+   "icen": -0.61
+  },
+  {
+   "year": 1961,
+   "month": 9,
+   "icen": -0.46
+  },
+  {
+   "year": 1961,
+   "month": 10,
+   "icen": -0.29
+  },
+  {
+   "year": 1961,
+   "month": 11,
+   "icen": -0.2
+  },
+  {
+   "year": 1961,
+   "month": 12,
+   "icen": -0.12
+  },
+  {
+   "year": 1962,
+   "month": 1,
+   "icen": -0.17
+  },
+  {
+   "year": 1962,
+   "month": 2,
+   "icen": -0.6
+  },
+  {
+   "year": 1962,
+   "month": 3,
+   "icen": -1.14
+  },
+  {
+   "year": 1962,
+   "month": 4,
+   "icen": -1.34
+  },
+  {
+   "year": 1962,
+   "month": 5,
+   "icen": -1.01
+  },
+  {
+   "year": 1962,
+   "month": 6,
+   "icen": -0.63
+  },
+  {
+   "year": 1962,
+   "month": 7,
+   "icen": -0.43
+  },
+  {
+   "year": 1962,
+   "month": 8,
+   "icen": -0.28
+  },
+  {
+   "year": 1962,
+   "month": 9,
+   "icen": -0.24
+  },
+  {
+   "year": 1962,
+   "month": 10,
+   "icen": -0.27
+  },
+  {
+   "year": 1962,
+   "month": 11,
+   "icen": -0.38
+  },
+  {
+   "year": 1962,
+   "month": 12,
+   "icen": -0.3
+  },
+  {
+   "year": 1963,
+   "month": 1,
+   "icen": -0.31
+  },
+  {
+   "year": 1963,
+   "month": 2,
+   "icen": -0.21
+  },
+  {
+   "year": 1963,
+   "month": 3,
+   "icen": -0.33
+  },
+  {
+   "year": 1963,
+   "month": 4,
+   "icen": -0.18
+  },
+  {
+   "year": 1963,
+   "month": 5,
+   "icen": -0.15
+  },
+  {
+   "year": 1963,
+   "month": 6,
+   "icen": 0.17
+  },
+  {
+   "year": 1963,
+   "month": 7,
+   "icen": 0.36
+  },
+  {
+   "year": 1963,
+   "month": 8,
+   "icen": 0.61
+  },
+  {
+   "year": 1963,
+   "month": 9,
+   "icen": 0.7
+  },
+  {
+   "year": 1963,
+   "month": 10,
+   "icen": 0.59
+  },
+  {
+   "year": 1963,
+   "month": 11,
+   "icen": 0.48
+  },
+  {
+   "year": 1963,
+   "month": 12,
+   "icen": 0.25
+  },
+  {
+   "year": 1964,
+   "month": 1,
+   "icen": -0.14
+  },
+  {
+   "year": 1964,
+   "month": 2,
+   "icen": -0.52
+  },
+  {
+   "year": 1964,
+   "month": 3,
+   "icen": -0.75
+  },
+  {
+   "year": 1964,
+   "month": 4,
+   "icen": -1.14
+  },
+  {
+   "year": 1964,
+   "month": 5,
+   "icen": -1.24
+  },
+  {
+   "year": 1964,
+   "month": 6,
+   "icen": -1.34
+  },
+  {
+   "year": 1964,
+   "month": 7,
+   "icen": -1.05
+  },
+  {
+   "year": 1964,
+   "month": 8,
+   "icen": -0.9
+  },
+  {
+   "year": 1964,
+   "month": 9,
+   "icen": -0.79
+  },
+  {
+   "year": 1964,
+   "month": 10,
+   "icen": -0.55
+  },
+  {
+   "year": 1964,
+   "month": 11,
+   "icen": -0.58
+  },
+  {
+   "year": 1964,
+   "month": 12,
+   "icen": -0.36
+  },
+  {
+   "year": 1965,
+   "month": 1,
+   "icen": -0.17
+  },
+  {
+   "year": 1965,
+   "month": 2,
+   "icen": 0.26
+  },
+  {
+   "year": 1965,
+   "month": 3,
+   "icen": 0.94
+  },
+  {
+   "year": 1965,
+   "month": 4,
+   "icen": 1.62
+  },
+  {
+   "year": 1965,
+   "month": 5,
+   "icen": 2.1
+  },
+  {
+   "year": 1965,
+   "month": 6,
+   "icen": 2.03
+  },
+  {
+   "year": 1965,
+   "month": 7,
+   "icen": 1.93
+  },
+  {
+   "year": 1965,
+   "month": 8,
+   "icen": 1.59
+  },
+  {
+   "year": 1965,
+   "month": 9,
+   "icen": 1.35
+  },
+  {
+   "year": 1965,
+   "month": 10,
+   "icen": 1.04
+  },
+  {
+   "year": 1965,
+   "month": 11,
+   "icen": 1.03
+  },
+  {
+   "year": 1965,
+   "month": 12,
+   "icen": 1.01
+  },
+  {
+   "year": 1966,
+   "month": 1,
+   "icen": 0.64
+  },
+  {
+   "year": 1966,
+   "month": 2,
+   "icen": 0.02
+  },
+  {
+   "year": 1966,
+   "month": 3,
+   "icen": -0.65
+  },
+  {
+   "year": 1966,
+   "month": 4,
+   "icen": -1.0
+  },
+  {
+   "year": 1966,
+   "month": 5,
+   "icen": -1.03
+  },
+  {
+   "year": 1966,
+   "month": 6,
+   "icen": -0.93
+  },
+  {
+   "year": 1966,
+   "month": 7,
+   "icen": -0.8
+  },
+  {
+   "year": 1966,
+   "month": 8,
+   "icen": -0.6
+  },
+  {
+   "year": 1966,
+   "month": 9,
+   "icen": -0.34
+  },
+  {
+   "year": 1966,
+   "month": 10,
+   "icen": -0.26
+  },
+  {
+   "year": 1966,
+   "month": 11,
+   "icen": -0.17
+  },
+  {
+   "year": 1966,
+   "month": 12,
+   "icen": -0.32
+  },
+  {
+   "year": 1967,
+   "month": 1,
+   "icen": -0.18
+  },
+  {
+   "year": 1967,
+   "month": 2,
+   "icen": -0.3
+  },
+  {
+   "year": 1967,
+   "month": 3,
+   "icen": -0.21
+  },
+  {
+   "year": 1967,
+   "month": 4,
+   "icen": -0.27
+  },
+  {
+   "year": 1967,
+   "month": 5,
+   "icen": -0.27
+  },
+  {
+   "year": 1967,
+   "month": 6,
+   "icen": -0.4
+  },
+  {
+   "year": 1967,
+   "month": 7,
+   "icen": -0.67
+  },
+  {
+   "year": 1967,
+   "month": 8,
+   "icen": -0.95
+  },
+  {
+   "year": 1967,
+   "month": 9,
+   "icen": -1.14
+  },
+  {
+   "year": 1967,
+   "month": 10,
+   "icen": -1.24
+  },
+  {
+   "year": 1967,
+   "month": 11,
+   "icen": -1.24
+  },
+  {
+   "year": 1967,
+   "month": 12,
+   "icen": -1.21
+  },
+  {
+   "year": 1968,
+   "month": 1,
+   "icen": -1.05
+  },
+  {
+   "year": 1968,
+   "month": 2,
+   "icen": -0.95
+  },
+  {
+   "year": 1968,
+   "month": 3,
+   "icen": -1.02
+  },
+  {
+   "year": 1968,
+   "month": 4,
+   "icen": -1.2
+  },
+  {
+   "year": 1968,
+   "month": 5,
+   "icen": -1.21
+  },
+  {
+   "year": 1968,
+   "month": 6,
+   "icen": -0.89
+  },
+  {
+   "year": 1968,
+   "month": 7,
+   "icen": -0.35
+  },
+  {
+   "year": 1968,
+   "month": 8,
+   "icen": 0.27
+  },
+  {
+   "year": 1968,
+   "month": 9,
+   "icen": 0.51
+  },
+  {
+   "year": 1968,
+   "month": 10,
+   "icen": 0.56
+  },
+  {
+   "year": 1968,
+   "month": 11,
+   "icen": 0.51
+  },
+  {
+   "year": 1968,
+   "month": 12,
+   "icen": 0.49
+  },
+  {
+   "year": 1969,
+   "month": 1,
+   "icen": 0.3
+  },
+  {
+   "year": 1969,
+   "month": 2,
+   "icen": 0.38
+  },
+  {
+   "year": 1969,
+   "month": 3,
+   "icen": 0.72
+  },
+  {
+   "year": 1969,
+   "month": 4,
+   "icen": 1.43
+  },
+  {
+   "year": 1969,
+   "month": 5,
+   "icen": 1.64
+  },
+  {
+   "year": 1969,
+   "month": 6,
+   "icen": 1.44
+  },
+  {
+   "year": 1969,
+   "month": 7,
+   "icen": 0.91
+  },
+  {
+   "year": 1969,
+   "month": 8,
+   "icen": 0.58
+  },
+  {
+   "year": 1969,
+   "month": 9,
+   "icen": 0.7
+  },
+  {
+   "year": 1969,
+   "month": 10,
+   "icen": 0.93
+  },
+  {
+   "year": 1969,
+   "month": 11,
+   "icen": 1.13
+  },
+  {
+   "year": 1969,
+   "month": 12,
+   "icen": 1.05
+  },
+  {
+   "year": 1970,
+   "month": 1,
+   "icen": 0.77
+  },
+  {
+   "year": 1970,
+   "month": 2,
+   "icen": 0.18
+  },
+  {
+   "year": 1970,
+   "month": 3,
+   "icen": -0.3
+  },
+  {
+   "year": 1970,
+   "month": 4,
+   "icen": -0.75
+  },
+  {
+   "year": 1970,
+   "month": 5,
+   "icen": -1.0
+  },
+  {
+   "year": 1970,
+   "month": 6,
+   "icen": -1.51
+  },
+  {
+   "year": 1970,
+   "month": 7,
+   "icen": -1.57
+  },
+  {
+   "year": 1970,
+   "month": 8,
+   "icen": -1.41
+  },
+  {
+   "year": 1970,
+   "month": 9,
+   "icen": -0.94
+  },
+  {
+   "year": 1970,
+   "month": 10,
+   "icen": -0.72
+  },
+  {
+   "year": 1970,
+   "month": 11,
+   "icen": -0.62
+  },
+  {
+   "year": 1970,
+   "month": 12,
+   "icen": -0.76
+  },
+  {
+   "year": 1971,
+   "month": 1,
+   "icen": -0.91
+  },
+  {
+   "year": 1971,
+   "month": 2,
+   "icen": -1.01
+  },
+  {
+   "year": 1971,
+   "month": 3,
+   "icen": -0.78
+  },
+  {
+   "year": 1971,
+   "month": 4,
+   "icen": -0.65
+  },
+  {
+   "year": 1971,
+   "month": 5,
+   "icen": -0.72
+  },
+  {
+   "year": 1971,
+   "month": 6,
+   "icen": -0.84
+  },
+  {
+   "year": 1971,
+   "month": 7,
+   "icen": -0.88
+  },
+  {
+   "year": 1971,
+   "month": 8,
+   "icen": -0.79
+  },
+  {
+   "year": 1971,
+   "month": 9,
+   "icen": -0.85
+  },
+  {
+   "year": 1971,
+   "month": 10,
+   "icen": -0.72
+  },
+  {
+   "year": 1971,
+   "month": 11,
+   "icen": -0.67
+  },
+  {
+   "year": 1971,
+   "month": 12,
+   "icen": -0.35
+  },
+  {
+   "year": 1972,
+   "month": 1,
+   "icen": 0.14
+  },
+  {
+   "year": 1972,
+   "month": 2,
+   "icen": 0.73
+  },
+  {
+   "year": 1972,
+   "month": 3,
+   "icen": 1.04
+  },
+  {
+   "year": 1972,
+   "month": 4,
+   "icen": 1.11
+  },
+  {
+   "year": 1972,
+   "month": 5,
+   "icen": 1.47
+  },
+  {
+   "year": 1972,
+   "month": 6,
+   "icen": 1.93
+  },
+  {
+   "year": 1972,
+   "month": 7,
+   "icen": 2.45
+  },
+  {
+   "year": 1972,
+   "month": 8,
+   "icen": 2.25
+  },
+  {
+   "year": 1972,
+   "month": 9,
+   "icen": 2.06
+  },
+  {
+   "year": 1972,
+   "month": 10,
+   "icen": 1.7
+  },
+  {
+   "year": 1972,
+   "month": 11,
+   "icen": 1.94
+  },
+  {
+   "year": 1972,
+   "month": 12,
+   "icen": 1.91
+  },
+  {
+   "year": 1973,
+   "month": 1,
+   "icen": 1.58
+  },
+  {
+   "year": 1973,
+   "month": 2,
+   "icen": 0.8
+  },
+  {
+   "year": 1973,
+   "month": 3,
+   "icen": -0.02
+  },
+  {
+   "year": 1973,
+   "month": 4,
+   "icen": -0.55
+  },
+  {
+   "year": 1973,
+   "month": 5,
+   "icen": -0.93
+  },
+  {
+   "year": 1973,
+   "month": 6,
+   "icen": -0.98
+  },
+  {
+   "year": 1973,
+   "month": 7,
+   "icen": -1.1
+  },
+  {
+   "year": 1973,
+   "month": 8,
+   "icen": -1.01
+  },
+  {
+   "year": 1973,
+   "month": 9,
+   "icen": -0.94
+  },
+  {
+   "year": 1973,
+   "month": 10,
+   "icen": -0.8
+  },
+  {
+   "year": 1973,
+   "month": 11,
+   "icen": -0.77
+  },
+  {
+   "year": 1973,
+   "month": 12,
+   "icen": -0.84
+  },
+  {
+   "year": 1974,
+   "month": 1,
+   "icen": -0.85
+  },
+  {
+   "year": 1974,
+   "month": 2,
+   "icen": -0.67
+  },
+  {
+   "year": 1974,
+   "month": 3,
+   "icen": -0.39
+  },
+  {
+   "year": 1974,
+   "month": 4,
+   "icen": -0.01
+  },
+  {
+   "year": 1974,
+   "month": 5,
+   "icen": -0.03
+  },
+  {
+   "year": 1974,
+   "month": 6,
+   "icen": -0.09
+  },
+  {
+   "year": 1974,
+   "month": 7,
+   "icen": -0.22
+  },
+  {
+   "year": 1974,
+   "month": 8,
+   "icen": -0.19
+  },
+  {
+   "year": 1974,
+   "month": 9,
+   "icen": -0.37
+  },
+  {
+   "year": 1974,
+   "month": 10,
+   "icen": -0.58
+  },
+  {
+   "year": 1974,
+   "month": 11,
+   "icen": -0.88
+  },
+  {
+   "year": 1974,
+   "month": 12,
+   "icen": -0.85
+  },
+  {
+   "year": 1975,
+   "month": 1,
+   "icen": -0.83
+  },
+  {
+   "year": 1975,
+   "month": 2,
+   "icen": -0.37
+  },
+  {
+   "year": 1975,
+   "month": 3,
+   "icen": -0.02
+  },
+  {
+   "year": 1975,
+   "month": 4,
+   "icen": 0.03
+  },
+  {
+   "year": 1975,
+   "month": 5,
+   "icen": -0.37
+  },
+  {
+   "year": 1975,
+   "month": 6,
+   "icen": -0.68
+  },
+  {
+   "year": 1975,
+   "month": 7,
+   "icen": -0.72
+  },
+  {
+   "year": 1975,
+   "month": 8,
+   "icen": -0.78
+  },
+  {
+   "year": 1975,
+   "month": 9,
+   "icen": -1.1
+  },
+  {
+   "year": 1975,
+   "month": 10,
+   "icen": -1.56
+  },
+  {
+   "year": 1975,
+   "month": 11,
+   "icen": -1.69
+  },
+  {
+   "year": 1975,
+   "month": 12,
+   "icen": -1.44
+  },
+  {
+   "year": 1976,
+   "month": 1,
+   "icen": -0.84
+  },
+  {
+   "year": 1976,
+   "month": 2,
+   "icen": -0.3
+  },
+  {
+   "year": 1976,
+   "month": 3,
+   "icen": 0.15
+  },
+  {
+   "year": 1976,
+   "month": 4,
+   "icen": 0.63
+  },
+  {
+   "year": 1976,
+   "month": 5,
+   "icen": 1.23
+  },
+  {
+   "year": 1976,
+   "month": 6,
+   "icen": 1.73
+  },
+  {
+   "year": 1976,
+   "month": 7,
+   "icen": 1.85
+  },
+  {
+   "year": 1976,
+   "month": 8,
+   "icen": 1.62
+  },
+  {
+   "year": 1976,
+   "month": 9,
+   "icen": 1.24
+  },
+  {
+   "year": 1976,
+   "month": 10,
+   "icen": 0.95
+  },
+  {
+   "year": 1976,
+   "month": 11,
+   "icen": 0.77
+  },
+  {
+   "year": 1976,
+   "month": 12,
+   "icen": 0.66
+  },
+  {
+   "year": 1977,
+   "month": 1,
+   "icen": 0.43
+  },
+  {
+   "year": 1977,
+   "month": 2,
+   "icen": 0.25
+  },
+  {
+   "year": 1977,
+   "month": 3,
+   "icen": 0.01
+  },
+  {
+   "year": 1977,
+   "month": 4,
+   "icen": -0.15
+  },
+  {
+   "year": 1977,
+   "month": 5,
+   "icen": -0.22
+  },
+  {
+   "year": 1977,
+   "month": 6,
+   "icen": -0.18
+  },
+  {
+   "year": 1977,
+   "month": 7,
+   "icen": -0.24
+  },
+  {
+   "year": 1977,
+   "month": 8,
+   "icen": -0.44
+  },
+  {
+   "year": 1977,
+   "month": 9,
+   "icen": -0.45
+  },
+  {
+   "year": 1977,
+   "month": 10,
+   "icen": -0.34
+  },
+  {
+   "year": 1977,
+   "month": 11,
+   "icen": -0.19
+  },
+  {
+   "year": 1977,
+   "month": 12,
+   "icen": -0.19
+  },
+  {
+   "year": 1978,
+   "month": 1,
+   "icen": -0.1
+  },
+  {
+   "year": 1978,
+   "month": 2,
+   "icen": -0.21
+  },
+  {
+   "year": 1978,
+   "month": 3,
+   "icen": -0.31
+  },
+  {
+   "year": 1978,
+   "month": 4,
+   "icen": -0.56
+  },
+  {
+   "year": 1978,
+   "month": 5,
+   "icen": -0.58
+  },
+  {
+   "year": 1978,
+   "month": 6,
+   "icen": -0.62
+  },
+  {
+   "year": 1978,
+   "month": 7,
+   "icen": -0.73
+  },
+  {
+   "year": 1978,
+   "month": 8,
+   "icen": -0.67
+  },
+  {
+   "year": 1978,
+   "month": 9,
+   "icen": -0.69
+  },
+  {
+   "year": 1978,
+   "month": 10,
+   "icen": -0.29
+  },
+  {
+   "year": 1978,
+   "month": 11,
+   "icen": 0.0
+  },
+  {
+   "year": 1978,
+   "month": 12,
+   "icen": 0.35
+  },
+  {
+   "year": 1979,
+   "month": 1,
+   "icen": 0.25
+  },
+  {
+   "year": 1979,
+   "month": 2,
+   "icen": 0.13
+  },
+  {
+   "year": 1979,
+   "month": 3,
+   "icen": 0.15
+  },
+  {
+   "year": 1979,
+   "month": 4,
+   "icen": 0.33
+  },
+  {
+   "year": 1979,
+   "month": 5,
+   "icen": 0.54
+  },
+  {
+   "year": 1979,
+   "month": 6,
+   "icen": 0.42
+  },
+  {
+   "year": 1979,
+   "month": 7,
+   "icen": 0.38
+  },
+  {
+   "year": 1979,
+   "month": 8,
+   "icen": 0.43
+  },
+  {
+   "year": 1979,
+   "month": 9,
+   "icen": 0.65
+  },
+  {
+   "year": 1979,
+   "month": 10,
+   "icen": 0.68
+  },
+  {
+   "year": 1979,
+   "month": 11,
+   "icen": 0.48
+  },
+  {
+   "year": 1979,
+   "month": 12,
+   "icen": 0.22
+  },
+  {
+   "year": 1980,
+   "month": 1,
+   "icen": 0.11
+  },
+  {
+   "year": 1980,
+   "month": 2,
+   "icen": 0.24
+  },
+  {
+   "year": 1980,
+   "month": 3,
+   "icen": 0.34
+  },
+  {
+   "year": 1980,
+   "month": 4,
+   "icen": 0.37
+  },
+  {
+   "year": 1980,
+   "month": 5,
+   "icen": 0.22
+  },
+  {
+   "year": 1980,
+   "month": 6,
+   "icen": -0.05
+  },
+  {
+   "year": 1980,
+   "month": 7,
+   "icen": -0.13
+  },
+  {
+   "year": 1980,
+   "month": 8,
+   "icen": -0.15
+  },
+  {
+   "year": 1980,
+   "month": 9,
+   "icen": -0.05
+  },
+  {
+   "year": 1980,
+   "month": 10,
+   "icen": -0.06
+  },
+  {
+   "year": 1980,
+   "month": 11,
+   "icen": -0.13
+  },
+  {
+   "year": 1980,
+   "month": 12,
+   "icen": -0.53
+  },
+  {
+   "year": 1981,
+   "month": 1,
+   "icen": -0.74
+  },
+  {
+   "year": 1981,
+   "month": 2,
+   "icen": -0.74
+  },
+  {
+   "year": 1981,
+   "month": 3,
+   "icen": -0.48
+  },
+  {
+   "year": 1981,
+   "month": 4,
+   "icen": -0.34
+  },
+  {
+   "year": 1981,
+   "month": 5,
+   "icen": -0.38
+  },
+  {
+   "year": 1981,
+   "month": 6,
+   "icen": -0.41
+  },
+  {
+   "year": 1981,
+   "month": 7,
+   "icen": -0.55
+  },
+  {
+   "year": 1981,
+   "month": 8,
+   "icen": -0.63
+  },
+  {
+   "year": 1981,
+   "month": 9,
+   "icen": -0.56
+  },
+  {
+   "year": 1981,
+   "month": 10,
+   "icen": -0.4
+  },
+  {
+   "year": 1981,
+   "month": 11,
+   "icen": -0.24
+  },
+  {
+   "year": 1981,
+   "month": 12,
+   "icen": -0.14
+  },
+  {
+   "year": 1982,
+   "month": 1,
+   "icen": -0.17
+  },
+  {
+   "year": 1982,
+   "month": 2,
+   "icen": -0.45
+  },
+  {
+   "year": 1982,
+   "month": 3,
+   "icen": -0.62
+  },
+  {
+   "year": 1982,
+   "month": 4,
+   "icen": -0.45
+  },
+  {
+   "year": 1982,
+   "month": 5,
+   "icen": 0.0
+  },
+  {
+   "year": 1982,
+   "month": 6,
+   "icen": 0.45
+  },
+  {
+   "year": 1982,
+   "month": 7,
+   "icen": 0.8
+  },
+  {
+   "year": 1982,
+   "month": 8,
+   "icen": 1.16
+  },
+  {
+   "year": 1982,
+   "month": 9,
+   "icen": 1.58
+  },
+  {
+   "year": 1982,
+   "month": 10,
+   "icen": 2.26
+  },
+  {
+   "year": 1982,
+   "month": 11,
+   "icen": 2.83
+  },
+  {
+   "year": 1982,
+   "month": 12,
+   "icen": 3.11
+  },
+  {
+   "year": 1983,
+   "month": 1,
+   "icen": 2.85
+  },
+  {
+   "year": 1983,
+   "month": 2,
+   "icen": 2.63
+  },
+  {
+   "year": 1983,
+   "month": 3,
+   "icen": 2.87
+  },
+  {
+   "year": 1983,
+   "month": 4,
+   "icen": 3.48
+  },
+  {
+   "year": 1983,
+   "month": 5,
+   "icen": 4.13
+  },
+  {
+   "year": 1983,
+   "month": 6,
+   "icen": 4.32
+  },
+  {
+   "year": 1983,
+   "month": 7,
+   "icen": 3.99
+  },
+  {
+   "year": 1983,
+   "month": 8,
+   "icen": 3.0
+  },
+  {
+   "year": 1983,
+   "month": 9,
+   "icen": 2.03
+  },
+  {
+   "year": 1983,
+   "month": 10,
+   "icen": 1.13
+  },
+  {
+   "year": 1983,
+   "month": 11,
+   "icen": 0.7
+  },
+  {
+   "year": 1983,
+   "month": 12,
+   "icen": 0.24
+  },
+  {
+   "year": 1984,
+   "month": 1,
+   "icen": -0.11
+  },
+  {
+   "year": 1984,
+   "month": 2,
+   "icen": -0.38
+  },
+  {
+   "year": 1984,
+   "month": 3,
+   "icen": -0.32
+  },
+  {
+   "year": 1984,
+   "month": 4,
+   "icen": -0.39
+  },
+  {
+   "year": 1984,
+   "month": 5,
+   "icen": -0.43
+  },
+  {
+   "year": 1984,
+   "month": 6,
+   "icen": -0.54
+  },
+  {
+   "year": 1984,
+   "month": 7,
+   "icen": -0.38
+  },
+  {
+   "year": 1984,
+   "month": 8,
+   "icen": -0.12
+  },
+  {
+   "year": 1984,
+   "month": 9,
+   "icen": -0.1
+  },
+  {
+   "year": 1984,
+   "month": 10,
+   "icen": -0.02
+  },
+  {
+   "year": 1984,
+   "month": 11,
+   "icen": -0.18
+  },
+  {
+   "year": 1984,
+   "month": 12,
+   "icen": -0.27
+  },
+  {
+   "year": 1985,
+   "month": 1,
+   "icen": -0.61
+  },
+  {
+   "year": 1985,
+   "month": 2,
+   "icen": -0.69
+  },
+  {
+   "year": 1985,
+   "month": 3,
+   "icen": -0.87
+  },
+  {
+   "year": 1985,
+   "month": 4,
+   "icen": -1.03
+  },
+  {
+   "year": 1985,
+   "month": 5,
+   "icen": -1.18
+  },
+  {
+   "year": 1985,
+   "month": 6,
+   "icen": -1.16
+  },
+  {
+   "year": 1985,
+   "month": 7,
+   "icen": -0.97
+  },
+  {
+   "year": 1985,
+   "month": 8,
+   "icen": -0.9
+  },
+  {
+   "year": 1985,
+   "month": 9,
+   "icen": -0.77
+  },
+  {
+   "year": 1985,
+   "month": 10,
+   "icen": -0.69
+  },
+  {
+   "year": 1985,
+   "month": 11,
+   "icen": -0.53
+  },
+  {
+   "year": 1985,
+   "month": 12,
+   "icen": -0.26
+  },
+  {
+   "year": 1986,
+   "month": 1,
+   "icen": 0.0
+  },
+  {
+   "year": 1986,
+   "month": 2,
+   "icen": -0.11
+  },
+  {
+   "year": 1986,
+   "month": 3,
+   "icen": -0.41
+  },
+  {
+   "year": 1986,
+   "month": 4,
+   "icen": -0.79
+  },
+  {
+   "year": 1986,
+   "month": 5,
+   "icen": -0.92
+  },
+  {
+   "year": 1986,
+   "month": 6,
+   "icen": -0.82
+  },
+  {
+   "year": 1986,
+   "month": 7,
+   "icen": -0.5
+  },
+  {
+   "year": 1986,
+   "month": 8,
+   "icen": -0.09
+  },
+  {
+   "year": 1986,
+   "month": 9,
+   "icen": 0.17
+  },
+  {
+   "year": 1986,
+   "month": 10,
+   "icen": 0.3
+  },
+  {
+   "year": 1986,
+   "month": 11,
+   "icen": 0.42
+  },
+  {
+   "year": 1986,
+   "month": 12,
+   "icen": 0.69
+  },
+  {
+   "year": 1987,
+   "month": 1,
+   "icen": 0.97
+  },
+  {
+   "year": 1987,
+   "month": 2,
+   "icen": 1.3
+  },
+  {
+   "year": 1987,
+   "month": 3,
+   "icen": 1.48
+  },
+  {
+   "year": 1987,
+   "month": 4,
+   "icen": 1.63
+  },
+  {
+   "year": 1987,
+   "month": 5,
+   "icen": 1.46
+  },
+  {
+   "year": 1987,
+   "month": 6,
+   "icen": 1.27
+  },
+  {
+   "year": 1987,
+   "month": 7,
+   "icen": 1.0
+  },
+  {
+   "year": 1987,
+   "month": 8,
+   "icen": 1.03
+  },
+  {
+   "year": 1987,
+   "month": 9,
+   "icen": 1.18
+  },
+  {
+   "year": 1987,
+   "month": 10,
+   "icen": 1.27
+  },
+  {
+   "year": 1987,
+   "month": 11,
+   "icen": 1.1
+  },
+  {
+   "year": 1987,
+   "month": 12,
+   "icen": 0.65
+  },
+  {
+   "year": 1988,
+   "month": 1,
+   "icen": 0.24
+  },
+  {
+   "year": 1988,
+   "month": 2,
+   "icen": -0.2
+  },
+  {
+   "year": 1988,
+   "month": 3,
+   "icen": -0.5
+  },
+  {
+   "year": 1988,
+   "month": 4,
+   "icen": -0.84
+  },
+  {
+   "year": 1988,
+   "month": 5,
+   "icen": -1.14
+  },
+  {
+   "year": 1988,
+   "month": 6,
+   "icen": -1.33
+  },
+  {
+   "year": 1988,
+   "month": 7,
+   "icen": -1.44
+  },
+  {
+   "year": 1988,
+   "month": 8,
+   "icen": -1.33
+  },
+  {
+   "year": 1988,
+   "month": 9,
+   "icen": -1.26
+  },
+  {
+   "year": 1988,
+   "month": 10,
+   "icen": -1.11
+  },
+  {
+   "year": 1988,
+   "month": 11,
+   "icen": -0.95
+  },
+  {
+   "year": 1988,
+   "month": 12,
+   "icen": -0.63
+  },
+  {
+   "year": 1989,
+   "month": 1,
+   "icen": -0.26
+  },
+  {
+   "year": 1989,
+   "month": 2,
+   "icen": 0.0
+  },
+  {
+   "year": 1989,
+   "month": 3,
+   "icen": 0.05
+  },
+  {
+   "year": 1989,
+   "month": 4,
+   "icen": -0.35
+  },
+  {
+   "year": 1989,
+   "month": 5,
+   "icen": -0.68
+  },
+  {
+   "year": 1989,
+   "month": 6,
+   "icen": -0.93
+  },
+  {
+   "year": 1989,
+   "month": 7,
+   "icen": -0.67
+  },
+  {
+   "year": 1989,
+   "month": 8,
+   "icen": -0.54
+  },
+  {
+   "year": 1989,
+   "month": 9,
+   "icen": -0.42
+  },
+  {
+   "year": 1989,
+   "month": 10,
+   "icen": -0.42
+  },
+  {
+   "year": 1989,
+   "month": 11,
+   "icen": -0.36
+  },
+  {
+   "year": 1989,
+   "month": 12,
+   "icen": -0.33
+  },
+  {
+   "year": 1990,
+   "month": 1,
+   "icen": -0.23
+  },
+  {
+   "year": 1990,
+   "month": 2,
+   "icen": -0.19
+  },
+  {
+   "year": 1990,
+   "month": 3,
+   "icen": -0.22
+  },
+  {
+   "year": 1990,
+   "month": 4,
+   "icen": -0.27
+  },
+  {
+   "year": 1990,
+   "month": 5,
+   "icen": -0.24
+  },
+  {
+   "year": 1990,
+   "month": 6,
+   "icen": -0.3
+  },
+  {
+   "year": 1990,
+   "month": 7,
+   "icen": -0.4
+  },
+  {
+   "year": 1990,
+   "month": 8,
+   "icen": -0.48
+  },
+  {
+   "year": 1990,
+   "month": 9,
+   "icen": -0.49
+  },
+  {
+   "year": 1990,
+   "month": 10,
+   "icen": -0.57
+  },
+  {
+   "year": 1990,
+   "month": 11,
+   "icen": -0.6
+  },
+  {
+   "year": 1990,
+   "month": 12,
+   "icen": -0.54
+  },
+  {
+   "year": 1991,
+   "month": 1,
+   "icen": -0.4
+  },
+  {
+   "year": 1991,
+   "month": 2,
+   "icen": -0.26
+  },
+  {
+   "year": 1991,
+   "month": 3,
+   "icen": -0.19
+  },
+  {
+   "year": 1991,
+   "month": 4,
+   "icen": -0.16
+  },
+  {
+   "year": 1991,
+   "month": 5,
+   "icen": -0.03
+  },
+  {
+   "year": 1991,
+   "month": 6,
+   "icen": 0.28
+  },
+  {
+   "year": 1991,
+   "month": 7,
+   "icen": 0.47
+  },
+  {
+   "year": 1991,
+   "month": 8,
+   "icen": 0.53
+  },
+  {
+   "year": 1991,
+   "month": 9,
+   "icen": 0.51
+  },
+  {
+   "year": 1991,
+   "month": 10,
+   "icen": 0.58
+  },
+  {
+   "year": 1991,
+   "month": 11,
+   "icen": 0.65
+  },
+  {
+   "year": 1991,
+   "month": 12,
+   "icen": 0.62
+  },
+  {
+   "year": 1992,
+   "month": 1,
+   "icen": 0.67
+  },
+  {
+   "year": 1992,
+   "month": 2,
+   "icen": 0.89
+  },
+  {
+   "year": 1992,
+   "month": 3,
+   "icen": 1.45
+  },
+  {
+   "year": 1992,
+   "month": 4,
+   "icen": 1.99
+  },
+  {
+   "year": 1992,
+   "month": 5,
+   "icen": 1.86
+  },
+  {
+   "year": 1992,
+   "month": 6,
+   "icen": 1.12
+  },
+  {
+   "year": 1992,
+   "month": 7,
+   "icen": 0.29
+  },
+  {
+   "year": 1992,
+   "month": 8,
+   "icen": -0.01
+  },
+  {
+   "year": 1992,
+   "month": 9,
+   "icen": -0.01
+  },
+  {
+   "year": 1992,
+   "month": 10,
+   "icen": -0.04
+  },
+  {
+   "year": 1992,
+   "month": 11,
+   "icen": -0.14
+  },
+  {
+   "year": 1992,
+   "month": 12,
+   "icen": -0.11
+  },
+  {
+   "year": 1993,
+   "month": 1,
+   "icen": 0.1
+  },
+  {
+   "year": 1993,
+   "month": 2,
+   "icen": 0.41
+  },
+  {
+   "year": 1993,
+   "month": 3,
+   "icen": 0.82
+  },
+  {
+   "year": 1993,
+   "month": 4,
+   "icen": 1.11
+  },
+  {
+   "year": 1993,
+   "month": 5,
+   "icen": 1.26
+  },
+  {
+   "year": 1993,
+   "month": 6,
+   "icen": 1.08
+  },
+  {
+   "year": 1993,
+   "month": 7,
+   "icen": 0.85
+  },
+  {
+   "year": 1993,
+   "month": 8,
+   "icen": 0.6
+  },
+  {
+   "year": 1993,
+   "month": 9,
+   "icen": 0.52
+  },
+  {
+   "year": 1993,
+   "month": 10,
+   "icen": 0.38
+  },
+  {
+   "year": 1993,
+   "month": 11,
+   "icen": 0.21
+  },
+  {
+   "year": 1993,
+   "month": 12,
+   "icen": 0.03
+  },
+  {
+   "year": 1994,
+   "month": 1,
+   "icen": -0.1
+  },
+  {
+   "year": 1994,
+   "month": 2,
+   "icen": -0.36
+  },
+  {
+   "year": 1994,
+   "month": 3,
+   "icen": -0.76
+  },
+  {
+   "year": 1994,
+   "month": 4,
+   "icen": -1.0
+  },
+  {
+   "year": 1994,
+   "month": 5,
+   "icen": -0.97
+  },
+  {
+   "year": 1994,
+   "month": 6,
+   "icen": -0.83
+  },
+  {
+   "year": 1994,
+   "month": 7,
+   "icen": -0.86
+  },
+  {
+   "year": 1994,
+   "month": 8,
+   "icen": -0.63
+  },
+  {
+   "year": 1994,
+   "month": 9,
+   "icen": -0.11
+  },
+  {
+   "year": 1994,
+   "month": 10,
+   "icen": 0.38
+  },
+  {
+   "year": 1994,
+   "month": 11,
+   "icen": 0.67
+  },
+  {
+   "year": 1994,
+   "month": 12,
+   "icen": 0.68
+  },
+  {
+   "year": 1995,
+   "month": 1,
+   "icen": 0.6
+  },
+  {
+   "year": 1995,
+   "month": 2,
+   "icen": 0.23
+  },
+  {
+   "year": 1995,
+   "month": 3,
+   "icen": -0.54
+  },
+  {
+   "year": 1995,
+   "month": 4,
+   "icen": -1.04
+  },
+  {
+   "year": 1995,
+   "month": 5,
+   "icen": -1.18
+  },
+  {
+   "year": 1995,
+   "month": 6,
+   "icen": -0.86
+  },
+  {
+   "year": 1995,
+   "month": 7,
+   "icen": -0.57
+  },
+  {
+   "year": 1995,
+   "month": 8,
+   "icen": -0.38
+  },
+  {
+   "year": 1995,
+   "month": 9,
+   "icen": -0.4
+  },
+  {
+   "year": 1995,
+   "month": 10,
+   "icen": -0.41
+  },
+  {
+   "year": 1995,
+   "month": 11,
+   "icen": -0.64
+  },
+  {
+   "year": 1995,
+   "month": 12,
+   "icen": -0.66
+  },
+  {
+   "year": 1996,
+   "month": 1,
+   "icen": -0.65
+  },
+  {
+   "year": 1996,
+   "month": 2,
+   "icen": -0.42
+  },
+  {
+   "year": 1996,
+   "month": 3,
+   "icen": -0.82
+  },
+  {
+   "year": 1996,
+   "month": 4,
+   "icen": -1.13
+  },
+  {
+   "year": 1996,
+   "month": 5,
+   "icen": -1.64
+  },
+  {
+   "year": 1996,
+   "month": 6,
+   "icen": -1.43
+  },
+  {
+   "year": 1996,
+   "month": 7,
+   "icen": -1.3
+  },
+  {
+   "year": 1996,
+   "month": 8,
+   "icen": -0.92
+  },
+  {
+   "year": 1996,
+   "month": 9,
+   "icen": -0.76
+  },
+  {
+   "year": 1996,
+   "month": 10,
+   "icen": -0.84
+  },
+  {
+   "year": 1996,
+   "month": 11,
+   "icen": -1.03
+  },
+  {
+   "year": 1996,
+   "month": 12,
+   "icen": -1.08
+  },
+  {
+   "year": 1997,
+   "month": 1,
+   "icen": -0.74
+  },
+  {
+   "year": 1997,
+   "month": 2,
+   "icen": -0.14
+  },
+  {
+   "year": 1997,
+   "month": 3,
+   "icen": 0.48
+  },
+  {
+   "year": 1997,
+   "month": 4,
+   "icen": 1.29
+  },
+  {
+   "year": 1997,
+   "month": 5,
+   "icen": 2.12
+  },
+  {
+   "year": 1997,
+   "month": 6,
+   "icen": 3.02
+  },
+  {
+   "year": 1997,
+   "month": 7,
+   "icen": 3.57
+  },
+  {
+   "year": 1997,
+   "month": 8,
+   "icen": 3.85
+  },
+  {
+   "year": 1997,
+   "month": 9,
+   "icen": 3.85
+  },
+  {
+   "year": 1997,
+   "month": 10,
+   "icen": 4.01
+  },
+  {
+   "year": 1997,
+   "month": 11,
+   "icen": 4.08
+  },
+  {
+   "year": 1997,
+   "month": 12,
+   "icen": 4.06
+  },
+  {
+   "year": 1998,
+   "month": 1,
+   "icen": 3.49
+  },
+  {
+   "year": 1998,
+   "month": 2,
+   "icen": 3.03
+  },
+  {
+   "year": 1998,
+   "month": 3,
+   "icen": 2.76
+  },
+  {
+   "year": 1998,
+   "month": 4,
+   "icen": 2.81
+  },
+  {
+   "year": 1998,
+   "month": 5,
+   "icen": 2.66
+  },
+  {
+   "year": 1998,
+   "month": 6,
+   "icen": 2.22
+  },
+  {
+   "year": 1998,
+   "month": 7,
+   "icen": 1.58
+  },
+  {
+   "year": 1998,
+   "month": 8,
+   "icen": 0.87
+  },
+  {
+   "year": 1998,
+   "month": 9,
+   "icen": 0.49
+  },
+  {
+   "year": 1998,
+   "month": 10,
+   "icen": 0.11
+  },
+  {
+   "year": 1998,
+   "month": 11,
+   "icen": -0.05
+  },
+  {
+   "year": 1998,
+   "month": 12,
+   "icen": -0.4
+  },
+  {
+   "year": 1999,
+   "month": 1,
+   "icen": -0.49
+  },
+  {
+   "year": 1999,
+   "month": 2,
+   "icen": -0.4
+  },
+  {
+   "year": 1999,
+   "month": 3,
+   "icen": -0.42
+  },
+  {
+   "year": 1999,
+   "month": 4,
+   "icen": -0.44
+  },
+  {
+   "year": 1999,
+   "month": 5,
+   "icen": -0.67
+  },
+  {
+   "year": 1999,
+   "month": 6,
+   "icen": -0.46
+  },
+  {
+   "year": 1999,
+   "month": 7,
+   "icen": -0.32
+  },
+  {
+   "year": 1999,
+   "month": 8,
+   "icen": -0.46
+  },
+  {
+   "year": 1999,
+   "month": 9,
+   "icen": -0.69
+  },
+  {
+   "year": 1999,
+   "month": 10,
+   "icen": -1.08
+  },
+  {
+   "year": 1999,
+   "month": 11,
+   "icen": -0.96
+  },
+  {
+   "year": 1999,
+   "month": 12,
+   "icen": -0.91
+  },
+  {
+   "year": 2000,
+   "month": 1,
+   "icen": -0.66
+  },
+  {
+   "year": 2000,
+   "month": 2,
+   "icen": -0.56
+  },
+  {
+   "year": 2000,
+   "month": 3,
+   "icen": -0.3
+  },
+  {
+   "year": 2000,
+   "month": 4,
+   "icen": -0.21
+  },
+  {
+   "year": 2000,
+   "month": 5,
+   "icen": -0.16
+  },
+  {
+   "year": 2000,
+   "month": 6,
+   "icen": -0.25
+  },
+  {
+   "year": 2000,
+   "month": 7,
+   "icen": -0.37
+  },
+  {
+   "year": 2000,
+   "month": 8,
+   "icen": -0.36
+  },
+  {
+   "year": 2000,
+   "month": 9,
+   "icen": -0.37
+  },
+  {
+   "year": 2000,
+   "month": 10,
+   "icen": -0.59
+  },
+  {
+   "year": 2000,
+   "month": 11,
+   "icen": -0.86
+  },
+  {
+   "year": 2000,
+   "month": 12,
+   "icen": -0.95
+  },
+  {
+   "year": 2001,
+   "month": 1,
+   "icen": -0.68
+  },
+  {
+   "year": 2001,
+   "month": 2,
+   "icen": -0.25
+  },
+  {
+   "year": 2001,
+   "month": 3,
+   "icen": 0.02
+  },
+  {
+   "year": 2001,
+   "month": 4,
+   "icen": -0.05
+  },
+  {
+   "year": 2001,
+   "month": 5,
+   "icen": -0.39
+  },
+  {
+   "year": 2001,
+   "month": 6,
+   "icen": -0.67
+  },
+  {
+   "year": 2001,
+   "month": 7,
+   "icen": -0.75
+  },
+  {
+   "year": 2001,
+   "month": 8,
+   "icen": -0.88
+  },
+  {
+   "year": 2001,
+   "month": 9,
+   "icen": -1.07
+  },
+  {
+   "year": 2001,
+   "month": 10,
+   "icen": -1.09
+  },
+  {
+   "year": 2001,
+   "month": 11,
+   "icen": -1.04
+  },
+  {
+   "year": 2001,
+   "month": 12,
+   "icen": -0.89
+  },
+  {
+   "year": 2002,
+   "month": 1,
+   "icen": -0.59
+  },
+  {
+   "year": 2002,
+   "month": 2,
+   "icen": 0.04
+  },
+  {
+   "year": 2002,
+   "month": 3,
+   "icen": 0.57
+  },
+  {
+   "year": 2002,
+   "month": 4,
+   "icen": 0.81
+  },
+  {
+   "year": 2002,
+   "month": 5,
+   "icen": 0.67
+  },
+  {
+   "year": 2002,
+   "month": 6,
+   "icen": 0.3
+  },
+  {
+   "year": 2002,
+   "month": 7,
+   "icen": -0.03
+  },
+  {
+   "year": 2002,
+   "month": 8,
+   "icen": -0.12
+  },
+  {
+   "year": 2002,
+   "month": 9,
+   "icen": 0.07
+  },
+  {
+   "year": 2002,
+   "month": 10,
+   "icen": 0.48
+  },
+  {
+   "year": 2002,
+   "month": 11,
+   "icen": 0.79
+  },
+  {
+   "year": 2002,
+   "month": 12,
+   "icen": 0.74
+  },
+  {
+   "year": 2003,
+   "month": 1,
+   "icen": 0.4
+  },
+  {
+   "year": 2003,
+   "month": 2,
+   "icen": 0.04
+  },
+  {
+   "year": 2003,
+   "month": 3,
+   "icen": -0.19
+  },
+  {
+   "year": 2003,
+   "month": 4,
+   "icen": -0.69
+  },
+  {
+   "year": 2003,
+   "month": 5,
+   "icen": -1.12
+  },
+  {
+   "year": 2003,
+   "month": 6,
+   "icen": -1.3
+  },
+  {
+   "year": 2003,
+   "month": 7,
+   "icen": -0.78
+  },
+  {
+   "year": 2003,
+   "month": 8,
+   "icen": -0.51
+  },
+  {
+   "year": 2003,
+   "month": 9,
+   "icen": -0.1
+  },
+  {
+   "year": 2003,
+   "month": 10,
+   "icen": -0.01
+  },
+  {
+   "year": 2003,
+   "month": 11,
+   "icen": 0.22
+  },
+  {
+   "year": 2003,
+   "month": 12,
+   "icen": 0.1
+  },
+  {
+   "year": 2004,
+   "month": 1,
+   "icen": 0.02
+  },
+  {
+   "year": 2004,
+   "month": 2,
+   "icen": -0.27
+  },
+  {
+   "year": 2004,
+   "month": 3,
+   "icen": -0.39
+  },
+  {
+   "year": 2004,
+   "month": 4,
+   "icen": -0.89
+  },
+  {
+   "year": 2004,
+   "month": 5,
+   "icen": -1.01
+  },
+  {
+   "year": 2004,
+   "month": 6,
+   "icen": -1.11
+  },
+  {
+   "year": 2004,
+   "month": 7,
+   "icen": -0.86
+  },
+  {
+   "year": 2004,
+   "month": 8,
+   "icen": -0.62
+  },
+  {
+   "year": 2004,
+   "month": 9,
+   "icen": -0.32
+  },
+  {
+   "year": 2004,
+   "month": 10,
+   "icen": 0.16
+  },
+  {
+   "year": 2004,
+   "month": 11,
+   "icen": 0.38
+  },
+  {
+   "year": 2004,
+   "month": 12,
+   "icen": 0.36
+  },
+  {
+   "year": 2005,
+   "month": 1,
+   "icen": -0.17
+  },
+  {
+   "year": 2005,
+   "month": 2,
+   "icen": -0.74
+  },
+  {
+   "year": 2005,
+   "month": 3,
+   "icen": -0.88
+  },
+  {
+   "year": 2005,
+   "month": 4,
+   "icen": -0.68
+  },
+  {
+   "year": 2005,
+   "month": 5,
+   "icen": -0.46
+  },
+  {
+   "year": 2005,
+   "month": 6,
+   "icen": -0.46
+  },
+  {
+   "year": 2005,
+   "month": 7,
+   "icen": -0.5
+  },
+  {
+   "year": 2005,
+   "month": 8,
+   "icen": -0.52
+  },
+  {
+   "year": 2005,
+   "month": 9,
+   "icen": -0.84
+  },
+  {
+   "year": 2005,
+   "month": 10,
+   "icen": -1.18
+  },
+  {
+   "year": 2005,
+   "month": 11,
+   "icen": -1.23
+  },
+  {
+   "year": 2005,
+   "month": 12,
+   "icen": -0.92
+  },
+  {
+   "year": 2006,
+   "month": 1,
+   "icen": -0.37
+  },
+  {
+   "year": 2006,
+   "month": 2,
+   "icen": -0.15
+  },
+  {
+   "year": 2006,
+   "month": 3,
+   "icen": -0.52
+  },
+  {
+   "year": 2006,
+   "month": 4,
+   "icen": -0.78
+  },
+  {
+   "year": 2006,
+   "month": 5,
+   "icen": -0.76
+  },
+  {
+   "year": 2006,
+   "month": 6,
+   "icen": -0.19
+  },
+  {
+   "year": 2006,
+   "month": 7,
+   "icen": 0.23
+  },
+  {
+   "year": 2006,
+   "month": 8,
+   "icen": 0.62
+  },
+  {
+   "year": 2006,
+   "month": 9,
+   "icen": 0.91
+  },
+  {
+   "year": 2006,
+   "month": 10,
+   "icen": 0.94
+  },
+  {
+   "year": 2006,
+   "month": 11,
+   "icen": 0.86
+  },
+  {
+   "year": 2006,
+   "month": 12,
+   "icen": 0.72
+  },
+  {
+   "year": 2007,
+   "month": 1,
+   "icen": 0.5
+  },
+  {
+   "year": 2007,
+   "month": 2,
+   "icen": 0.05
+  },
+  {
+   "year": 2007,
+   "month": 3,
+   "icen": -0.59
+  },
+  {
+   "year": 2007,
+   "month": 4,
+   "icen": -1.22
+  },
+  {
+   "year": 2007,
+   "month": 5,
+   "icen": -1.54
+  },
+  {
+   "year": 2007,
+   "month": 6,
+   "icen": -1.46
+  },
+  {
+   "year": 2007,
+   "month": 7,
+   "icen": -1.26
+  },
+  {
+   "year": 2007,
+   "month": 8,
+   "icen": -1.05
+  },
+  {
+   "year": 2007,
+   "month": 9,
+   "icen": -1.23
+  },
+  {
+   "year": 2007,
+   "month": 10,
+   "icen": -1.41
+  },
+  {
+   "year": 2007,
+   "month": 11,
+   "icen": -1.64
+  },
+  {
+   "year": 2007,
+   "month": 12,
+   "icen": -1.29
+  },
+  {
+   "year": 2008,
+   "month": 1,
+   "icen": -0.64
+  },
+  {
+   "year": 2008,
+   "month": 2,
+   "icen": 0.04
+  },
+  {
+   "year": 2008,
+   "month": 3,
+   "icen": 0.34
+  },
+  {
+   "year": 2008,
+   "month": 4,
+   "icen": 0.44
+  },
+  {
+   "year": 2008,
+   "month": 5,
+   "icen": 0.5
+  },
+  {
+   "year": 2008,
+   "month": 6,
+   "icen": 0.69
+  },
+  {
+   "year": 2008,
+   "month": 7,
+   "icen": 0.98
+  },
+  {
+   "year": 2008,
+   "month": 8,
+   "icen": 1.13
+  },
+  {
+   "year": 2008,
+   "month": 9,
+   "icen": 0.92
+  },
+  {
+   "year": 2008,
+   "month": 10,
+   "icen": 0.37
+  },
+  {
+   "year": 2008,
+   "month": 11,
+   "icen": -0.12
+  },
+  {
+   "year": 2008,
+   "month": 12,
+   "icen": -0.3
+  },
+  {
+   "year": 2009,
+   "month": 1,
+   "icen": -0.43
+  },
+  {
+   "year": 2009,
+   "month": 2,
+   "icen": -0.55
+  },
+  {
+   "year": 2009,
+   "month": 3,
+   "icen": -0.36
+  },
+  {
+   "year": 2009,
+   "month": 4,
+   "icen": -0.02
+  },
+  {
+   "year": 2009,
+   "month": 5,
+   "icen": 0.47
+  },
+  {
+   "year": 2009,
+   "month": 6,
+   "icen": 0.58
+  },
+  {
+   "year": 2009,
+   "month": 7,
+   "icen": 0.75
+  },
+  {
+   "year": 2009,
+   "month": 8,
+   "icen": 0.7
+  },
+  {
+   "year": 2009,
+   "month": 9,
+   "icen": 0.56
+  },
+  {
+   "year": 2009,
+   "month": 10,
+   "icen": 0.39
+  },
+  {
+   "year": 2009,
+   "month": 11,
+   "icen": 0.42
+  },
+  {
+   "year": 2009,
+   "month": 12,
+   "icen": 0.41
+  },
+  {
+   "year": 2010,
+   "month": 1,
+   "icen": 0.35
+  },
+  {
+   "year": 2010,
+   "month": 2,
+   "icen": 0.18
+  },
+  {
+   "year": 2010,
+   "month": 3,
+   "icen": 0.05
+  },
+  {
+   "year": 2010,
+   "month": 4,
+   "icen": 0.09
+  },
+  {
+   "year": 2010,
+   "month": 5,
+   "icen": 0.07
+  },
+  {
+   "year": 2010,
+   "month": 6,
+   "icen": -0.24
+  },
+  {
+   "year": 2010,
+   "month": 7,
+   "icen": -0.75
+  },
+  {
+   "year": 2010,
+   "month": 8,
+   "icen": -1.16
+  },
+  {
+   "year": 2010,
+   "month": 9,
+   "icen": -1.24
+  },
+  {
+   "year": 2010,
+   "month": 10,
+   "icen": -1.25
+  },
+  {
+   "year": 2010,
+   "month": 11,
+   "icen": -1.13
+  },
+  {
+   "year": 2010,
+   "month": 12,
+   "icen": -0.88
+  },
+  {
+   "year": 2011,
+   "month": 1,
+   "icen": -0.5
+  },
+  {
+   "year": 2011,
+   "month": 2,
+   "icen": -0.5
+  },
+  {
+   "year": 2011,
+   "month": 3,
+   "icen": -0.4
+  },
+  {
+   "year": 2011,
+   "month": 4,
+   "icen": -0.31
+  },
+  {
+   "year": 2011,
+   "month": 5,
+   "icen": 0.08
+  },
+  {
+   "year": 2011,
+   "month": 6,
+   "icen": 0.18
+  },
+  {
+   "year": 2011,
+   "month": 7,
+   "icen": 0.08
+  },
+  {
+   "year": 2011,
+   "month": 8,
+   "icen": -0.28
+  },
+  {
+   "year": 2011,
+   "month": 9,
+   "icen": -0.59
+  },
+  {
+   "year": 2011,
+   "month": 10,
+   "icen": -0.71
+  },
+  {
+   "year": 2011,
+   "month": 11,
+   "icen": -0.67
+  },
+  {
+   "year": 2011,
+   "month": 12,
+   "icen": -0.46
+  },
+  {
+   "year": 2012,
+   "month": 1,
+   "icen": -0.15
+  },
+  {
+   "year": 2012,
+   "month": 2,
+   "icen": 0.11
+  },
+  {
+   "year": 2012,
+   "month": 3,
+   "icen": 0.47
+  },
+  {
+   "year": 2012,
+   "month": 4,
+   "icen": 0.65
+  },
+  {
+   "year": 2012,
+   "month": 5,
+   "icen": 0.94
+  },
+  {
+   "year": 2012,
+   "month": 6,
+   "icen": 0.77
+  },
+  {
+   "year": 2012,
+   "month": 7,
+   "icen": 0.5
+  },
+  {
+   "year": 2012,
+   "month": 8,
+   "icen": 0.18
+  },
+  {
+   "year": 2012,
+   "month": 9,
+   "icen": -0.07
+  },
+  {
+   "year": 2012,
+   "month": 10,
+   "icen": -0.23
+  },
+  {
+   "year": 2012,
+   "month": 11,
+   "icen": -0.53
+  },
+  {
+   "year": 2012,
+   "month": 12,
+   "icen": -0.63
+  },
+  {
+   "year": 2013,
+   "month": 1,
+   "icen": -0.73
+  },
+  {
+   "year": 2013,
+   "month": 2,
+   "icen": -0.67
+  },
+  {
+   "year": 2013,
+   "month": 3,
+   "icen": -0.85
+  },
+  {
+   "year": 2013,
+   "month": 4,
+   "icen": -1.13
+  },
+  {
+   "year": 2013,
+   "month": 5,
+   "icen": -1.54
+  },
+  {
+   "year": 2013,
+   "month": 6,
+   "icen": -1.66
+  },
+  {
+   "year": 2013,
+   "month": 7,
+   "icen": -1.52
+  },
+  {
+   "year": 2013,
+   "month": 8,
+   "icen": -1.15
+  },
+  {
+   "year": 2013,
+   "month": 9,
+   "icen": -0.86
+  },
+  {
+   "year": 2013,
+   "month": 10,
+   "icen": -0.66
+  },
+  {
+   "year": 2013,
+   "month": 11,
+   "icen": -0.55
+  },
+  {
+   "year": 2013,
+   "month": 12,
+   "icen": -0.31
+  },
+  {
+   "year": 2014,
+   "month": 1,
+   "icen": -0.33
+  },
+  {
+   "year": 2014,
+   "month": 2,
+   "icen": -0.29
+  },
+  {
+   "year": 2014,
+   "month": 3,
+   "icen": -0.3
+  },
+  {
+   "year": 2014,
+   "month": 4,
+   "icen": 0.25
+  },
+  {
+   "year": 2014,
+   "month": 5,
+   "icen": 0.87
+  },
+  {
+   "year": 2014,
+   "month": 6,
+   "icen": 1.21
+  },
+  {
+   "year": 2014,
+   "month": 7,
+   "icen": 1.15
+  },
+  {
+   "year": 2014,
+   "month": 8,
+   "icen": 0.9
+  },
+  {
+   "year": 2014,
+   "month": 9,
+   "icen": 0.81
+  },
+  {
+   "year": 2014,
+   "month": 10,
+   "icen": 0.77
+  },
+  {
+   "year": 2014,
+   "month": 11,
+   "icen": 0.65
+  },
+  {
+   "year": 2014,
+   "month": 12,
+   "icen": 0.37
+  },
+  {
+   "year": 2015,
+   "month": 1,
+   "icen": -0.06
+  },
+  {
+   "year": 2015,
+   "month": 2,
+   "icen": -0.18
+  },
+  {
+   "year": 2015,
+   "month": 3,
+   "icen": 0.2
+  },
+  {
+   "year": 2015,
+   "month": 4,
+   "icen": 0.88
+  },
+  {
+   "year": 2015,
+   "month": 5,
+   "icen": 1.6
+  },
+  {
+   "year": 2015,
+   "month": 6,
+   "icen": 2.1
+  },
+  {
+   "year": 2015,
+   "month": 7,
+   "icen": 2.13
+  },
+  {
+   "year": 2015,
+   "month": 8,
+   "icen": 2.15
+  },
+  {
+   "year": 2015,
+   "month": 9,
+   "icen": 2.02
+  },
+  {
+   "year": 2015,
+   "month": 10,
+   "icen": 2.23
+  },
+  {
+   "year": 2015,
+   "month": 11,
+   "icen": 2.21
+  },
+  {
+   "year": 2015,
+   "month": 12,
+   "icen": 2.06
+  },
+  {
+   "year": 2016,
+   "month": 1,
+   "icen": 1.75
+  },
+  {
+   "year": 2016,
+   "month": 2,
+   "icen": 1.45
+  },
+  {
+   "year": 2016,
+   "month": 3,
+   "icen": 1.05
+  },
+  {
+   "year": 2016,
+   "month": 4,
+   "icen": 0.77
+  },
+  {
+   "year": 2016,
+   "month": 5,
+   "icen": 0.51
+  },
+  {
+   "year": 2016,
+   "month": 6,
+   "icen": 0.42
+  },
+  {
+   "year": 2016,
+   "month": 7,
+   "icen": 0.34
+  },
+  {
+   "year": 2016,
+   "month": 8,
+   "icen": 0.35
+  },
+  {
+   "year": 2016,
+   "month": 9,
+   "icen": 0.36
+  },
+  {
+   "year": 2016,
+   "month": 10,
+   "icen": 0.31
+  },
+  {
+   "year": 2016,
+   "month": 11,
+   "icen": 0.25
+  },
+  {
+   "year": 2016,
+   "month": 12,
+   "icen": 0.47
+  },
+  {
+   "year": 2017,
+   "month": 1,
+   "icen": 0.89
+  },
+  {
+   "year": 2017,
+   "month": 2,
+   "icen": 1.29
+  },
+  {
+   "year": 2017,
+   "month": 3,
+   "icen": 1.31
+  },
+  {
+   "year": 2017,
+   "month": 4,
+   "icen": 0.92
+  },
+  {
+   "year": 2017,
+   "month": 5,
+   "icen": 0.31
+  },
+  {
+   "year": 2017,
+   "month": 6,
+   "icen": -0.13
+  },
+  {
+   "year": 2017,
+   "month": 7,
+   "icen": -0.32
+  },
+  {
+   "year": 2017,
+   "month": 8,
+   "icen": -0.52
+  },
+  {
+   "year": 2017,
+   "month": 9,
+   "icen": -0.69
+  },
+  {
+   "year": 2017,
+   "month": 10,
+   "icen": -0.97
+  },
+  {
+   "year": 2017,
+   "month": 11,
+   "icen": -1.21
+  },
+  {
+   "year": 2017,
+   "month": 12,
+   "icen": -1.3
+  },
+  {
+   "year": 2018,
+   "month": 1,
+   "icen": -1.25
+  },
+  {
+   "year": 2018,
+   "month": 2,
+   "icen": -1.21
+  },
+  {
+   "year": 2018,
+   "month": 3,
+   "icen": -1.16
+  },
+  {
+   "year": 2018,
+   "month": 4,
+   "icen": -1.07
+  },
+  {
+   "year": 2018,
+   "month": 5,
+   "icen": -0.84
+  },
+  {
+   "year": 2018,
+   "month": 6,
+   "icen": -0.61
+  },
+  {
+   "year": 2018,
+   "month": 7,
+   "icen": -0.46
+  },
+  {
+   "year": 2018,
+   "month": 8,
+   "icen": -0.24
+  },
+  {
+   "year": 2018,
+   "month": 9,
+   "icen": -0.09
+  },
+  {
+   "year": 2018,
+   "month": 10,
+   "icen": 0.27
+  },
+  {
+   "year": 2018,
+   "month": 11,
+   "icen": 0.63
+  },
+  {
+   "year": 2018,
+   "month": 12,
+   "icen": 0.87
+  },
+  {
+   "year": 2019,
+   "month": 1,
+   "icen": 0.78
+  },
+  {
+   "year": 2019,
+   "month": 2,
+   "icen": 0.49
+  },
+  {
+   "year": 2019,
+   "month": 3,
+   "icen": 0.31
+  },
+  {
+   "year": 2019,
+   "month": 4,
+   "icen": 0.21
+  },
+  {
+   "year": 2019,
+   "month": 5,
+   "icen": 0.05
+  },
+  {
+   "year": 2019,
+   "month": 6,
+   "icen": -0.28
+  },
+  {
+   "year": 2019,
+   "month": 7,
+   "icen": -0.6
+  },
+  {
+   "year": 2019,
+   "month": 8,
+   "icen": -0.72
+  },
+  {
+   "year": 2019,
+   "month": 9,
+   "icen": -0.74
+  },
+  {
+   "year": 2019,
+   "month": 10,
+   "icen": -0.53
+  },
+  {
+   "year": 2019,
+   "month": 11,
+   "icen": -0.3
+  },
+  {
+   "year": 2019,
+   "month": 12,
+   "icen": -0.18
+  },
+  {
+   "year": 2020,
+   "month": 1,
+   "icen": -0.14
+  },
+  {
+   "year": 2020,
+   "month": 2,
+   "icen": -0.14
+  },
+  {
+   "year": 2020,
+   "month": 3,
+   "icen": 0.07
+  },
+  {
+   "year": 2020,
+   "month": 4,
+   "icen": 0.02
+  },
+  {
+   "year": 2020,
+   "month": 5,
+   "icen": -0.2
+  },
+  {
+   "year": 2020,
+   "month": 6,
+   "icen": -0.72
+  },
+  {
+   "year": 2020,
+   "month": 7,
+   "icen": -1.02
+  },
+  {
+   "year": 2020,
+   "month": 8,
+   "icen": -1.19
+  },
+  {
+   "year": 2020,
+   "month": 9,
+   "icen": -1.02
+  },
+  {
+   "year": 2020,
+   "month": 10,
+   "icen": -0.91
+  },
+  {
+   "year": 2020,
+   "month": 11,
+   "icen": -0.76
+  },
+  {
+   "year": 2020,
+   "month": 12,
+   "icen": -0.79
+  },
+  {
+   "year": 2021,
+   "month": 1,
+   "icen": -0.84
+  },
+  {
+   "year": 2021,
+   "month": 2,
+   "icen": -0.83
+  },
+  {
+   "year": 2021,
+   "month": 3,
+   "icen": -0.86
+  },
+  {
+   "year": 2021,
+   "month": 4,
+   "icen": -0.83
+  },
+  {
+   "year": 2021,
+   "month": 5,
+   "icen": -0.7
+  },
+  {
+   "year": 2021,
+   "month": 6,
+   "icen": -0.46
+  },
+  {
+   "year": 2021,
+   "month": 7,
+   "icen": -0.3
+  },
+  {
+   "year": 2021,
+   "month": 8,
+   "icen": -0.41
+  },
+  {
+   "year": 2021,
+   "month": 9,
+   "icen": -0.62
+  },
+  {
+   "year": 2021,
+   "month": 10,
+   "icen": -0.9
+  },
+  {
+   "year": 2021,
+   "month": 11,
+   "icen": -1.23
+  },
+  {
+   "year": 2021,
+   "month": 12,
+   "icen": -1.31
+  },
+  {
+   "year": 2022,
+   "month": 1,
+   "icen": -1.46
+  },
+  {
+   "year": 2022,
+   "month": 2,
+   "icen": -1.14
+  },
+  {
+   "year": 2022,
+   "month": 3,
+   "icen": -1.24
+  },
+  {
+   "year": 2022,
+   "month": 4,
+   "icen": -1.26
+  },
+  {
+   "year": 2022,
+   "month": 5,
+   "icen": -1.51
+  },
+  {
+   "year": 2022,
+   "month": 6,
+   "icen": -1.44
+  },
+  {
+   "year": 2022,
+   "month": 7,
+   "icen": -1.09
+  },
+  {
+   "year": 2022,
+   "month": 8,
+   "icen": -0.93
+  },
+  {
+   "year": 2022,
+   "month": 9,
+   "icen": -1.12
+  },
+  {
+   "year": 2022,
+   "month": 10,
+   "icen": -1.3
+  },
+  {
+   "year": 2022,
+   "month": 11,
+   "icen": -1.1
+  },
+  {
+   "year": 2022,
+   "month": 12,
+   "icen": -0.7
+  },
+  {
+   "year": 2023,
+   "month": 1,
+   "icen": -0.17
+  },
+  {
+   "year": 2023,
+   "month": 2,
+   "icen": 0.47
+  },
+  {
+   "year": 2023,
+   "month": 3,
+   "icen": 1.53
+  },
+  {
+   "year": 2023,
+   "month": 4,
+   "icen": 2.11
+  },
+  {
+   "year": 2023,
+   "month": 5,
+   "icen": 2.45
+  },
+  {
+   "year": 2023,
+   "month": 6,
+   "icen": 2.57
+  },
+  {
+   "year": 2023,
+   "month": 7,
+   "icen": 2.92
+  },
+  {
+   "year": 2023,
+   "month": 8,
+   "icen": 2.9
+  },
+  {
+   "year": 2023,
+   "month": 9,
+   "icen": 2.68
+  },
+  {
+   "year": 2023,
+   "month": 10,
+   "icen": 2.28
+  },
+  {
+   "year": 2023,
+   "month": 11,
+   "icen": 2.01
+  },
+  {
+   "year": 2023,
+   "month": 12,
+   "icen": 1.67
+  },
+  {
+   "year": 2024,
+   "month": 1,
+   "icen": 1.34
+  },
+  {
+   "year": 2024,
+   "month": 2,
+   "icen": 0.88
+  },
+  {
+   "year": 2024,
+   "month": 3,
+   "icen": 0.38
+  },
+  {
+   "year": 2024,
+   "month": 4,
+   "icen": -0.38
+  },
+  {
+   "year": 2024,
+   "month": 5,
+   "icen": -0.78
+  },
+  {
+   "year": 2024,
+   "month": 6,
+   "icen": -0.97
+  },
+  {
+   "year": 2024,
+   "month": 7,
+   "icen": -0.72
+  },
+  {
+   "year": 2024,
+   "month": 8,
+   "icen": -0.65
+  },
+  {
+   "year": 2024,
+   "month": 9,
+   "icen": -0.5
+  },
+  {
+   "year": 2024,
+   "month": 10,
+   "icen": -0.34
+  },
+  {
+   "year": 2024,
+   "month": 11,
+   "icen": -0.1
+  },
+  {
+   "year": 2024,
+   "month": 12,
+   "icen": -0.11
+  },
+  {
+   "year": 2025,
+   "month": 1,
+   "icen": 0.0
+  },
+  {
+   "year": 2025,
+   "month": 2,
+   "icen": 0.45
+  },
+  {
+   "year": 2025,
+   "month": 3,
+   "icen": 0.72
+  },
+  {
+   "year": 2025,
+   "month": 4,
+   "icen": 0.46
+  },
+  {
+   "year": 2025,
+   "month": 5,
+   "icen": 0.18
+  },
+  {
+   "year": 2025,
+   "month": 6,
+   "icen": 0.11
+  },
+  {
+   "year": 2025,
+   "month": 7,
+   "icen": 0.17
+  },
+  {
+   "year": 2025,
+   "month": 8,
+   "icen": -0.01
+  },
+  {
+   "year": 2025,
+   "month": 9,
+   "icen": -0.22
+  },
+  {
+   "year": 2025,
+   "month": 10,
+   "icen": -0.42
+  },
+  {
+   "year": 2025,
+   "month": 11,
+   "icen": -0.5
+  },
+  {
+   "year": 2025,
+   "month": 12,
+   "icen": -0.51
+  },
+  {
+   "year": 2026,
+   "month": 1,
+   "icen": -0.06
+  },
+  {
+   "year": 2026,
+   "month": 2,
+   "icen": 0.42
+  },
+  {
+   "year": 2026,
+   "month": 3,
+   "icen": 0.96
+  },
+  {
+   "year": 2026,
+   "month": 4,
+   "icen": 1.34
+  },
+  {
+   "year": 2026,
+   "month": 5,
+   "icen": 1.98
+  },
+  {
+   "year": 2026,
+   "month": 6,
+   "icen": 2.66
+  },
+  {
+   "year": 2026,
+   "month": 7,
+   "icen": 3.38
+  },
+  {
+   "year": 2026,
+   "month": 8,
+   "icen": 3.98
+  },
+  {
+   "year": 2026,
+   "month": 9,
+   "icen": 4.5
+  }
+ ]
+}

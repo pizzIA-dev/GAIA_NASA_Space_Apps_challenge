@@ -87,6 +87,12 @@
   extremos; desde la extracción cacheada, sin EE) + panel en Explorar (heatmap + ciclo medio + tabla de extremos), SDK
   `analyses.seasonal()`. Dato real: mes más extremo de 2003–2024 en la provincia de Trujillo = **marzo 2017, 140 mm
   (+75 mm sobre su media)** (coincide con El Niño Costero 2017; no se afirma causa). Tests: backend 83, Playwright 21.
+- **Caso Trujillo (F5, ADR-0008):** ingesta oficial reproducible `scripts/ingest_case_trujillo.py` → `data/case-trujillo/`
+  (SINPAD/INDECI datos abiertos ODC-BY con SHA256; ICEN oficial IGP/ENFEN). Conciliación **16/16 con la v12** (2017–2025).
+  Episodios ENFEN derivados (regla ICEN > +0,5 ≥ 3 meses, **umbral pendiente de verificar con el PDF de la NT 01-2024**;
+  la web de ENFEN no responde desde aquí). API `/cases/...` (events, enfen), SDK `client.cases`, capa «Contexto local» en
+  Explorar (bandas + marcadores + tabla; causalidad siempre «no verificada»). **El Niño Costero 2026 en curso** (ICEN +4,50
+  sep-2026). Bug corregido: geometría ausente → 503 (antes 500). Tests: backend 90, Playwright 24 (también sin EE).
 - API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
 - Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
 - **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
@@ -99,7 +105,8 @@
 1. Prueba con lector de pantalla (NVDA).
 2. **F4 restante:** Atlas (mapas de tendencia por variable), brush temporal,
    diferencia de pendientes con IC (bootstrap conjunto) para comparaciones.
-3. **F5 caso Trujillo:** ingesta SINPAD/ENFEN, capa de eventos (colores reservados), cartografía INEI con Alto Trujillo.
+3. **F5 restante:** verificar umbral ENFEN (PDF NT 01-2024, pedir al usuario), historia guiada 6 escenas (§9.2),
+   asociación eventos↔anomalías con meses de control (§7.7), cartografía INEI con Alto Trujillo.
 4. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).
 5. MK corregido por autocorrelación, Kendall estacional. Docker pospuesto (no necesario aún).
 

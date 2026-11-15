@@ -146,6 +146,25 @@ class Analyses(_Resource):
         return ax
 
 
+class Cases(_Resource):
+    """Casos con capas nacionales opcionales (p. ej. «trujillo-el-nino»). Coincidencia temporal ≠ causalidad."""
+
+    def list(self) -> list[dict]:
+        return self._c._get("cases")["items"]
+
+    def get(self, case_id: str) -> dict:
+        return self._c._get(f"cases/{case_id}")
+
+    def events(self, case_id: str, geo_id: str | None = None, year_from: int | None = None,
+               year_to: int | None = None, focal: bool = True) -> list[dict]:
+        params = {"geo_id": geo_id, "year_from": year_from, "year_to": year_to, "focal": str(focal).lower()}
+        return self._c._get(f"cases/{case_id}/events", params={k: v for k, v in params.items() if v is not None})["items"]
+
+    def enfen(self, case_id: str, year_from: int | None = None, year_to: int | None = None) -> dict:
+        params = {"year_from": year_from, "year_to": year_to}
+        return self._c._get(f"cases/{case_id}/enfen", params={k: v for k, v in params.items() if v is not None})
+
+
 class EarthTrendClient:
     """Cliente de la API v1.
 
@@ -164,6 +183,7 @@ class EarthTrendClient:
         self.catalog = Catalog(self)
         self.geographies = Geographies(self)
         self.analyses = Analyses(self)
+        self.cases = Cases(self)
 
     def health(self) -> dict:
         return self._get("health")

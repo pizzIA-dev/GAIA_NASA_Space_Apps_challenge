@@ -213,3 +213,19 @@ def test_cors_allows_local_web_origin_only():
     assert ok.headers.get("access-control-allow-origin") == "http://localhost:3000"
     bad = c.options("/api/v1/health", headers={"Origin": "https://evil.example", "Access-Control-Request-Method": "GET"})
     assert "access-control-allow-origin" not in bad.headers
+
+
+def test_missing_geometry_file_is_503_not_500(tmp_path, pe_geos):
+    (pe_geos.pe.root / "geoms" / "130111.json").unlink()
+    app.dependency_overrides[routes.get_geographies] = lambda: pe_geos
+    app.dependency_overrides[routes.get_store] = lambda: RunStore(tmp_path / "runs")
+    app.dependency_overrides[routes.get_adapters] = lambda: {"nasa-gpm-imerg-monthly-v07": FakeIMERG()}
+    try:
+        c = TestClient(app)
+        spec = make_spec()
+        spec["geography"] = {"geo_ids": ["pe-ign2020:130111"]}
+        r = c.post("/api/v1/analyses", json=spec)
+        assert r.status_code == 503 and r.json()["title"] == "source_unavailable"
+        assert c.get("/api/v1/geographies/pe-ign2020:1301/features").status_code == 503
+    finally:
+        app.dependency_overrides.clear()

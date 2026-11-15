@@ -45,6 +45,8 @@ class PeruGeomRef:
         self._path = geoms_dir / f"{parse_geo_id(geo.geo_id)}.json"
 
     def geojson(self) -> dict:
+        if not self._path.is_file():
+            raise BoundariesNotIngested(f"Geometría de {self.geo.geo_id} no ingerida: ejecuta scripts/ingest_pe_boundaries.py")
         return json.loads(self._path.read_text(encoding="utf-8"))
 
     def to_ee(self, ee):
@@ -128,6 +130,8 @@ class PeruIGNIndex:
 def _simplified(path: str, tolerance_deg: float) -> dict:
     from shapely.geometry import mapping, shape
 
+    if not Path(path).is_file():
+        raise BoundariesNotIngested(f"Geometría no ingerida ({Path(path).name}): ejecuta scripts/ingest_pe_boundaries.py")
     geom = json.loads(Path(path).read_text(encoding="utf-8"))
     return mapping(shape(geom).simplify(tolerance_deg, preserve_topology=True))
 

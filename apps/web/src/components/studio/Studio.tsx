@@ -195,7 +195,7 @@ function StudioPanel({ index, total, variable, panelKey, names, theme }:
   const st = useStudio();
   const { datasetId, variableId } = splitKey(panelKey);
   const specs = useMemo(() => st.geos.map((g) => buildSpec(
-    { focus: g, selected: g, datasetId, variableId, view: "annual", method: st.method, start: st.start, end: st.end }, g, "annual",
+    { focus: g, selected: g, datasetId, variableId, view: "annual", method: st.method, start: st.start, end: st.end, context: false }, g, "annual",
   )), [st.geos, st.method, st.start, st.end, datasetId, variableId]);
   const fam = useQuery<CompareResult, ApiError>({ queryKey: ["compare", specs], queryFn: () => api.compare(specs, `estudio:${panelKey}`), enabled: !!variable });
   const label = variable ? cleanQuantity(variable.physical_quantity) : panelKey;
