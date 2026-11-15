@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 import time
+from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 from typing import Literal
@@ -116,9 +117,19 @@ def get_geography(geo_id: str, request: Request,
         return problem(503, "source_unavailable", str(e), request)
 
 
+_FEATURES_CACHE: OrderedDict[str, dict] = OrderedDict()
+FEATURES_CACHE_SIZE = 32  # colecciones simplificadas en memoria (la del Perú ≈ 1 MB); evita recalcular en CPU limitada
+
+
 @router.get("/geographies/{geo_id}/features", tags=["geographies"])
 def geography_features(geo_id: str, request: Request, geos=Depends(get_geographies)):
     """GeoJSON FeatureCollection del territorio y sus unidades hijas (geometría simplificada, solo visualización)."""
+    # Solo con el registro global (en pruebas se inyectan registros temporales que no deben compartir caché).
+    cacheable = geos is reg.registry
+    key = geo_id
+    if cacheable and key in _FEATURES_CACHE:
+        _FEATURES_CACHE.move_to_end(key)
+        return _FEATURES_CACHE[key]
     try:
         g = geos.get(geo_id)
         units = [("self", g), *[("child", c) for c in geos.children(g)]]
@@ -128,8 +139,13 @@ def geography_features(geo_id: str, request: Request, geos=Depends(get_geographi
                            "role": role, "boundary_set_id": u.boundary_set_id},
             "geometry": geos.geometry_geojson(u.geo_id),
         } for role, u in units]
-        return {"type": "FeatureCollection", "features": features, "attribution": geos.attribution(g.boundary_set_id),
-                "geometry_note": "Simplificada solo para visualización; el análisis usa la geometría original"}
+        out = {"type": "FeatureCollection", "features": features, "attribution": geos.attribution(g.boundary_set_id),
+               "geometry_note": "Simplificada solo para visualización; el análisis usa la geometría original"}
+        if cacheable:
+            _FEATURES_CACHE[key] = out
+        while len(_FEATURES_CACHE) > FEATURES_CACHE_SIZE:
+            _FEATURES_CACHE.popitem(last=False)
+        return out
     except gb.GeographyNotFound:
         return problem(404, "unknown_geography", f"geo_id no encontrado: {geo_id}", request)
     except (EarthEngineUnavailable, BoundariesNotIngested) as e:

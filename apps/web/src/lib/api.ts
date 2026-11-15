@@ -19,6 +19,11 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
   } catch {
     throw new ApiError({ status: 0, title: "api_unreachable", detail: `No se pudo contactar la API en ${API_URL}. ¿Está levantado el backend?` });
   }
+  // Un servidor gratuito que despierta puede responder con una página HTML o un 502/503 sin JSON: es transitorio.
+  const isJson = (res.headers.get("content-type") ?? "").includes("json");
+  if (!isJson && (res.ok || res.status >= 502)) {
+    throw new ApiError({ status: 0, title: "api_unreachable", detail: "El servidor de GaIA está despertando; reintentando…" });
+  }
   if (!res.ok) {
     let p: Partial<Problem> = {};
     try { p = await res.json(); } catch { /* sin cuerpo */ }
@@ -57,3 +62,7 @@ export const api = {
   compare: (specs: object[], familyId?: string) =>
     call<CompareResult>("analyses/compare", { method: "POST", body: JSON.stringify({ specs, multiple_testing: "BH_FDR", family_id: familyId }) }),
 };
+
+/** Errores transitorios que justifican reintentar: servidor dormido/despertando o Earth Engine ocupado. */
+export const isTransient = (e: unknown) =>
+  e instanceof ApiError && (e.problem.title === "api_unreachable" || e.problem.title === "source_busy");

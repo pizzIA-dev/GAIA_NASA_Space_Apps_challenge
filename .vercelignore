@@ -1,0 +1,15 @@
+# Despliegue de la web con la CLI de Vercel desde la raíz del repositorio (ADR-0014).
+# Lista blanca: solo se sube lo que la web necesita para compilarse. Nada de datos locales, cachés, claves,
+# referencias históricas (NinoDetect) ni el backend.
+/*
+!/apps
+/apps/*
+!/apps/web
+!/packages
+/packages/*
+!/packages/design-tokens
+/apps/web/node_modules
+/apps/web/.next
+/apps/web/test-results
+/apps/web/playwright-report
+/apps/web/e2e

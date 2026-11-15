@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { api, ApiError } from "@/lib/api";
+import { api, ApiError, isTransient } from "@/lib/api";
 import { digitsFor, fmt, fmtP, signed, TEST_LABEL, unitPerDecade, verdictOf } from "@/lib/format";
 import { METHOD_NAMES, RECOMMENDED, UNCORRECTED } from "@/lib/methods";
 import { statisticsFor, type Method } from "@/lib/study";
@@ -186,7 +186,7 @@ function VariableCard({ cfg, varKey, variable, dataset }:
   const spec = useMemo(() => specFor(cfg, varKey), [cfg, varKey]);
   // Si Earth Engine está ocupado (503 source_busy) se reintenta solo, sin que el usuario tenga que hacer nada.
   const q = useQuery<Run, ApiError>({ queryKey: ["run", spec], queryFn: () => api.analyze(spec),
-    retry: (n, e) => n < 4 && e.problem.title === "source_busy", retryDelay: 15_000 });
+    retry: (n, e) => n < 12 && isTransient(e), retryDelay: 10_000 });
   const est = useQuery({ queryKey: ["cost", spec], queryFn: () => api.estimateCost(spec), enabled: q.isPending, staleTime: Infinity });
   const st = q.data?.statistics, vd = st ? verdictOf(st) : null, d = digitsFor(st?.estimate);
   const unit = variable?.unit_display ?? "";

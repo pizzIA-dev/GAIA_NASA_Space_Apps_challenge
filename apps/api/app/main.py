@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 
 from app.api.v1.routes import Problem, problem_response, router
 from app.core.config import settings
@@ -8,7 +9,7 @@ from app.services.earth_engine.client import auth_mode
 from app.services.statistics.trend_core import ALGORITHM_VERSION, COMPATIBILITY
 
 app = FastAPI(
-    title="Earth Trend Studio API (nombre provisional)",
+    title="GaIA API",
     version="0.1.0",
     description="API científica de tendencias del sistema terrestre. Mismo motor para web, REST y SDK Python.",
 )
@@ -39,6 +40,8 @@ def capabilities() -> dict:
     }
 
 
+# Compresión: las geometrías (≈ 1,1 MB → ≈ 0,3 MB) y series cuentan contra la salida de datos del alojamiento gratuito.
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=list(settings.allowed_origins),

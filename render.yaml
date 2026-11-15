@@ -1,0 +1,34 @@
+# Render Blueprint — API de GaIA en el plan gratuito (ADR-0014, docs/runbooks/despliegue-gratuito.md).
+# Sin datos de pago: si se superan los límites del plan gratuito, Render suspende el servicio, no cobra.
+# La clave de Earth Engine NO va aquí: se sube a mano como «Secret File» (ee-service-account.json) en el panel de Render.
+services:
+  - type: web
+    name: gaia-api
+    runtime: python
+    plan: free
+    region: virginia
+    branch: main
+    autoDeploy: true
+    healthCheckPath: /api/v1/health
+    buildCommand: >-
+      pip install --upgrade pip &&
+      pip install -r apps/api/requirements.lock.txt &&
+      python scripts/ingest_pe_boundaries.py &&
+      python scripts/e2e_fixtures.py seed .cache
+    # --proxy-headers: la IP real del visitante (X-Forwarded-For) para que el cupo anónimo sea por persona, no global.
+    startCommand: >-
+      uvicorn app.main:app --app-dir apps/api --host 0.0.0.0 --port $PORT
+      --proxy-headers --forwarded-allow-ips "*"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.5"
+      - key: EE_PROJECT
+        value: nasa-pizzia
+      - key: EE_SERVICE_ACCOUNT_FILE
+        value: /etc/secrets/ee-service-account.json
+      - key: EE_SERVICE_ACCOUNT_EMAIL
+        sync: false # correo de la cuenta de servicio dedicada (se escribe en el panel)
+      - key: ALLOWED_ORIGINS
+        sync: false # dominio de la web en Vercel, p. ej. https://gaia-xxxx.vercel.app
+      - key: CACHE_DIR
+        value: .cache

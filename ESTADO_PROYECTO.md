@@ -128,6 +128,9 @@ opcionales: Explorar (detalle), Análisis avanzado (`/estudio`), Atlas, Casos de
   `/catalog/capabilities`, nivel 90/95/99 % (veredicto con α = 1 − nivel), aviso si el método no corrige la
   autocorrelación, procedencia y cobertura temporal por tarjeta, «Ver detalle» → Explorar con la misma configuración.
   Atlas acepta cualquier territorio. E2E de paridad web = API (`e2e/panel.spec.ts`). Marca GaIA y navegación nueva.
+- **Listo para alojamiento gratuito** (ADR-0014): gzip en la API, caché de geometrías simplificadas, `--proxy-headers`
+  (cupo por IP real), aviso «servidor despertando» + reintentos en la web, `render.yaml`, `.vercelignore`. Simulación
+  de Render desde copia limpia OK (compilación 22 s, EE con clave fuera del repo, CORS, gzip, cupo por IP).
 - API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
 - Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
 - **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
@@ -142,7 +145,9 @@ opcionales: Explorar (detalle), Análisis avanzado (`/estudio`), Atlas, Casos de
    Kendall estacional y dependencia de largo plazo (ENSO) más allá de AR(1) (ver ADR-0012, «Límites»).
 3. ✅ Resuelto 2026-11-15: umbral «ligero» ampliado (ADR-0005): las 4 variables por defecto se calculan sin token
    (1–3 min la primera vez, luego en caché); el Panel muestra tiempo estimado/transcurrido y reintenta si EE está ocupado.
-4. F6: despliegue, guía de uso, demo.
+4. **F6 despliegue gratuito preparado (ADR-0014):** Vercel Hobby (web, CLI) + Render Free (API, `render.yaml`) +
+   Earth Engine no comercial. Guía paso a paso en `docs/runbooks/despliegue-gratuito.md`. **Pendiente del usuario:**
+   cuentas Render/Vercel sin tarjeta, clave dedicada de EE como Secret File, `vercel login`. Luego: verificación en vivo.
 5. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).
 6. Kendall estacional. Docker pospuesto (no necesario aún).
 

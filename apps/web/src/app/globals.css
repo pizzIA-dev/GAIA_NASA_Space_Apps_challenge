@@ -213,3 +213,6 @@ code { background: var(--paper-2); padding: 1px 6px; border-radius: 3px; font-si
 .picker .children .list { max-height: 260px; overflow-y: auto; }
 .dash-more { margin-top: 18px; }
 .waiting p { margin: 0 0 4px; }
+
+/* Aviso de servidor gratuito despertando */
+.wake-banner { background: var(--accent-soft); color: var(--ink); border-bottom: 1px solid var(--rule); padding: 8px 24px; font-size: var(--text-small); }
