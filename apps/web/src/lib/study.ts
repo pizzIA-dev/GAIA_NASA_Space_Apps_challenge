@@ -56,13 +56,14 @@ export function studyToUrl(s: StudyState): string {
 }
 
 const METHODS: Record<Method, object> = {
-  sen: { estimator: "theil_sen", interval_method: "theil_sen_analytic", significance_test: "mann_kendall" },
-  ols: { estimator: "ols", interval_method: "hac_newey_west", significance_test: "ols_hac_t" },
-  sen_boot: { estimator: "theil_sen", interval_method: "moving_block_bootstrap", significance_test: "mann_kendall", seed: 2026 },
+  // Métodos corregidos por autocorrelación (n efectivo AR(1)); ver ADR-0012 y scientific/reports/cobertura_ic.md.
+  sen: { estimator: "theil_sen", interval_method: "theil_sen_ar1", significance_test: "mann_kendall_ar1" },
+  ols: { estimator: "ols", interval_method: "ar1_effective_n", significance_test: "ols_ar1_t" },
+  sen_boot: { estimator: "theil_sen", interval_method: "moving_block_bootstrap", significance_test: "mann_kendall_ar1", seed: 2026 },
 };
 
 export const METHOD_LABEL: Record<Method, string> = {
-  sen: "Theil–Sen", ols: "OLS con IC HAC", sen_boot: "Theil–Sen + bootstrap",
+  sen: "Theil–Sen", ols: "OLS (n efectivo)", sen_boot: "Theil–Sen + bootstrap",
 };
 
 /** Especificación canónica (§11.2) que la web envía a la API: la misma que usaría el SDK. */

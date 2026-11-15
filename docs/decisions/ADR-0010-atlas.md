@@ -30,3 +30,5 @@
   disminución (q < 0,05), 18 sin evidencia, ninguno con aumento.
   Con token (precálculo local): temperatura 2 m MERRA-2 → 9 aumento, 16 sin evidencia; humedad del suelo GLDAS → 18
   disminución, 7 sin evidencia; NDVI MODIS → 18 aumento, 1 disminución, 6 sin evidencia (2003–2024, q < 0,05).
+- **Actualización (ADR-0012, motor 0.2):** con IC y pruebas corregidos por autocorrelación, los recuentos del Perú
+  pasan a: lluvia 0 con evidencia, temperatura 0, humedad del suelo 2 con disminución, NDVI 18 con aumento.

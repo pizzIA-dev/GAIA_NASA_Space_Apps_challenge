@@ -7,9 +7,11 @@ interface Capabilities { estimators: Record<string, { interval_methods: string[]
 
 const NAMES: Record<string, string> = {
   ols: "Regresión lineal (OLS)", theil_sen: "Pendiente de Theil–Sen",
-  ols_classic: "IC clásico de OLS", hac_newey_west: "IC robusto HAC (Newey–West)", theil_sen_analytic: "IC analítico de Theil–Sen",
-  moving_block_bootstrap: "Bootstrap por bloques móviles", ols_t: "Prueba t clásica", ols_hac_t: "Prueba t con errores HAC",
-  mann_kendall: "Mann–Kendall", none: "Sin prueba",
+  ols_classic: "IC clásico de OLS", hac_newey_west: "IC robusto HAC (Newey–West)", ar1_effective_n: "IC de OLS con n efectivo AR(1)",
+  theil_sen_analytic: "IC analítico de Theil–Sen", theil_sen_ar1: "IC de Theil–Sen con n efectivo AR(1)",
+  moving_block_bootstrap: "Bootstrap por bloques móviles (pares)", ols_t: "Prueba t clásica", ols_hac_t: "Prueba t con errores HAC",
+  ols_ar1_t: "Prueba t con n efectivo AR(1)", mann_kendall: "Mann–Kendall", mann_kendall_ar1: "Mann–Kendall con n efectivo AR(1)",
+  none: "Sin prueba",
 };
 
 const GLOSSARY: [string, string][] = [

@@ -66,10 +66,12 @@ class TransformSpec(_Strict):
 class StatisticsSpec(_Strict):
     estimator: Literal["ols", "theil_sen"] = "theil_sen"
     interval_method: Literal[
-        "ols_classic", "hac_newey_west", "theil_sen_analytic", "moving_block_bootstrap"
-    ] = "theil_sen_analytic"
+        "ols_classic", "hac_newey_west", "ar1_effective_n", "theil_sen_analytic", "theil_sen_ar1",
+        "moving_block_bootstrap"
+    ] = "theil_sen_ar1"
     confidence_level: float = Field(0.95, gt=0.5, lt=1.0)
-    significance_test: Literal["ols_t", "ols_hac_t", "mann_kendall", "none"] = "mann_kendall"
+    significance_test: Literal["ols_t", "ols_hac_t", "ols_ar1_t", "mann_kendall", "mann_kendall_ar1", "none"] = (
+        "mann_kendall_ar1")
     time_unit: Literal["year", "decade"] = "decade"
     resamples: int = Field(1000, ge=100, le=5000)
     block_length: int = Field(12, ge=1, le=120)

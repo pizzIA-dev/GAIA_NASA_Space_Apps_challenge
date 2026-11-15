@@ -115,6 +115,11 @@
 - **Diferencia de pendientes** (ADR-0011): `POST /analyses/difference` + SDK + bloque en cada panel del Estudio.
   Δ = TS(A) − TS(B) con IC por bootstrap de bloques sobre pares de periodos (cobertura simulada 96–98,5 %). OLS no se
   ofrece (sus IC cubrieron 73–92 % con n = 22). Real: Huanchaco − Moche lluvia +4,9 mm/década, IC −24 a +14, r = 0,96.
+- **Motor 0.2: autocorrelación corregida por defecto** (ADR-0012). Estudio de cobertura reproducible
+  (`scripts/coverage_study.py` → `scientific/reports/cobertura_ic.md`) mostró que HAC, Theil–Sen analítico + MK y el
+  bootstrap de residuos subcubrían (66–89 %, error tipo I hasta 33 %) con n = 22. Nuevos por defecto: Theil–Sen +
+  IC con n efectivo AR(1) + MK AR(1) (94–96 % / 3–7 % con φ ≤ 0,3); bootstrap por pares. Atlas Perú cambia:
+  lluvia 7 → 0, temperatura 9 → 0, humedad del suelo 18 → 2, NDVI 18 → 18. Pruebas de cobertura en CI.
 - API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
 - Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
 - **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
@@ -126,7 +131,7 @@
 ## Siguiente
 1. Prueba con lector de pantalla (NVDA).
 2. **F4 restante:** brush temporal,
-   **medir la cobertura de los IC por serie** (OLS-HAC y Theil–Sen analítico con n ≈ 22 años; ver ADR-0011).
+   Kendall estacional y dependencia de largo plazo (ENSO) más allá de AR(1) (ver ADR-0012, «Límites»).
 3. **F5 restante:** umbral ENFEN (PDF NT
    01-2024, el usuario decidió seguir sin él), cartografía INEI con Alto Trujillo.
 4. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).
