@@ -19,7 +19,8 @@ const median = (a: number[]) => {
   return n % 2 ? s[(n - 1) / 2]! : (s[n / 2 - 1]! + s[n / 2]!) / 2;
 };
 
-export function TrendChart({ run, unit, anomaly }: { run: Run; unit: string; anomaly: boolean }) {
+export function TrendChart({ run, unit, anomaly, theme, onReady }:
+  { run: Run; unit: string; anomaly: boolean; theme: string; onReady?: (c: import("echarts").ECharts | null) => void }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export function TrendChart({ run, unit, anomaly }: { run: Run; unit: string; ano
       if (disposed || !ref.current) return;
       chart?.dispose();
       chart = echarts.init(ref.current, undefined, { renderer: "svg" });
+      onReady?.(chart);
       const st = run.statistics;
       const perYear = (v: number) => (st.estimate_unit.endsWith("/decade") ? v / 10 : v);
       const pts = run.series.map((p) => [Date.parse(p.time_start_utc), p.value] as [number, number | null]);
@@ -96,8 +98,9 @@ export function TrendChart({ run, unit, anomaly }: { run: Run; unit: string; ano
     if (ref.current) ro.observe(ref.current);
     const onScheme = () => void render();
     mq.addEventListener("change", onScheme);
-    return () => { disposed = true; ro?.disconnect(); mq.removeEventListener("change", onScheme); chart?.dispose(); };
-  }, [run, unit, anomaly]);
+    return () => { disposed = true; ro?.disconnect(); mq.removeEventListener("change", onScheme); onReady?.(null); chart?.dispose(); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [run, unit, anomaly, theme]);
 
   return <div ref={ref} className="chart" role="img" aria-label="Serie temporal con tendencia" />;
 }

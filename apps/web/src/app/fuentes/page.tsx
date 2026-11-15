@@ -1,0 +1,8 @@
+import type { Metadata } from "next";
+import { Sources } from "@/components/pages/Sources";
+
+export const metadata: Metadata = { title: "Fuentes · Earth Trend Studio" };
+
+export default function FuentesPage() {
+  return <Sources />;
+}

@@ -4,6 +4,8 @@ import Link from "next/link";
 import "../styles/tokens.css";
 import "./globals.css";
 import { Providers } from "./providers";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { THEME_BOOT } from "@/lib/theme-boot";
 
 const serif = Source_Serif_4({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-serif", display: "swap" });
 const sans = Source_Sans_3({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-sans", display: "swap" });
@@ -24,7 +26,10 @@ const NAV = [
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${serif.variable} ${sans.variable}`}>
+    <html lang="es" className={`${serif.variable} ${sans.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+      </head>
       <body>
         <a className="skip" href="#contenido">Saltar al contenido</a>
         <header className="top">
@@ -32,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <nav className="primary" aria-label="Secciones">
             {NAV.map((n) => <Link key={n.href} href={n.href}>{n.label}</Link>)}
           </nav>
+          <ThemeToggle />
         </header>
         <Providers>{children}</Providers>
       </body>

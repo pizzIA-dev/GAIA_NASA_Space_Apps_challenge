@@ -38,10 +38,11 @@ export interface Run {
   status: string;
   cache_hit: boolean;
   analysis_spec_hash: string;
+  request: object;
   statistics: Statistics;
   series: SeriesPoint[];
   source_versions: SourceVersion[];
-  geography: { geo_id?: string; name?: string; area_km2?: number | null; attribution?: string; kind: string };
+  geography: { geo_id?: string; name?: string; area_km2?: number | null; attribution?: string; boundary_set_id?: string; kind: string };
   cost?: CostEstimate;
 }
 

@@ -15,5 +15,6 @@ No fueron instaladas por el agente; su auditoría formal (scripts, permisos, lic
 | vercel-react-native-skills | vercel-labs/agent-skills | no aplica al MVP web | descartar |
 | ui-ux-pro-max | sin entrada en lock | checklist UX/a11y | ✅ 2026-11-14: scripts Python solo leen CSV locales (sin red, subprocess ni eval); `--persist` escribe MASTER.md. **Usada** solo como checklist, sin persistir |
 | obsidian-*, cybersecurity-analyst, find-skills, myskillcommitter | sin entrada en lock | varios | pendiente |
+| sql-code-review | aportada por el usuario (raíz del repo, ignorada en local vía `.git/info/exclude`) | revisión SQL cuando se añada PostgreSQL/PostGIS | solo instrucciones (SKILL.md, 301 líneas), sin scripts; usar al diseñar la capa de BD |
 
 Ninguna skill es dependencia runtime del producto.

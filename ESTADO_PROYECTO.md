@@ -8,6 +8,7 @@
 - `5a060d4` F2 — cliente EE, `AnalysisSpec`+hashes, IMERG, runner con caché, `/analyses`, golden v13.1.
 - `e1f3c8c` F2 — geografías geoBoundaries v6 + fronteras oficiales Perú (IGN), ingesta y manifiesto.
 - `3c32d82` F2 — adaptadores GLDAS/MERRA-2/NDVI/SST, SDK, notebook 01, coste/tokens/límites.
+- `16c59ae` F1 — dirección «Cuaderno de campo», tokens, web Explorar con API real.
 - (lista completa: `git log --oneline`)
 
 ## Qué funciona (verificado con datos reales)
@@ -63,6 +64,12 @@
   serie anual/anomalía mensual, 3 métodos, veredicto en frase, mapa de pendientes (auto para productos mensuales; botón para
   el resto), calidad, run_id y procedencia. Verificado en navegador (1440/390 px, sin errores de consola, build de
   producción OK). Hallazgo vía web: NDVI Laredo +0,016/década, IC [+0,002; +0,030], p=0,04 → evidencia de aumento.
+- **F1 (sesión 2, cont.):** selector de tema Sistema/Claro/Oscuro (sin parpadeo, recordado); exportación CSV/JSON/SVG/PNG@2×
+  con run_id, fuente y especificación (`src/lib/export.ts`); páginas **Fuentes** (catálogo y fronteras desde la API) y
+  **Métodos** (flujo, matriz de compatibilidad de la API, lectura del veredicto, glosario); Estudio/Atlas/Historias con
+  página honesta «aún no disponible». **Playwright 8/8** (`npm --prefix apps/web run test:e2e`, Edge `msedge`, sin
+  descargar navegadores): paridad web↔API, exportaciones, URL, error 401 honesto, tema, Fuentes/Métodos, 1024/768/390 px.
+  **Contraste WCAG 2.1 AA 26/26** (`npm --prefix apps/web run check:contrast`).
 - API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
 - Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
 - **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
@@ -72,10 +79,11 @@
 `data/_downloads/` (descargas crudas) y `.cache/` (índices, geometrías, extracciones, runs) son regenerables.
 
 ## Siguiente
-1. **F1 restante:** pruebas Playwright (E2E + paridad web↔API), revisión a 1024/768 px, contraste WCAG medido,
-   selector de tema claro/oscuro, exportación (PNG/SVG/CSV/JSON), páginas Fuentes y Métodos con contenido real.
-   Mejora: el mapa de unidades hace N POST; un `POST /analyses/compare` o batch reduciría llamadas.
-2. MK corregido por autocorrelación, Kendall estacional. Docker pospuesto (no necesario aún).
+1. **Cierre F1 / inicio F4:** Estudio (lienzo con arrastrar variables y comparar territorios, plan §4.3/§5.3),
+   `POST /analyses/compare` (también reduce las N llamadas del mapa), lector de pantalla, CI (GitHub Actions) con
+   pytest + tsc + Playwright + contraste.
+2. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).
+3. MK corregido por autocorrelación, Kendall estacional. Docker pospuesto (no necesario aún).
 
 ## Pendiente para el caso Trujillo (F5)
 - Cartografía distrital INEI reciente que incluya Alto Trujillo (130112) como nuevo `boundary_set_id`.

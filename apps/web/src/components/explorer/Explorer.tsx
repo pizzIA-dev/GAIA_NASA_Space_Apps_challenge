@@ -3,10 +3,13 @@ import { useQueries, useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
+import { cssVar } from "@/lib/colors";
+import { exportCsv, exportJson, exportPng, exportSvg } from "@/lib/export";
 import { divergentStops } from "@/lib/colors";
 import { digitsFor, fmt, signed, TEST_LABEL, unitPerDecade, verdictOf } from "@/lib/format";
 import { buildSpec, METHOD_LABEL, readStudyFromUrl, studyToUrl, useStudy, type Method } from "@/lib/study";
 import type { Dataset, Geography, Run, Variable } from "@/lib/types";
+import { useResolvedTheme } from "@/lib/theme";
 import { TerritoryMap, type UnitResult } from "./TerritoryMap";
 import { TrendChart } from "./TrendChart";
 
@@ -21,6 +24,8 @@ const MAP_AUTO_MAX_UNITS = 12; // calcular el mapa automáticamente solo para pr
 
 export function Explorer() {
   const study = useStudy();
+  const theme = useResolvedTheme();
+  const chartRef = useRef<import("echarts").ECharts | null>(null);
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -140,11 +145,18 @@ export function Explorer() {
           <section className="panel chart-wrap" aria-label="Serie temporal">
             <div className="panel-head">
               <h2>Serie y tendencia</h2>
-              {study.selected !== study.focus && (
-                <button type="button" className="btn" onClick={() => study.set({ selected: study.focus })}>Volver a {focus.data?.name}</button>
-              )}
+              <div className="toolbar" role="group" aria-label="Exportar">
+                {study.selected !== study.focus && (
+                  <button type="button" className="btn" onClick={() => study.set({ selected: study.focus })}>Volver a {focus.data?.name}</button>
+                )}
+                <ExportMenu run={main.data} unit={unit} chartRef={chartRef}
+                  caption={{
+                    title: `${cleanQuantity(variable?.physical_quantity ?? "")}, ${selectedGeo?.name ?? ""} (${study.start}–${study.end}${anomaly ? ", anomalía mensual" : ""})`,
+                    subtitle: `${dataset?.title ?? ""} · ${main.data.statistics.estimator === "ols" ? "OLS-HAC" : "Theil–Sen"} ${signed(main.data.statistics.estimate, digitsFor(main.data.statistics.estimate))} ${unitPerDecade(main.data.statistics.estimate_unit)} · run_id ${main.data.run_id}`,
+                  }} />
+              </div>
             </div>
-            <TrendChart run={main.data} unit={unit} anomaly={anomaly} />
+            <TrendChart run={main.data} unit={unit} anomaly={anomaly} theme={theme} onReady={(c) => { chartRef.current = c; }} />
             <p className="legend-line">
               <span className="lg series-k" />{anomaly ? "anomalía mensual" : "valor anual"}
               <span className="lg trend-k" />tendencia {main.data.statistics.estimator === "ols" ? "OLS" : "Theil–Sen"}
@@ -157,7 +169,7 @@ export function Explorer() {
           <section className="panel" aria-label="Mapa de pendientes">
             <h2>¿Dónde cambia? Pendiente por unidad</h2>
             {features.data && (
-              <TerritoryMap fc={features.data} results={results} selected={study.selected} pixelKm2={pixelKm2}
+              <TerritoryMap key={theme} fc={features.data} results={results} selected={study.selected} pixelKm2={pixelKm2}
                 onSelect={(id) => study.set({ selected: id, view: "annual" })} />
             )}
             {!mapEnabled && units.length > 0 && main.isSuccess && (
@@ -167,7 +179,7 @@ export function Explorer() {
               </p>
             )}
             {mapEnabled && mapDone < units.length && <p className="hint" role="status">Calculando {mapDone} de {units.length} unidades…</p>}
-            <MapLegend pixelKm2={pixelKm2} />
+            <MapLegend pixelKm2={pixelKm2} theme={theme} />
           </section>
           <section className="panel" aria-label="Calidad y procedencia">
             <h2>Calidad del resultado</h2>
@@ -177,6 +189,19 @@ export function Explorer() {
         </div>
       </main>
     </div>
+  );
+}
+
+function ExportMenu({ run, unit, chartRef, caption }:
+  { run: Run; unit: string; chartRef: React.RefObject<import("echarts").ECharts | null>; caption: { title: string; subtitle: string } }) {
+  const chart = () => chartRef.current;
+  return (
+    <>
+      <button type="button" className="btn" onClick={() => exportCsv(run, unit)}>CSV</button>
+      <button type="button" className="btn" onClick={() => exportJson(run)}>JSON</button>
+      <button type="button" className="btn" onClick={() => { const c = chart(); if (c) exportSvg(c, run, caption); }}>SVG</button>
+      <button type="button" className="btn" onClick={() => { const c = chart(); if (c) void exportPng(c, run, caption, cssVar("--paper")); }}>PNG</button>
+    </>
   );
 }
 
@@ -265,9 +290,9 @@ function Provenance({ dataset, attribution }: { dataset: Dataset; attribution?: 
   );
 }
 
-function MapLegend({ pixelKm2 }: { pixelKm2: number }) {
+function MapLegend({ pixelKm2, theme }: { pixelKm2: number; theme: string }) {
   const [stops, setStops] = useState<string[]>([]);
-  useEffect(() => setStops(divergentStops()), []);
+  useEffect(() => setStops(divergentStops()), [theme]);
   return (
     <div className="map-legend">
       <div className="ramp">{stops.map((c) => <span key={c} style={{ background: c }} />)}</div>

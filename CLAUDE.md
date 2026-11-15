@@ -40,7 +40,7 @@ Google Earth Engine (NASA Space Apps 2026 — "Be An Earth System Trend Detectiv
 Windows 11 · Python 3.13.5 · Node 24 / npm 11 · git 2.37. **No instalados:** uv, pnpm, docker, gcloud (no necesarios).
 Backend: venv `apps/api/.venv` (pip). Tests: `cd apps/api && .venv/Scripts/python -m pytest -q`.
 Web: `apps/web` (npm; Next 16, TS 5.9). `npm --prefix apps/web run dev` (genera tokens y copia worker MapLibre) ·
-`npx tsc --noEmit` · `npx next build`. Servidores para el panel del navegador: `.claude/launch.json` (api, web).
+`npx tsc --noEmit` · `npx next build` · `npm run test:e2e` (Playwright, Edge) · `npm run check:contrast`. Servidores para el panel del navegador: `.claude/launch.json` (api, web).
 Earth Engine: cuenta de servicio (ruta en `.env`, clave fuera del repo); diagnóstico `scripts/check_ee_auth.py`.
 
 ## Documentación
