@@ -106,3 +106,15 @@ test("JSON y SVG exportados llevan run_id, estadística y fuente", async ({ page
   const png = await fs.readFile((await p.path())!);
   expect(png.subarray(1, 4).toString()).toBe("PNG");
 });
+
+test("el ciclo estacional muestra la climatología y los extremos que calcula la API", async ({ page, request }) => {
+  await page.goto("/explorar");
+  const id = await runId(page);
+  const s = await (await request.get(`${API}/analyses/${id}/seasonal`)).json();
+  const panel = page.getByRole("region", { name: "Ciclo estacional" });
+  await expect(panel).toContainText(`Mes más alto en promedio: ${s.peak_month}`);
+  const rows = panel.locator(".extremes tbody tr");
+  await expect(rows).toHaveCount(s.extremes.length);
+  await expect(rows.first()).toContainText(s.extremes[0].label);
+  await expect(panel.locator(".chart.heat svg")).toBeVisible();
+});

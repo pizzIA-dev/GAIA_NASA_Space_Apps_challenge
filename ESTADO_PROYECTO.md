@@ -81,6 +81,12 @@
   web (contraste, tsc, build) y e2e (Playwright Chromium, **Earth Engine deshabilitado**, caché sembrada con fixtures NASA
   reales `scientific/fixtures/e2e`, 3 MB, generados con `scripts/e2e_fixtures.py`). Reproducido en local (venv limpio
   79/79, `npm ci` + build OK, e2e 12/12 sin EE). **CI #1 en verde en GitHub (3 min).** Flujo: rama + PR + CI + merge (ver CLAUDE.md).
+- **Accesibilidad automática:** axe-core en Playwright (WCAG 2.1 A/AA, 4 páginas × 2 temas) en CI; corregidos mapa
+  (`role=group`) y nombre accesible de «Añadir panel/En uso». PR #2.
+- **Ciclo estacional:** `GET /analyses/{id}/seasonal` (matriz año×mes, climatología media/mediana/P25–P75, meses
+  extremos; desde la extracción cacheada, sin EE) + panel en Explorar (heatmap + ciclo medio + tabla de extremos), SDK
+  `analyses.seasonal()`. Dato real: mes más extremo de 2003–2024 en la provincia de Trujillo = **marzo 2017, 140 mm
+  (+75 mm sobre su media)** (coincide con El Niño Costero 2017; no se afirma causa). Tests: backend 83, Playwright 21.
 - API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
 - Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
 - **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
@@ -91,7 +97,7 @@
 
 ## Siguiente
 1. Prueba con lector de pantalla (NVDA).
-2. **F4 restante:** Atlas (mapas de tendencia por variable), brush temporal, heatmap año×mes y climatología en la web,
+2. **F4 restante:** Atlas (mapas de tendencia por variable), brush temporal,
    diferencia de pendientes con IC (bootstrap conjunto) para comparaciones.
 3. **F5 caso Trujillo:** ingesta SINPAD/ENFEN, capa de eventos (colores reservados), cartografía INEI con Alto Trujillo.
 4. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).

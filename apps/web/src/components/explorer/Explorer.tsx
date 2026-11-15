@@ -11,6 +11,7 @@ import { buildSpec, METHOD_LABEL, readStudyFromUrl, studyToUrl, useStudy, type M
 import type { CompareResult, Dataset, Geography, Run, Variable } from "@/lib/types";
 import { useResolvedTheme } from "@/lib/theme";
 import { TerritoryMap, type UnitResult } from "./TerritoryMap";
+import { SeasonalPanel } from "./SeasonalPanel";
 import { TrendChart } from "./TrendChart";
 
 const ARTICLE: Record<string, string> = { ADM0: "", ADM1: "el departamento de ", ADM2: "la provincia de ", ADM3: "el distrito de " };
@@ -188,6 +189,7 @@ export function Explorer() {
             {dataset && <Provenance dataset={dataset} attribution={features.data?.attribution} />}
           </section>
         </div>
+        {main.data && <SeasonalPanel runId={main.data.run_id} theme={theme} place={selectedGeo?.name ?? "el territorio"} />}
       </main>
     </div>
   );
