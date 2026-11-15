@@ -29,3 +29,21 @@ test("axe sin violaciones con la capa de contexto activada", async ({ page }) =>
   const r = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).exclude(".maplibregl-canvas").analyze();
   expect(r.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
 });
+
+test("¿relación o coincidencia?: la web muestra el mismo análisis que la API", async ({ page, request }) => {
+  await page.goto("/explorar?context=true");
+  const panel = page.getByRole("region", { name: "Relación o coincidencia" });
+  await panel.getByRole("button", { name: /Analizar asociación/ }).click();
+  const rows = panel.locator(".assoc-table tbody tr");
+  await expect(rows).toHaveCount(4);
+  const api = await (await request.post(`${API}/cases/trujillo-el-nino/association`, {
+    data: { dataset_id: "nasa-gpm-imerg-monthly-v07", variable_id: "precipitation_mm_month", year_from: 2003, year_to: 2024 },
+  })).json();
+  const lag0 = api.results[0];
+  const sign = lag0.effect > 0 ? "+" : "−";
+  await expect(rows.first()).toContainText(`${sign}${new Intl.NumberFormat("es-PE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(Math.abs(lag0.effect))}`);
+  const expected = lag0.q_value < 0.05 ? (lag0.effect > 0 ? "más alta con registro" : "más baja con registro") : "sin diferencia distinguible";
+  await expect(rows.first()).toContainText(expected);
+  await expect(panel).toContainText("no capacidad de anticipación");
+  await expect(panel).toContainText("no demuestra causalidad");
+});

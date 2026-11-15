@@ -48,3 +48,41 @@ def test_enfen_series_and_episodes():
     assert len(r["series"]) == 12
     ids = {e["id"] for e in r["episodes"]}
     assert "EN-COSTERO-2017" in ids and all(e["derived"] for e in r["episodes"])
+
+
+def test_association_endpoint_with_simulated_series(tmp_path):
+    """Panel con series simuladas (sin EE) y eventos oficiales: estructura, avisos y política de familia."""
+    import json as _json
+
+    from app.api.v1 import routes
+    from app.services.analyses.runner import RunStore
+    from tests.contract.test_analyses_api import FakeIMERG
+    from tests.contract.test_geographies import SQ
+
+    root = tmp_path / "pe"
+    (root / "geoms").mkdir(parents=True)
+    units = [{"ubigeo": "1301", "name": "Trujillo", "admin_level": "ADM2", "parent_ubigeo": None, "area_km2": 1769.0}] + [
+        {"ubigeo": u, "name": n, "admin_level": "ADM3", "parent_ubigeo": "1301", "area_km2": 50.0}
+        for u, n in [("130111", "Victor Larco Herrera"), ("130104", "Huanchaco"), ("130110", "Simbal")]]
+    for u in units:
+        (root / "geoms" / f"{u['ubigeo']}.json").write_text(_json.dumps(SQ), encoding="utf-8")
+    (root / "index.json").write_text(_json.dumps({"source": {}, "units": units}), encoding="utf-8")
+    from app.services.geographies import geoboundaries as gb
+    from app.services.geographies import peru_ign as pe
+    from app.services.geographies.registry import GeographyRegistry
+
+    reg = GeographyRegistry(gb.GeoBoundariesIndex(tmp_path), pe.PeruIGNIndex(root))
+    app.dependency_overrides.update({routes.get_geographies: lambda: reg,
+                                     routes.get_store: lambda: RunStore(tmp_path / "s"),
+                                     routes.get_adapters: lambda: {"nasa-gpm-imerg-monthly-v07": FakeIMERG()}})
+    try:
+        r = c.post("/api/v1/cases/trujillo-el-nino/association", json={"resamples": 199, "lags": [0, 1]})
+        assert r.status_code == 200, r.text
+        body = r.json()
+        assert body["n_units"] == 3 and len(body["results"]) == 2
+        assert body["results"][0]["n_event_months"] > 0 and "q_value" in body["results"][0]
+        assert body["events_excluded_no_geometry"] > 0  # eventos de distritos fuera del panel (p. ej. Alto Trujillo)
+        assert any("no capacidad de anticipación" in w for w in body["warnings"])
+        assert c.post("/api/v1/cases/trujillo-el-nino/association", json={"lags": [20]}).status_code == 422
+    finally:
+        app.dependency_overrides.clear()

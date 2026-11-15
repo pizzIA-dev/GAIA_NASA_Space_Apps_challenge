@@ -92,7 +92,11 @@
   Episodios ENFEN derivados (regla ICEN > +0,5 ≥ 3 meses, **umbral pendiente de verificar con el PDF de la NT 01-2024**;
   la web de ENFEN no responde desde aquí). API `/cases/...` (events, enfen), SDK `client.cases`, capa «Contexto local» en
   Explorar (bandas + marcadores + tabla; causalidad siempre «no verificada»). **El Niño Costero 2026 en curso** (ICEN +4,50
-  sep-2026). Bug corregido: geometría ausente → 503 (antes 500). Tests: backend 90, Playwright 24 (también sin EE).
+  sep-2026). Bug corregido: geometría ausente → 503 (antes 500).
+- **Escena 4 «¿Relación o coincidencia?»:** `POST /cases/trujillo-el-nino/association` (permutación estratificada por mes
+  calendario, desfases 0–3, BH-FDR, avisos de episodios) + panel en Explorar. Real IMERG 2003–2024: **mismo mes +22,2 mm
+  (q<0,001); meses previos sin diferencia** → coincidencia con lluvia, sin anticipación. Fixtures CI regenerados (27 series).
+  Tests: backend 96, Playwright 25 (también sin EE).
 - API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
 - Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
 - **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
@@ -105,8 +109,8 @@
 1. Prueba con lector de pantalla (NVDA).
 2. **F4 restante:** Atlas (mapas de tendencia por variable), brush temporal,
    diferencia de pendientes con IC (bootstrap conjunto) para comparaciones.
-3. **F5 restante:** verificar umbral ENFEN (PDF NT 01-2024, pedir al usuario), historia guiada 6 escenas (§9.2),
-   asociación eventos↔anomalías con meses de control (§7.7), cartografía INEI con Alto Trujillo.
+3. **F5 restante:** historia guiada 6 escenas en /historias (§9.2; escenas 1–4 ya tienen motor), escena 5 alerta
+   retrospectiva con falsos positivos, umbral ENFEN (PDF NT 01-2024, el usuario decidió seguir sin él), INEI Alto Trujillo.
 4. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).
 5. MK corregido por autocorrelación, Kendall estacional. Docker pospuesto (no necesario aún).
 

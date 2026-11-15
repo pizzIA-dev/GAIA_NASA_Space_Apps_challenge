@@ -111,3 +111,12 @@ export interface EnfenEpisode {
 
 export interface CaseEvents { case_id: string; count: number; items: CaseEvent[]; legend: Record<string, string>; note: string }
 export interface CaseEnfen { source: Record<string, unknown>; rule: { status: string; note: string; warm_threshold_gt: number; min_consecutive_months: number }; episodes: EnfenEpisode[] }
+
+export interface AssociationLag {
+  lag_months: number; status: string; effect: number | null; effect_unit?: string; p_value: number | null; q_value?: number | null;
+  n_event_months: number; n_control_months: number; n_independent_episodes?: number; dominant_episode?: string; dominant_episode_share?: number;
+}
+export interface CaseAssociationResult {
+  results: AssociationLag[]; warnings: string[]; n_units: number; resamples: number; seed: number;
+  events_used: number; events_excluded_no_geometry: number; interpretation: string;
+}

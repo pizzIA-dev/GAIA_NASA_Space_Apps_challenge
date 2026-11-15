@@ -27,3 +27,17 @@
   pico +2,92), LN-COSTERO-2017-18 (oct 2017–may 2018), **EN-COSTERO-2026 en curso** (mar–sep 2026, ICEN +4,50 en sep).
 - **Pendiente:** verificar umbrales con el PDF de la NT 01-2024 (el usuario puede aportarlo); cartografía INEI con
   Alto Trujillo (130112); historia guiada de 6 escenas (§9.2); asociación eventos↔anomalías con meses de control (§7.7).
+
+## Escena 4 — «¿Relación o coincidencia?» (añadido 2026-11-15)
+- `POST /cases/trujillo-el-nino/association` (motor `app/services/cases/association.py`): panel distrito × mes de los 11
+  distritos IGN con meses CON y SIN registro. Efecto = anomalía media (respecto al mismo mes calendario) en distrito-mes
+  con registro menos la de los distrito-mes sin registro del mismo mes calendario, h = 0…3 meses antes. Prueba:
+  permutación de etiquetas dentro de cada mes calendario; BH-FDR sobre desfases. Reutiliza `/analyses/compare` (misma
+  política de coste/cuota). Avisos automáticos: < 5 episodios independientes, episodio dominante > 50 %, desfase 0 =
+  simultaneidad, asociación ≠ causalidad.
+- **Resultado real (IMERG, 2003–2024):** desfase 0: **+22,2 mm**, q < 0,001; desfases 1–3: sin diferencia distinguible
+  (q ≥ 0,40). 16 distrito-mes con registro vs 2404 sin registro; 11 episodios; marzo 2017 = 38 %. Lectura: los registros
+  coinciden con meses lluviosos, pero la lluvia de los meses previos no los anticipa.
+- Validado con casos sintéticos de respuesta conocida (`tests/scientific/test_case_association.py`).
+- Nota de UX: un usuario anónimo puede agotar el cupo de 20 extracciones/hora con este análisis (11 distritos) si la
+  caché está fría; la API responde 429 con explicación. Los fixtures de CI incluyen estas series.

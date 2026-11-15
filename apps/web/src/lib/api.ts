@@ -1,4 +1,4 @@
-import type { CaseEnfen, CaseEvents, CompareResult, Dataset, FeatureCollection, Geography, Problem, Run, Seasonal, Variable } from "./types";
+import type { CaseAssociationResult, CaseEnfen, CaseEvents, CompareResult, Dataset, FeatureCollection, Geography, Problem, Run, Seasonal, Variable } from "./types";
 
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1").replace(/\/$/, "");
 
@@ -38,6 +38,8 @@ export const api = {
   features: (geoId: string) => call<FeatureCollection>(`geographies/${encodeURIComponent(geoId)}/features`),
   caseEvents: (geoId: string, from: number, to: number) =>
     call<CaseEvents>(`cases/trujillo-el-nino/events?geo_id=${encodeURIComponent(geoId)}&year_from=${from}&year_to=${to}`),
+  caseAssociation: (body: object) =>
+    call<CaseAssociationResult>("cases/trujillo-el-nino/association", { method: "POST", body: JSON.stringify(body) }),
   caseEnfen: (from: number, to: number) => call<CaseEnfen>(`cases/trujillo-el-nino/enfen?year_from=${from}&year_to=${to}`),
   seasonal: (runId: string) => call<Seasonal>(`analyses/${encodeURIComponent(runId)}/seasonal`),
   analyze: (spec: object) => call<Run>("analyses", { method: "POST", body: JSON.stringify(spec) }),

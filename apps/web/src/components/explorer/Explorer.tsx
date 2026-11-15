@@ -11,6 +11,7 @@ import { buildSpec, METHOD_LABEL, readStudyFromUrl, studyToUrl, useStudy, type M
 import type { CompareResult, Dataset, Geography, Run, Variable } from "@/lib/types";
 import { useResolvedTheme } from "@/lib/theme";
 import { TerritoryMap, type UnitResult } from "./TerritoryMap";
+import { CaseAssociation } from "./CaseAssociation";
 import { CaseEventsPanel } from "./CaseEventsPanel";
 import { SeasonalPanel } from "./SeasonalPanel";
 import { TrendChart } from "./TrendChart";
@@ -211,6 +212,10 @@ export function Explorer() {
         </div>
         {showCase && caseEvents.data && (
           <CaseEventsPanel data={caseEvents.data} enfen={caseEnfen.data} place={selectedGeo?.name ?? "el territorio"} />
+        )}
+        {showCase && study.selected === "pe-ign2020:1301" && variable && (
+          <CaseAssociation key={`${study.datasetId}/${study.variableId}/${study.start}/${study.end}`} datasetId={study.datasetId}
+            variableId={study.variableId} quantity={cleanQuantity(variable.physical_quantity)} start={study.start} end={study.end} />
         )}
         {showCase && caseEvents.error && <p className="state" role="alert">{(caseEvents.error as ApiError).problem.detail}</p>}
         {main.data && <SeasonalPanel runId={main.data.run_id} theme={theme} place={selectedGeo?.name ?? "el territorio"} />}

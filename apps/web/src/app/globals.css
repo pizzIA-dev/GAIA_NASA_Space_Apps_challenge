@@ -110,6 +110,8 @@ code { background: var(--paper-2); padding: 1px 6px; border-radius: 3px; font-si
 .band-nino { background: var(--episode-nino); border-color: var(--rule); }
 .band-nina { background: var(--episode-nina); border-color: var(--rule); }
 .events-table td small { font-size: var(--text-caption); }
+.case-assoc { margin-top: 20px; }
+.assoc-table { margin-top: 8px; }
 @media (max-width: 780px) { .events-table { display: block; overflow-x: auto; } }
 
 /* Ciclo estacional */

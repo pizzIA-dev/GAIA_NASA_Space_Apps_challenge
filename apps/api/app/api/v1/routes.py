@@ -13,6 +13,7 @@ from app.schemas.analysis import AnalysisSpec
 from app.services.analyses import cost, runner
 from app.services.analyses.seasonal import seasonal_summary
 from app.services.cases import trujillo
+from app.services.cases.association import association
 from app.services.earth_engine.adapters import catalog
 from app.services.earth_engine.client import EarthEngineUnavailable
 from app.services.geographies import geoboundaries as gb
@@ -460,3 +461,62 @@ def get_case_enfen(case_id: str, year_from: int | None = Query(None, ge=1950), y
     """Serie oficial ICEN y episodios El Niño/La Niña Costera derivados con la regla operacional declarada."""
     _case(case_id)
     return trujillo.enfen(year_from, year_to)
+
+
+class AssociationRequest(BaseModel):
+    """Escena 4 del caso (plan §9.2): ¿relación o coincidencia? Panel distrito × mes con y sin registros."""
+
+    model_config = ConfigDict(extra="forbid")
+    dataset_id: str = "nasa-gpm-imerg-monthly-v07"
+    variable_id: str = "precipitation_mm_month"
+    year_from: int = Field(2003, ge=2001, le=2025)
+    year_to: int = Field(2024, ge=2002, le=2026)
+    lags: list[int] = Field(default_factory=lambda: [0, 1, 2, 3], min_length=1, max_length=7)
+    resamples: int = Field(2000, ge=199, le=10000)
+    seed: int = 2026
+
+
+@router.post("/cases/{case_id}/association", tags=["cases"])
+def case_association(case_id: str, req: AssociationRequest, identity: Identity = Depends(get_identity),
+                     store=Depends(get_store), adapters=Depends(get_adapters), geos=Depends(get_geographies),
+                     limiter=Depends(get_limiter), gate=Depends(get_gate)):
+    """Anomalías mensuales de la variable en meses CON vs SIN registros SINPAD (mismo mes calendario), con desfases.
+
+    Unidades: distritos IGN de la provincia de Trujillo. Reutiliza /analyses/compare (misma política de coste/cuota).
+    """
+    _case(case_id)
+    if any(h < 0 or h > 12 for h in req.lags) or req.year_to <= req.year_from:
+        raise Problem(422, "invalid_request", "Desfases entre 0 y 12 meses y year_to > year_from")
+    units = [g for g in geos.children(geos.get("pe-ign2020:1301"))] if geos.pe.available else []
+    if not units:
+        raise Problem(503, "source_unavailable", "Fronteras oficiales del Perú no ingeridas")
+    specs = [AnalysisSpec.model_validate({
+        "data": {"dataset_id": req.dataset_id, "variable_id": req.variable_id},
+        "geography": {"geo_ids": [u.geo_id]},
+        "time": {"start": f"{req.year_from - 1}-01-01", "end_exclusive": f"{req.year_to + 1}-01-01", "granularity": "month"},
+        "transforms": {"seasonality": "monthly_anomaly"},
+    }) for u in units]
+    fam = compare_analyses(CompareRequest(specs=specs, multiple_testing="none", family_id=f"{case_id}:asociacion"),
+                           identity, store, adapters, geos, limiter, gate)
+    series, unit_status = {}, []
+    for u, it in zip(units, fam["items"], strict=True):
+        unit_status.append({"geo_id": u.geo_id, "name": u.name, "status": it["status"],
+                            "error": it.get("error", {}).get("code") if it["status"] != "succeeded" else None})
+        if it["status"] == "succeeded":
+            series[u.geo_id] = it["series"]
+    if len(series) < 2:
+        raise Problem(422, "insufficient_coverage", "Menos de 2 distritos con serie mensual: no hay panel comparable",
+                      extra={"units": unit_status})
+    known = set(series)
+    evs = trujillo.events(None, req.year_from, req.year_to, True, known_geo_ids=known)
+    unit_label = (adapters[req.dataset_id].info.variable(req.variable_id).unit_display
+                  if req.dataset_id in adapters else "")
+    out = association(series, evs, req.year_from, req.year_to, req.lags, req.resamples, req.seed, unit=unit_label)
+    excluded = [e for e in trujillo.events(None, req.year_from, req.year_to, True) if f"pe-ign2020:{e['ubigeo']}" not in known]
+    return out | {
+        "case_id": case_id, "variable": {"dataset_id": req.dataset_id, "variable_id": req.variable_id, "unit": unit_label},
+        "period": [req.year_from, req.year_to], "units": unit_status,
+        "events_used": sum(1 for e in evs if e["geo_id"]), "events_excluded_no_geometry": len(excluded),
+        "interpretation": "Efecto = anomalía media (respecto al mismo mes calendario) en los distrito-mes con registro "
+                          "SINPAD menos la de los distrito-mes sin registro del mismo mes calendario, h meses antes.",
+    }
