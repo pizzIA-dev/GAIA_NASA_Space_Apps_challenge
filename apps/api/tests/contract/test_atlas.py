@@ -78,3 +78,38 @@ def test_sdk_atlas_matches_rest(ctx):
     b = c.post("/api/v1/atlas", json=BODY).json()
     assert [it["run_id"] for it in a["items"]] == [it["run_id"] for it in b["items"]]
     assert [it["statistics"]["q_value"] for it in a["items"]] == [it["statistics"]["q_value"] for it in b["items"]]
+
+
+def test_transient_ee_error_is_retried_but_data_errors_are_not(monkeypatch):
+    from app.services.analyses import runner
+
+    calls = {"n": 0}
+
+    def flaky(p):
+        calls["n"] += 1
+        if calls["n"] < 3:
+            raise RuntimeError("EEException: Too many concurrent aggregations.")
+        return {"ok": True}
+
+    monkeypatch.setattr(runner, "execute", flaky)
+    assert routes._execute_with_retry(object(), waits=(0, 0)) == {"ok": True} and calls["n"] == 3
+
+    def bad(p):
+        calls["n"] += 1
+        raise RuntimeError("Image.select: Band not found")
+
+    calls["n"] = 0
+    monkeypatch.setattr(runner, "execute", bad)
+    with pytest.raises(RuntimeError):
+        routes._execute_with_retry(object(), waits=(0, 0))
+    assert calls["n"] == 1
+
+    def no_pixels(p):
+        calls["n"] += 1
+        raise runner.AnalysisError(422, "insufficient_coverage", "sin píxeles")
+
+    calls["n"] = 0
+    monkeypatch.setattr(runner, "execute", no_pixels)
+    with pytest.raises(runner.AnalysisError):
+        routes._execute_with_retry(object(), waits=(0, 0))
+    assert calls["n"] == 1

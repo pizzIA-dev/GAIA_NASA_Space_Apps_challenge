@@ -24,5 +24,9 @@
   que un píxel, recuento aumento/disminución/sin evidencia/sin datos y tabla accesible con IC y q.
 - **Consecuencias:** las escalas no son comparables entre variables (se dice en la leyenda). El color divergente es
   marrón↔azul verdoso para toda variable; en temperatura significa solo «menos/más».
+- **Reintento (2026-11-15):** con 6 extracciones en paralelo, NDVI nacional dio 2/25 «Too many concurrent
+  aggregations» de EE. Se reintentan SOLO errores transitorios de EE (esperas 5 s y 15 s); los de datos o método no.
 - **Validación real:** lluvia IMERG 2003–2024, 25 departamentos del Perú: 25/25 calculados, 7 con evidencia de
   disminución (q < 0,05), 18 sin evidencia, ninguno con aumento.
+  Con token (precálculo local): temperatura 2 m MERRA-2 → 9 aumento, 16 sin evidencia; humedad del suelo GLDAS → 18
+  disminución, 7 sin evidencia; NDVI MODIS → 18 aumento, 1 disminución, 6 sin evidencia (2003–2024, q < 0,05).
