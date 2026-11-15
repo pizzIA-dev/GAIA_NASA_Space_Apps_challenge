@@ -4,7 +4,7 @@
 corresponde a la plataforma (el caso Trujillo/ENFEN lo trabajan los usuarios). **Realineación UX (ADR-0013):** la
 portada es el **Panel ambiental** (territorio mundial + periodo + variables + método + nivel de confianza). Módulos
 opcionales: Explorar (detalle), Análisis avanzado (`/estudio`), Atlas, Casos de estudio. Tag de recuperación
-`pre-dashboard-2026-11-15`.
+`pre-dashboard-2026-11-15`. **Git:** push directo a `main` tras pruebas locales (sin PR, decisión del usuario).
 
 ## Commits
 - `5cefce7` F0 — repo, CLAUDE.md, motor estadístico, CSV→pendiente explicada.

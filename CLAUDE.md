@@ -49,12 +49,12 @@ Web: `apps/web` (npm; Next 16, TS 5.9). `npm --prefix apps/web run dev` (genera 
 Earth Engine: cuenta de servicio (ruta en `.env`, clave fuera del repo); diagnóstico `scripts/check_ee_auth.py`.
 CI: `.github/workflows/ci.yml` sin EE (fixtures reales en `scientific/fixtures/e2e`); ver `docs/runbooks/ci.md`.
 
-## Flujo git (acordado con el usuario 2026-11-14)
-- Remoto `github.com/pizzIA-dev/NASA_Space_Apps_challenge` (privado, organización pizzIA-dev; antes RoAlro, redirige). **Nunca push directo a `main`.**
-- Cada tarea: rama corta (`feat/…`, `fix/…`, `chore/…`) → PR con `gh pr create` → CI verde → `gh pr merge --squash --delete-branch`.
-- Autorización permanente del usuario para abrir PR y hacer merge con CI en verde. Nunca merge en rojo.
+## Flujo git (actualizado por el usuario 2026-11-15)
+- Remoto `github.com/pizzIA-dev/NASA_Space_Apps_challenge` (privado, organización pizzIA-dev).
+- **Push directo a `main`, sin PR** (decisión del usuario para entregar más rápido). Antes de cada push: pytest y, si
+  se tocó la web, `npx tsc --noEmit` + `npx playwright test` en local. CI corre tras el push como aviso: si falla,
+  se corrige con otro commit. Antes de cambios estructurales: tag de recuperación.
 - `gh` en `C:/Program Files/GitHub CLI` (en Bash: `export PATH="$PATH:/c/Program Files/GitHub CLI"`).
-- El plan gratuito no impone rulesets en repos privados: la protección es por disciplina.
 
 ## Documentación
 - `ESTADO_PROYECTO.md` — estado vivo: qué está hecho, qué sigue, bloqueos. **Actualizar al cerrar cada sesión.**
