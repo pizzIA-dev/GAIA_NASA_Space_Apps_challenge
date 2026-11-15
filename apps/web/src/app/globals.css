@@ -97,6 +97,14 @@ code { background: var(--paper-2); padding: 1px 6px; border-radius: 3px; font-si
 .table th, .table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
 .table thead th { color: var(--muted); font-weight: 600; }
 .glossary { display: grid; gap: 10px; } .glossary dt { font-weight: 600; } .glossary dd { margin: 2px 0 0; max-width: 72ch; color: var(--muted); }
+/* Ciclo estacional */
+.seasonal { margin-top: 20px; }
+.seasonal h3 { font-size: var(--text-small); font-weight: 600; color: var(--muted); margin: 8px 0 4px; }
+.seasonal-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 20px; }
+.chart.heat { height: 460px; } .chart.clim { height: 260px; }
+.table.extremes { margin-top: 10px; } .table.extremes caption { text-align: left; font-size: var(--text-small); color: var(--muted); padding-bottom: 4px; }
+@media (max-width: 1100px) { .seasonal-grid { grid-template-columns: 1fr; } }
+
 /* Estudio */
 .page-title { font-family: var(--font-serif); font-weight: 500; font-size: 2rem; margin: 0 0 6px; }
 .main > .lead { color: var(--muted); max-width: 70ch; margin: 0 0 18px; }

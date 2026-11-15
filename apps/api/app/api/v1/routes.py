@@ -11,6 +11,7 @@ from app.core.limits import ExtractionGate, RateLimited, SlidingWindowLimiter
 from app.core.security import ApiKeyStore, Identity, InvalidToken
 from app.schemas.analysis import AnalysisSpec
 from app.services.analyses import cost, runner
+from app.services.analyses.seasonal import seasonal_summary
 from app.services.earth_engine.adapters import catalog
 from app.services.earth_engine.client import EarthEngineUnavailable
 from app.services.geographies import geoboundaries as gb
@@ -389,3 +390,19 @@ def get_manifest(run_id: str, store=Depends(get_store)):
     run = _run(run_id, store)
     return {k: run[k] for k in ("run_id", "analysis_spec_hash", "request", "source_versions", "provenance",
                                 "compute")}
+
+
+@router.get("/analyses/{run_id}/seasonal", tags=["analyses"])
+def get_seasonal(run_id: str, store=Depends(get_store)):
+    """Matriz año × mes, climatología mensual (media, mediana, P25–P75) y meses extremos de la serie MENSUAL extraída.
+
+    Se calcula desde la extracción del run (sin volver a Earth Engine), aunque el run sea anual o de anomalías.
+    """
+    run = _run(run_id, store)
+    key = run.get("provenance", {}).get("extraction_key")
+    extraction = store.get("extractions", key) if key else None
+    if extraction is None:
+        raise Problem(404, "extraction_not_cached", "La extracción mensual de este run ya no está en caché; vuelve a ejecutarlo.")
+    rows = extraction["rows"]
+    unit = rows[0].get("unit", "") if rows else ""
+    return {"run_id": run_id, "source_versions": run["source_versions"], **seasonal_summary(rows, unit)}

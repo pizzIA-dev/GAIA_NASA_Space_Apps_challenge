@@ -117,6 +117,10 @@ class Analyses(_Resource):
         df.attrs.update({"run_id": run_id, "unit": s.get("unit")})
         return df
 
+    def seasonal(self, run_id: str) -> dict:
+        """Matriz año × mes, climatología mensual (media, mediana, P25–P75) y meses extremos del run."""
+        return self._c._get(f"analyses/{run_id}/seasonal")
+
     def manifest(self, run_id: str) -> dict:
         return self._c._get(f"analyses/{run_id}/manifest")
 

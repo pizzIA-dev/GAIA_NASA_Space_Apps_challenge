@@ -82,3 +82,15 @@ export interface CompareItem {
 }
 
 export interface CompareResult { family_id: string | null; multiple_testing: string; family_size: number; items: CompareItem[]; note: string }
+
+export interface ClimMonth {
+  month: number; label: string; n_valid: number; n_years: number;
+  mean: number | null; median: number | null; p25: number | null; p75: number | null; min: number | null; max: number | null;
+}
+
+export interface Seasonal {
+  run_id: string; unit: string; years: number[]; months: string[]; matrix: (number | null)[][];
+  climatology: ClimMonth[]; peak_month: string | null; low_month: string | null;
+  extremes: { year: number; month: number; label: string; value: number; anomaly: number }[];
+  n_months: number; n_missing: number; note: string;
+}
