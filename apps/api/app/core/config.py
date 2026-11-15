@@ -39,13 +39,18 @@ class Settings:
     auth_mode: str = field(default_factory=lambda: _env("AUTH_MODE", "optional") or "optional")
     api_keys_file: Path = field(default_factory=lambda: Path(
         _env("API_KEYS_FILE") or REPO_ROOT / (_env("CACHE_DIR", ".cache") or ".cache") / "security" / "api_keys.json"))
-    light_max_images: int = int(_env("LIGHT_MAX_IMAGES", "50000") or 50000)
-    light_max_pixel_images: float = float(_env("LIGHT_MAX_PIXEL_IMAGES", "5e7") or 5e7)
+    # «Ligero» = permitido sin token. Desde 2026-11-15 cubre los 5 productos para 2001–2024 en territorios de hasta
+    # ~400 000 km² (MERRA-2 horario 24 años ≈ 210 000 imágenes; NDVI 500 m de un país mediano ≈ 6e8 píxel-imágenes):
+    # la primera consulta puede tardar 1–3 min y luego queda en caché para todos. Protecciones que se mantienen:
+    # cupo por persona/hora, extracciones simultáneas limitadas y área máxima.
+    light_max_images: int = int(_env("LIGHT_MAX_IMAGES", "250000") or 250000)
+    light_max_pixel_images: float = float(_env("LIGHT_MAX_PIXEL_IMAGES", "1e9") or 1e9)
     heavy_max_images: int = int(_env("HEAVY_MAX_IMAGES", "600000") or 600000)
     heavy_max_pixel_images: float = float(_env("HEAVY_MAX_PIXEL_IMAGES", "3e9") or 3e9)
     anon_extractions_per_hour: int = int(_env("ANON_EXTRACTIONS_PER_HOUR", "20") or 20)
     key_extractions_per_hour: int = int(_env("KEY_EXTRACTIONS_PER_HOUR", "200") or 200)
-    max_concurrent_extractions: int = int(_env("MAX_CONCURRENT_EXTRACTIONS", "2") or 2)
+    max_concurrent_extractions: int = int(_env("MAX_CONCURRENT_EXTRACTIONS", "4") or 4)
+    extraction_wait_s: float = float(_env("EXTRACTION_WAIT_S", "30") or 30)
     atlas_parallel_extractions: int = int(_env("ATLAS_PARALLEL_EXTRACTIONS", "6") or 6)
     # Orígenes web permitidos (CORS estricto, plan §12A.2). Los notebooks no dependen de CORS.
     allowed_origins: tuple[str, ...] = field(default_factory=lambda: tuple(

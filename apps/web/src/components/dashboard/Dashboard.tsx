@@ -11,7 +11,7 @@ import { digitsFor, fmt, fmtP, signed, TEST_LABEL, unitPerDecade, verdictOf } fr
 import { METHOD_NAMES, RECOMMENDED, UNCORRECTED } from "@/lib/methods";
 import { statisticsFor, type Method } from "@/lib/study";
 import { useResolvedTheme } from "@/lib/theme";
-import type { Dataset, Geography, Run, Variable } from "@/lib/types";
+import type { CostEstimate, Dataset, Geography, Run, Variable } from "@/lib/types";
 import { ErrorPanel, Provenance } from "../explorer/Explorer";
 import { TrendChart } from "../explorer/TrendChart";
 
@@ -184,7 +184,10 @@ function VariableCard({ cfg, varKey, variable, dataset }:
   { cfg: Config; varKey: string; variable?: Variable; dataset?: Dataset }) {
   const theme = useResolvedTheme();
   const spec = useMemo(() => specFor(cfg, varKey), [cfg, varKey]);
-  const q = useQuery<Run, ApiError>({ queryKey: ["run", spec], queryFn: () => api.analyze(spec), retry: false });
+  // Si Earth Engine está ocupado (503 source_busy) se reintenta solo, sin que el usuario tenga que hacer nada.
+  const q = useQuery<Run, ApiError>({ queryKey: ["run", spec], queryFn: () => api.analyze(spec),
+    retry: (n, e) => n < 4 && e.problem.title === "source_busy", retryDelay: 15_000 });
+  const est = useQuery({ queryKey: ["cost", spec], queryFn: () => api.estimateCost(spec), enabled: q.isPending, staleTime: Infinity });
   const st = q.data?.statistics, vd = st ? verdictOf(st) : null, d = digitsFor(st?.estimate);
   const unit = variable?.unit_display ?? "";
   const ms = methodState(cfg);
@@ -198,7 +201,7 @@ function VariableCard({ cfg, varKey, variable, dataset }:
         <h2 id={`h-${varKey}`}>{variable ? clean(variable.physical_quantity) : varKey} <small className="muted">{SHORT[varKey.split("/")[0] ?? ""]}</small></h2>
         {vd && <span className="tag" data-kind={vd.kind}>{vd.label}</span>}
       </div>
-      {q.isPending && <p className="state" role="status">Calculando con datos NASA…</p>}
+      {q.isPending && <Waiting cost={est.data?.cost} granularity={dataset?.native_granularity} retrying={q.failureCount > 0} />}
       {q.error && <ErrorPanel error={q.error} />}
       {st && q.data && (
         <>
@@ -270,6 +273,35 @@ function TerritoryPicker({ geo, onPick }: { geo?: Geography & { children: Geogra
           </div>
         </details>
       )}
+    </div>
+  );
+}
+
+const GRANULARITY: Record<string, string> = {
+  "1h": "horario", "3h": "de cada 3 horas", "1d": "diario", "16d": "de cada 16 días", month: "mensual",
+};
+
+/** Espera honesta: tiempo estimado del primer cálculo, tiempo transcurrido y que el resultado quedará guardado. */
+function Waiting({ cost, granularity, retrying }: { cost?: CostEstimate; granularity?: string; retrying: boolean }) {
+  const [elapsed, setElapsed] = useState(0);
+  useEffect(() => {
+    const t0 = Date.now();
+    const id = setInterval(() => setElapsed(Math.round((Date.now() - t0) / 1000)), 1000);
+    return () => clearInterval(id);
+  }, []);
+  if (cost?.tier === "cached") return <p className="state" role="status">Cargando resultado guardado…</p>;
+  const secs = cost ? Math.max(5, Math.round(cost.estimated_seconds / 10) * 10) : null;
+  return (
+    <div className="state waiting" role="status">
+      <p>
+        <b>Calculando con datos NASA en Earth Engine</b>{granularity && GRANULARITY[granularity] ? ` (producto ${GRANULARITY[granularity]})` : ""}.
+        {secs != null && ` La primera vez tarda aprox. ${secs >= 90 ? `${Math.round(secs / 60)} min` : `${secs} s`}`}
+        {secs != null && "; después queda guardado y será inmediato para todos."}
+      </p>
+      <p className="muted small">
+        {retrying ? "Earth Engine está ocupado con otros cálculos; reintentando automáticamente… " : ""}
+        Llevamos {elapsed} s. Puedes revisar las otras variables mientras tanto.
+      </p>
     </div>
   );
 }

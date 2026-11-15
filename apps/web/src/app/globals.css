@@ -212,3 +212,4 @@ code { background: var(--paper-2); padding: 1px 6px; border-radius: 3px; font-si
 .picker .children { margin-top: 8px; } .picker .children summary { cursor: pointer; font-size: var(--text-small); }
 .picker .children .list { max-height: 260px; overflow-y: auto; }
 .dash-more { margin-top: 18px; }
+.waiting p { margin: 0 0 4px; }

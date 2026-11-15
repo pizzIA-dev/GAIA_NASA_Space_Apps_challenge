@@ -51,7 +51,8 @@ test("elegir un distrito y cambiar de método recalcula y queda en la URL", asyn
 });
 
 test("un análisis pesado sin token muestra el motivo y el coste, no un error genérico", async ({ page }) => {
-  await page.goto("/explorar?datasetId=nasa-merra2-slv&variableId=air_temperature_2m_c");
+  // MERRA-2 horario 1981–2024 (≈ 385 000 imágenes) sigue siendo «pesado» con el umbral de 2026-11-15
+  await page.goto("/explorar?datasetId=nasa-merra2-slv&variableId=air_temperature_2m_c&start=1981");
   const err = page.locator("section.panel.error[role=alert]");
   await expect(err).toContainText("requiere un token de API");
   await expect(err).toContainText("imágenes fuente");

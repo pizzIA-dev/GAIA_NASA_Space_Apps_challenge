@@ -140,9 +140,8 @@ opcionales: Explorar (detalle), Análisis avanzado (`/estudio`), Atlas, Casos de
 1. Prueba con lector de pantalla (NVDA).
 2. **F4 restante:** brush temporal,
    Kendall estacional y dependencia de largo plazo (ENSO) más allá de AR(1) (ver ADR-0012, «Límites»).
-3. **Decisión pendiente:** variables «pesadas» (MERRA-2, GLDAS con ≥ 10–22 años) no se pueden calcular desde la web
-   sin token y la web no tiene dónde introducirlo (opciones: campo de token en la web, umbral «ligero» mayor en el
-   servidor desplegado, o caché precalculada de territorios).
+3. ✅ Resuelto 2026-11-15: umbral «ligero» ampliado (ADR-0005): las 4 variables por defecto se calculan sin token
+   (1–3 min la primera vez, luego en caché); el Panel muestra tiempo estimado/transcurrido y reintenta si EE está ocupado.
 4. F6: despliegue, guía de uso, demo.
 5. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).
 6. Kendall estacional. Docker pospuesto (no necesario aún).

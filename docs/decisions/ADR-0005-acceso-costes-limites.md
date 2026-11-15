@@ -23,3 +23,15 @@
   - Errores por excepción `Problem` → `application/problem+json` uniforme.
 - **Limitaciones:** contadores en memoria de un proceso (para varios workers: Redis/DB con la misma interfaz); el
   coste es orientativo, no facturación de EE.
+
+## Actualización 2026-11-15 — umbral «ligero» ampliado (usabilidad del Panel)
+- Decisión del usuario: que la web sea usable sin token. `LIGHT_MAX_IMAGES` 50 000 → **250 000** y
+  `LIGHT_MAX_PIXEL_IMAGES` 5e7 → **1e9**: los 5 productos en 2001–2024 para territorios de hasta ~400 000 km²
+  (MERRA-2 horario 24 años ≈ 210 000 imágenes) se calculan sin token. `MAX_CONCURRENT_EXTRACTIONS` 2 → 4 y espera
+  del semáforo 10 → 30 s (`EXTRACTION_WAIT_S`).
+- Se mantienen: cupo por persona/hora (20 anónimo), área máxima, «pesado» con token (p. ej. MERRA-2 1981–2024 ≈
+  385 000 imágenes) y «demasiado grande» por encima del límite.
+- El Panel informa del tiempo estimado del primer cálculo, el tiempo transcurrido y que el resultado quedará en caché;
+  reintenta solo si EE está ocupado. Medido: provincia de Ascope, 4 variables sin token en ≈ 2 min; luego instantáneo.
+- El token sigue existiendo para el SDK y usos intensivos; la web no lo pide.
+

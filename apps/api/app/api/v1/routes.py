@@ -158,7 +158,7 @@ def problem_response(request: Request, p: Problem) -> JSONResponse:
 
 _key_store = ApiKeyStore(runner.settings.api_keys_file)
 _limiter = SlidingWindowLimiter(3600.0)
-_gate = ExtractionGate(runner.settings.max_concurrent_extractions)
+_gate = ExtractionGate(runner.settings.max_concurrent_extractions, wait_s=runner.settings.extraction_wait_s)
 
 
 def get_key_store() -> ApiKeyStore:

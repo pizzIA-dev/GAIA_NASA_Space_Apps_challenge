@@ -16,7 +16,8 @@ from tests.contract.test_analyses_api import SQUARE, FakeIMERG, make_spec
 
 MERRA_SPEC = {"data": {"dataset_id": "nasa-merra2-slv", "variable_id": "air_temperature_2m_c"},
               "geography": {"custom_geometry": SQUARE},
-              "time": {"start": "2003-01-01", "end_exclusive": "2025-01-01"}}
+              # 1981–2024: 528 meses × 730 imágenes horarias ≈ 385 000 → «pesado» también con el umbral de 2026-11-15
+              "time": {"start": "1981-01-01", "end_exclusive": "2025-01-01"}}
 
 
 class FakeMERRA(MERRA2Monthly):
@@ -72,7 +73,7 @@ def test_estimate_cost_tiers(ctx):
     light = c.post("/api/v1/analyses/estimate-cost", json=make_spec()).json()
     assert light["cost"]["tier"] == "light" and light["allowed"]
     heavy = c.post("/api/v1/analyses/estimate-cost", json=MERRA_SPEC).json()
-    assert heavy["cost"]["tier"] == "heavy" and heavy["cost"]["source_images"] == 264 * 730
+    assert heavy["cost"]["tier"] == "heavy" and heavy["cost"]["source_images"] == 528 * 730
     assert not heavy["allowed"] and heavy["denied"]["code"] == "token_required"
     assert c.post("/api/v1/analyses/estimate-cost", json=MERRA_SPEC, headers=full).json()["allowed"]
 
@@ -135,3 +136,11 @@ def test_my_api_keys_and_self_revoke(ctx):
     kid = mine[0]["key_id"]
     assert c.delete(f"/api/v1/me/api-keys/{kid}", headers=full).json()["revoked"]
     assert c.get("/api/v1/me", headers=full).status_code == 401
+
+
+def test_merra2_2001_2024_is_light_without_token(ctx):
+    """Usabilidad (2026-11-15): los productos horarios en el periodo completo de la web no exigen token."""
+    c = ctx[0]
+    spec = {**MERRA_SPEC, "time": {"start": "2001-01-01", "end_exclusive": "2025-01-01"}}
+    r = c.post("/api/v1/analyses/estimate-cost", json=spec).json()
+    assert r["cost"]["tier"] == "light" and r["allowed"]

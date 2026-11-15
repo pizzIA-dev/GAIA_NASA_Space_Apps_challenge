@@ -1,5 +1,5 @@
 import type { Capabilities } from "./methods";
-import type { AtlasResult, SlopeDifference, CaseAssociationResult, CaseBacktest, CaseEnfen, CaseSummary, CaseEvents, CompareResult, Dataset, FeatureCollection, Geography, Problem, Run, Seasonal, Variable } from "./types";
+import type { AtlasResult, CostEstimate, SlopeDifference, CaseAssociationResult, CaseBacktest, CaseEnfen, CaseSummary, CaseEvents, CompareResult, Dataset, FeatureCollection, Geography, Problem, Run, Seasonal, Variable } from "./types";
 
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1").replace(/\/$/, "");
 
@@ -51,6 +51,8 @@ export const api = {
   caseBacktest: () => call<CaseBacktest>("cases/trujillo-el-nino/backtest"),
   caseEnfen: (from: number, to: number) => call<CaseEnfen>(`cases/trujillo-el-nino/enfen?year_from=${from}&year_to=${to}`),
   seasonal: (runId: string) => call<Seasonal>(`analyses/${encodeURIComponent(runId)}/seasonal`),
+  estimateCost: (spec: object) =>
+    call<{ cost: CostEstimate; allowed: boolean }>("analyses/estimate-cost", { method: "POST", body: JSON.stringify(spec) }),
   analyze: (spec: object) => call<Run>("analyses", { method: "POST", body: JSON.stringify(spec) }),
   compare: (specs: object[], familyId?: string) =>
     call<CompareResult>("analyses/compare", { method: "POST", body: JSON.stringify({ specs, multiple_testing: "BH_FDR", family_id: familyId }) }),
