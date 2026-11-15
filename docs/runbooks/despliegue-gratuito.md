@@ -27,8 +27,9 @@ Objetivo: demostración pública con **US$ 0 de alojamiento** (ADR-0014). Ningú
 ## 2. API en Render Free
 
 1. Crea una cuenta en <https://render.com> (con GitHub). **No agregues tarjeta.**
-2. Autoriza a Render a leer el repositorio privado `pizzIA-dev/NASA_Space_Apps_challenge` (instalación de la
-   app de Render en la organización de GitHub; te lo pedirá al conectar).
+2. Instala la **app de Render en la organización** de GitHub (https://github.com/apps/render/installations/new →
+   `pizzIA-dev`). Sin la app, Render puede clonar el repo con tu conexión personal pero **no recibe los avisos de
+   `push`** y el despliegue automático no se dispara (pasó el 2026-11-15).
 3. **New → Blueprint** → elige el repositorio. Render lee `render.yaml` y crea el servicio `gaia-api` (plan free).
    Te pedirá los valores marcados como secretos:
    - `EE_SERVICE_ACCOUNT_EMAIL` = correo de la cuenta del paso 1.
@@ -69,6 +70,12 @@ npx vercel deploy --prod
 ```
 
 Después, vuelve a Render y pon la URL de Vercel en `ALLOWED_ORIGINS` (paso 2.3).
+
+## 3b. Actualizaciones
+
+- **API:** automática. Cada merge a `main` dispara un despliegue en Render (Auto-Deploy «On Commit»).
+- **Web:** manual, desde `apps/web`: `npx vercel deploy --prod` (Hobby no despliega desde Git un repo privado de
+  organización, por eso la integración de Git de Vercel está desconectada).
 
 ## 4. Verificación tras desplegar
 
