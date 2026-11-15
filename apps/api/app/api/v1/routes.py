@@ -22,6 +22,7 @@ from app.services.earth_engine.client import EarthEngineUnavailable
 from app.services.geographies import geoboundaries as gb
 from app.services.geographies import registry as reg
 from app.services.geographies.peru_ign import BoundariesNotIngested
+from app.services.statistics.slope_difference import slope_difference
 from app.services.statistics.trend_core import IncompatibleMethodError, benjamini_hochberg
 
 router = APIRouter(prefix="/api/v1")
@@ -302,7 +303,7 @@ def compare_analyses(req: CompareRequest, identity: Identity = Depends(get_ident
     """Ejecuta varios análisis con la misma política de coste/cuota y corrige por pruebas múltiples (BH-FDR).
 
     Cada ítem falla o tiene éxito por separado (p. ej. un distrito sin píxeles no invalida a los demás).
-    No estima la diferencia entre pendientes: compárense los IC de cada ítem (pendiente futura del plan §12A.1).
+    No estima la diferencia entre pendientes: para eso, POST /analyses/difference (IC propio, plan §12A.1).
     """
     slots: list[dict] = []
     for i, spec in enumerate(req.specs):
@@ -357,8 +358,8 @@ def compare_analyses(req: CompareRequest, identity: Identity = Depends(get_ident
     return {
         "family_id": req.family_id, "multiple_testing": req.multiple_testing, "family_size": len(ok),
         "items": sorted(items, key=lambda it: it["index"]),
-        "note": "q-valores BH-FDR sobre los ítems con p-valor de esta familia. La diferencia entre pendientes no se "
-                "estima aquí: un solapamiento de IC no equivale a una prueba de diferencia.",
+        "note": "q-valores BH-FDR sobre los ítems con p-valor de esta familia. Un solapamiento de IC no equivale a una "
+                "prueba de diferencia: para comparar dos pendientes usa POST /analyses/difference (IC propio).",
     }
 
 
@@ -498,6 +499,66 @@ def atlas(req: AtlasRequest, identity: Identity = Depends(get_identity), store=D
         "note": "Pendiente por unidad con su propio IC; q-valores BH-FDR sobre las unidades del atlas. Escala divergente "
                 "centrada en 0, común a todas las unidades; las unidades sin evidencia se marcan, no se ocultan.",
     }
+
+
+class DifferenceRequest(BaseModel):
+    """Diferencia de pendientes A − B con IC propio (plan §12A.1 «Comparar territorios»)."""
+
+    model_config = ConfigDict(extra="forbid")
+    a: AnalysisSpec
+    b: AnalysisSpec
+    resamples: int = Field(2000, ge=500, le=10000)
+    block_length: int | None = Field(None, ge=1, le=36)
+    seed: int = 2026
+
+
+@router.post("/analyses/difference", tags=["analyses"])
+def slope_difference_endpoint(req: DifferenceRequest, identity: Identity = Depends(get_identity),
+                              store=Depends(get_store), adapters=Depends(get_adapters), geos=Depends(get_geographies),
+                              limiter=Depends(get_limiter), gate=Depends(get_gate)):
+    """Diferencia de pendientes (Theil–Sen) entre dos análisis que solo difieren en el territorio.
+
+    No se combinan los IC individuales: bootstrap de bloques sobre pares de periodos, que conserva la correlación
+    entre territorios vecinos. Coste y cupo como una comparación de dos análisis.
+    """
+    da, db = req.a.model_dump(mode="json"), req.b.model_dump(mode="json")
+    same = {k: da[k] == db[k] for k in ("data", "time", "transforms")}
+    same["estimator"] = da["statistics"]["estimator"] == db["statistics"]["estimator"]
+    if not all(same.values()):
+        diff = ", ".join(k for k, v in same.items() if not v)
+        raise Problem(409, "not_comparable",
+                      f"Las dos especificaciones deben diferir solo en el territorio (difieren en: {diff})")
+    if da["geography"] == db["geography"]:
+        raise Problem(422, "invalid_request", "A y B son el mismo territorio")
+    fam = compare_analyses(CompareRequest(specs=[req.a, req.b], multiple_testing="none", family_id="diferencia"),
+                           identity, store, adapters, geos, limiter, gate)
+    items = fam["items"]
+    failed = [it for it in items if it["status"] != "succeeded"]
+    if failed:
+        e = failed[0]["error"]
+        raise Problem(e["status"], e["code"], f"{'A' if failed[0]['index'] == 0 else 'B'}: {e['detail']}")
+    ia, ib = items
+    st = req.a.statistics
+    block = req.block_length or (12 if req.a.time.granularity == "month" else 3)
+    unit = ia["statistics"]["estimate_unit"].rsplit("/", 1)[0]
+    try:
+        diff = slope_difference(
+            [r["time_start_utc"] for r in ia["series"]], [r["value"] for r in ia["series"]],
+            [r["time_start_utc"] for r in ib["series"]], [r["value"] for r in ib["series"]],
+            estimator=st.estimator, confidence_level=st.confidence_level, time_unit=st.time_unit, value_unit=unit,
+            resamples=req.resamples, block_length=block, seed=req.seed)
+    except IncompatibleMethodError as e:
+        raise Problem(409, "incompatible_method", str(e)) from e
+
+    def brief(it: dict) -> dict:
+        s = it["statistics"]
+        return {"geo_id": it["geo_id"], "geography": it.get("geography"), "run_id": it["run_id"],
+                "estimate": s["estimate"], "ci_lower": s["ci_lower"], "ci_upper": s["ci_upper"],
+                "p_value": s["p_value"], "estimate_unit": s["estimate_unit"]}
+
+    return {"a": brief(ia), "b": brief(ib), "difference": diff,
+            "interpretation": "Diferencia = pendiente de A menos pendiente de B, con su propio IC. Que los IC de A y B "
+                              "se solapen no implica que la diferencia sea cero, ni lo contrario."}
 
 
 def _run(run_id: str, store) -> dict:

@@ -72,6 +72,15 @@ class Analyses(_Resource):
             body["family_id"] = family_id
         return self._c._post("analyses/compare", json=body)
 
+    def difference(self, spec_a: dict, spec_b: dict, resamples: int = 2000, block_length: int | None = None,
+                   seed: int = 2026) -> dict:
+        """Diferencia de pendientes A − B (Theil–Sen) con IC propio por bootstrap de bloques sobre pares de periodos.
+        Las especificaciones deben diferir solo en el territorio."""
+        body: dict = {"a": spec_a, "b": spec_b, "resamples": resamples, "seed": seed}
+        if block_length is not None:
+            body["block_length"] = block_length
+        return self._c._post("analyses/difference", json=body)
+
     def atlas(self, parent_geo_id: str, dataset_id: str, variable_id: str, start_year: int = 2003,
               end_year: int = 2024, method: str = "sen") -> dict:
         """Pendiente anual de todas las subunidades de un territorio (misma spec que un análisis individual),

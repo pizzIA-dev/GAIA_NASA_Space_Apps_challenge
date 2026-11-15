@@ -112,6 +112,9 @@
   del cupo, extracciones individuales en paralelo (`ATLAS_PARALLEL_EXTRACTIONS`=6). UI: small multiples (lluvia,
   temperatura 2 m, humedad del suelo, NDVI) para Perú/departamentos, La Libertad/provincias, Trujillo/distritos.
   Real: lluvia 25 departamentos → 7 disminución, 18 sin evidencia. La reducción multibanda por lotes se descartó (más lenta).
+- **Diferencia de pendientes** (ADR-0011): `POST /analyses/difference` + SDK + bloque en cada panel del Estudio.
+  Δ = TS(A) − TS(B) con IC por bootstrap de bloques sobre pares de periodos (cobertura simulada 96–98,5 %). OLS no se
+  ofrece (sus IC cubrieron 73–92 % con n = 22). Real: Huanchaco − Moche lluvia +4,9 mm/década, IC −24 a +14, r = 0,96.
 - API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
 - Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
 - **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
@@ -123,7 +126,7 @@
 ## Siguiente
 1. Prueba con lector de pantalla (NVDA).
 2. **F4 restante:** brush temporal,
-   diferencia de pendientes con IC (bootstrap conjunto) para comparaciones.
+   **medir la cobertura de los IC por serie** (OLS-HAC y Theil–Sen analítico con n ≈ 22 años; ver ADR-0011).
 3. **F5 restante:** umbral ENFEN (PDF NT
    01-2024, el usuario decidió seguir sin él), cartografía INEI con Alto Trujillo.
 4. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).

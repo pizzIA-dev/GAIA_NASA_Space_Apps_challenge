@@ -111,3 +111,32 @@ def test_sdk_compare_matches_rest(ctx):
     b = c.post("/api/v1/analyses/compare", json={"specs": specs, "family_id": "sdk"}, headers=auth).json()
     assert [it["run_id"] for it in a["items"]] == [it["run_id"] for it in b["items"]]
     assert [it["statistics"]["q_value"] for it in a["items"]] == [it["statistics"]["q_value"] for it in b["items"]]
+
+
+def test_difference_contract_and_sdk(ctx):
+    c, auth, _ = ctx
+    a, b = spec_for(SHAPES[0]), spec_for(SHAPES[2])
+    r = c.post("/api/v1/analyses/difference", json={"a": a, "b": b, "resamples": 500})
+    assert r.status_code == 200, r.text
+    body = r.json()
+    d = body["difference"]
+    # El adaptador simulado devuelve la misma serie para cualquier geometría: diferencia exactamente 0.
+    assert d["estimate"] == 0 and d["p_value"] == 1.0 and d["n_paired_observations"] == 22
+    assert "pares de periodos" in d["ci_method"] and body["a"]["run_id"] != body["b"]["run_id"]
+    sdk = EarthTrendClient(base_url="http://testserver/api/v1", token=auth["Authorization"][7:], http_client=c)
+    assert sdk.analyses.difference(a, b, resamples=500)["difference"] == d
+
+
+def test_difference_rejects_non_comparable_specs(ctx):
+    c, _, _ = ctx
+    a = spec_for(SHAPES[0])
+    other_period = spec_for(SHAPES[2], start="2005-01-01")
+    r = c.post("/api/v1/analyses/difference", json={"a": a, "b": other_period})
+    assert r.status_code == 409 and "time" in r.json()["detail"]
+    assert c.post("/api/v1/analyses/difference", json={"a": a, "b": a}).status_code == 422
+    empty = c.post("/api/v1/analyses/difference", json={"a": a, "b": spec_for(SHAPES[1])})
+    assert empty.status_code == 422 and empty.json()["detail"].startswith("B:")
+    ols = {**a, "statistics": {"estimator": "ols", "interval_method": "hac_newey_west", "significance_test": "ols_hac_t"}}
+    ols_b = {**spec_for(SHAPES[2]), "statistics": ols["statistics"]}
+    r = c.post("/api/v1/analyses/difference", json={"a": ols, "b": ols_b})
+    assert r.status_code == 409 and "Theil–Sen" in r.json()["detail"]

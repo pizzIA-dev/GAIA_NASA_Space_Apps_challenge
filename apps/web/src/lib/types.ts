@@ -166,3 +166,14 @@ export interface AtlasResult {
   scale: { center: number; max_abs_estimate: number | null }; pixel_km2: number;
   cost: { tier: string; estimated_seconds: number; source_images: number }; items: AtlasItem[]; note: string;
 }
+
+export interface SlopeDifference {
+  a: { geo_id: string; run_id: string; estimate: number | null; ci_lower: number | null; ci_upper: number | null; estimate_unit: string };
+  b: { geo_id: string; run_id: string; estimate: number | null; ci_lower: number | null; ci_upper: number | null; estimate_unit: string };
+  difference: {
+    status: string; estimate: number | null; ci_lower: number | null; ci_upper: number | null; p_value: number | null;
+    estimate_unit: string; ci_method: string | null; test_method: string | null; n_paired_observations: number;
+    residual_correlation: number | null; warnings: string[];
+  };
+  interpretation: string;
+}

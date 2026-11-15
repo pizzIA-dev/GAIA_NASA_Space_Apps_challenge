@@ -190,3 +190,10 @@ code { background: var(--paper-2); padding: 1px 6px; border-radius: 3px; font-si
 .atlas-card .map { height: 420px; }
 .atlas-table { margin-top: 10px; overflow-x: auto; } .atlas-table summary { cursor: pointer; font-weight: 600; }
 @media (max-width: 640px) { .atlas { padding: 16px; } .atlas-card .map { height: 280px; } }
+
+/* Estudio: diferencia de pendientes con IC propio */
+.slope-diff { border-top: 1px solid var(--rule); margin-top: 14px; padding-top: 10px; }
+.slope-diff h3 { margin: 0 0 8px; font-size: 1rem; }
+.diff-pick { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 8px; }
+.diff-pick select { margin-left: 4px; max-width: 220px; padding: 3px 4px; border: 1px solid var(--rule); border-radius: var(--radius-control); background: var(--paper-2); color: var(--ink); }
+.diff-result { margin: 6px 0; max-width: 75ch; }
