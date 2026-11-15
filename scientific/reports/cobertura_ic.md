@@ -1,6 +1,6 @@
 # Cobertura de IC 95 % y error tipo I (α = 0,05) del motor `trend_core`
 
-Generado por `scripts/coverage_study.py` (1000 repeticiones base; 194 s). Ruido AR(1) gaussiano con coeficiente φ. Nominal: cobertura 95 %, error tipo I 5 %. Error de Monte Carlo ≈ ±1,4 pp con 1000 repeticiones y ±3 pp con 200.
+Generado por `scripts/coverage_study.py` (1000 repeticiones base; 172 s). Ruido AR(1) gaussiano con coeficiente φ. Nominal: cobertura 95 %, error tipo I 5 %. Error de Monte Carlo ≈ ±1,4 pp con 1000 repeticiones y ±3 pp con 200.
 
 | Serie | Método | φ | Repeticiones | Cobertura IC 95 % | Error tipo I |
 |---|---|---|---|---|---|
@@ -34,3 +34,36 @@ Generado por `scripts/coverage_study.py` (1000 repeticiones base; 194 s). Ruido 
 | mensual n=264 | Theil–Sen + IC n efectivo + MK AR(1) [nuevo, defecto] | 0.5 | 250 | 96.0% | 4.0% |
 
 ⚠ = cobertura < 92 % o error tipo I > 8 %. Theil–Sen + bootstrap en series mensuales no se midió (coste).
+
+## Otros niveles de confianza (métodos recomendados)
+
+Nominal: cobertura = nivel; error tipo I = 1 − nivel (se rechaza con p < 1 − nivel).
+
+| Serie | Método | Nivel | φ | Repeticiones | Cobertura | Error tipo I |
+|---|---|---|---|---|---|---|
+| anual n=22 | OLS + IC n efectivo AR(1) + t AR(1) [nuevo] | 90% | 0.0 | 500 | 92.2% | 10.0% |
+| anual n=22 | OLS + IC n efectivo AR(1) + t AR(1) [nuevo] | 90% | 0.3 | 500 | 88.2% | 12.8% |
+| anual n=22 | OLS + IC n efectivo AR(1) + t AR(1) [nuevo] | 90% | 0.6 | 500 | 85.0% | 14.0% |
+| anual n=22 | OLS + IC n efectivo AR(1) + t AR(1) [nuevo] | 99% | 0.0 | 500 | 99.6% | 1.2% |
+| anual n=22 | OLS + IC n efectivo AR(1) + t AR(1) [nuevo] | 99% | 0.3 | 500 | 97.0% | 2.0% |
+| anual n=22 | OLS + IC n efectivo AR(1) + t AR(1) [nuevo] | 99% | 0.6 | 500 | 95.8% | 5.0% |
+| anual n=22 | Theil–Sen + IC n efectivo + MK AR(1) [nuevo, defecto] | 90% | 0.0 | 500 | 94.0% | 10.0% |
+| anual n=22 | Theil–Sen + IC n efectivo + MK AR(1) [nuevo, defecto] | 90% | 0.3 | 500 | 89.0% | 12.2% |
+| anual n=22 | Theil–Sen + IC n efectivo + MK AR(1) [nuevo, defecto] | 90% | 0.6 | 500 | 82.8% | 13.8% |
+| anual n=22 | Theil–Sen + IC n efectivo + MK AR(1) [nuevo, defecto] | 99% | 0.0 | 500 | 99.8% | 0.8% |
+| anual n=22 | Theil–Sen + IC n efectivo + MK AR(1) [nuevo, defecto] | 99% | 0.3 | 500 | 97.0% | 2.2% |
+| anual n=22 | Theil–Sen + IC n efectivo + MK AR(1) [nuevo, defecto] | 99% | 0.6 | 500 | 95.0% | 4.6% |
+| anual n=22 | Theil–Sen + bootstrap bloques (pares) + MK AR(1) [corregido] | 90% | 0.0 | 150 | 91.3% | 12.0% |
+| anual n=22 | Theil–Sen + bootstrap bloques (pares) + MK AR(1) [corregido] | 90% | 0.3 | 150 | 86.0% | 11.3% |
+| anual n=22 | Theil–Sen + bootstrap bloques (pares) + MK AR(1) [corregido] | 90% | 0.6 | 150 | 84.7% | 11.3% |
+| anual n=22 | Theil–Sen + bootstrap bloques (pares) + MK AR(1) [corregido] | 99% | 0.0 | 150 | 100.0% | 0.7% |
+| anual n=22 | Theil–Sen + bootstrap bloques (pares) + MK AR(1) [corregido] | 99% | 0.3 | 150 | 96.7% | 2.0% |
+| anual n=22 | Theil–Sen + bootstrap bloques (pares) + MK AR(1) [corregido] | 99% | 0.6 | 150 | 94.7% | 2.7% |
+| mensual n=264 | OLS + IC n efectivo AR(1) + t AR(1) [nuevo] | 90% | 0.0 | 166 | 89.8% | 9.6% |
+| mensual n=264 | OLS + IC n efectivo AR(1) + t AR(1) [nuevo] | 90% | 0.5 | 166 | 94.6% | 9.6% |
+| mensual n=264 | OLS + IC n efectivo AR(1) + t AR(1) [nuevo] | 99% | 0.0 | 166 | 98.2% | 1.8% |
+| mensual n=264 | OLS + IC n efectivo AR(1) + t AR(1) [nuevo] | 99% | 0.5 | 166 | 98.8% | 0.6% |
+| mensual n=264 | Theil–Sen + IC n efectivo + MK AR(1) [nuevo, defecto] | 90% | 0.0 | 166 | 89.8% | 10.2% |
+| mensual n=264 | Theil–Sen + IC n efectivo + MK AR(1) [nuevo, defecto] | 90% | 0.5 | 166 | 95.2% | 10.2% |
+| mensual n=264 | Theil–Sen + IC n efectivo + MK AR(1) [nuevo, defecto] | 99% | 0.0 | 166 | 98.8% | 1.8% |
+| mensual n=264 | Theil–Sen + IC n efectivo + MK AR(1) [nuevo, defecto] | 99% | 0.5 | 166 | 98.2% | 0.0% |

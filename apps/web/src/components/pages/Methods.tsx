@@ -2,17 +2,9 @@
 // Métodos (plan §7 y Anexo B): explicación honesta de cada procedimiento. La matriz de compatibilidad viene de la API.
 import { useQuery } from "@tanstack/react-query";
 import { API_URL } from "@/lib/api";
+import { METHOD_NAMES, type Capabilities } from "@/lib/methods";
 
-interface Capabilities { estimators: Record<string, { interval_methods: string[]; significance_tests: string[] }>; confidence_levels: number[] }
-
-const NAMES: Record<string, string> = {
-  ols: "Regresión lineal (OLS)", theil_sen: "Pendiente de Theil–Sen",
-  ols_classic: "IC clásico de OLS", hac_newey_west: "IC robusto HAC (Newey–West)", ar1_effective_n: "IC de OLS con n efectivo AR(1)",
-  theil_sen_analytic: "IC analítico de Theil–Sen", theil_sen_ar1: "IC de Theil–Sen con n efectivo AR(1)",
-  moving_block_bootstrap: "Bootstrap por bloques móviles (pares)", ols_t: "Prueba t clásica", ols_hac_t: "Prueba t con errores HAC",
-  ols_ar1_t: "Prueba t con n efectivo AR(1)", mann_kendall: "Mann–Kendall", mann_kendall_ar1: "Mann–Kendall con n efectivo AR(1)",
-  none: "Sin prueba",
-};
+const NAMES = METHOD_NAMES;
 
 const GLOSSARY: [string, string][] = [
   ["Tendencia", "Dirección y magnitud de un cambio sistemático en el tiempo durante el periodo elegido."],

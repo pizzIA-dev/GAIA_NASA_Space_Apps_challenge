@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Explorer } from "@/components/explorer/Explorer";
 
-export const metadata: Metadata = { title: "Explorar · Earth Trend Studio" };
+export const metadata: Metadata = { title: "Detalle de una variable · GaIA" };
 
 export default function ExplorarPage() {
   return (

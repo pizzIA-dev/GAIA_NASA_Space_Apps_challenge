@@ -15,6 +15,9 @@ export interface StudyState {
   start: number;
   end: number; // año final inclusivo
   context: boolean; // capa de contexto local (eventos SINPAD + episodios ENFEN) cuando el territorio la tiene
+  ic?: string; // variante de intervalo dentro del estimador del preset (vacío = la del preset)
+  prueba?: string; // variante de prueba de significancia (vacío = la del preset)
+  conf?: number; // nivel de confianza (vacío = 0,95)
 }
 
 export const DEFAULT_STUDY: StudyState = {
@@ -35,7 +38,8 @@ interface Store extends StudyState {
 
 export const useStudy = create<Store>((set) => ({ ...DEFAULT_STUDY, set: (patch) => set(patch) }));
 
-const KEYS: (keyof StudyState)[] = ["focus", "selected", "datasetId", "variableId", "view", "method", "start", "end", "context"];
+const KEYS: (keyof StudyState)[] = ["focus", "selected", "datasetId", "variableId", "view", "method", "start", "end", "context",
+  "ic", "prueba", "conf"];
 
 export function readStudyFromUrl(search: string): Partial<StudyState> {
   const q = new URLSearchParams(search);
@@ -43,14 +47,14 @@ export function readStudyFromUrl(search: string): Partial<StudyState> {
   for (const k of KEYS) {
     const v = q.get(k);
     if (v == null) continue;
-    out[k] = k === "start" || k === "end" ? Number(v) : k === "context" ? v === "true" : v;
+    out[k] = k === "start" || k === "end" || k === "conf" ? Number(v) : k === "context" ? v === "true" : v;
   }
   return out as Partial<StudyState>;
 }
 
 export function studyToUrl(s: StudyState): string {
   const q = new URLSearchParams();
-  for (const k of KEYS) if (s[k] !== DEFAULT_STUDY[k]) q.set(k, String(s[k]));
+  for (const k of KEYS) if (s[k] != null && s[k] !== DEFAULT_STUDY[k]) q.set(k, String(s[k]));
   const str = q.toString();
   return str ? `?${str}` : "";
 }
@@ -69,8 +73,7 @@ export const METHOD_LABEL: Record<Method, string> = {
 /** Especificación canónica (§11.2) que la web envía a la API: la misma que usaría el SDK. */
 export function buildSpec(s: StudyState, geoId: string = s.selected, view: View = s.view): object {
   const anomaly = view === "anomaly";
-  const stats = { ...METHODS[s.method] } as Record<string, unknown>;
-  if (s.method === "sen_boot") stats.block_length = anomaly ? 12 : 3;
+  const stats = statisticsFor(s, anomaly);
   return {
     data: { dataset_id: s.datasetId, variable_id: s.variableId },
     geography: { geo_ids: [geoId] },
@@ -78,4 +81,21 @@ export function buildSpec(s: StudyState, geoId: string = s.selected, view: View 
     ...(anomaly ? { transforms: { seasonality: "monthly_anomaly" } } : {}),
     statistics: stats,
   };
+}
+
+/** Estadística de la especificación: preset + variantes (`ic`, `prueba`, `conf`). Un preset sin variantes produce
+ *  exactamente la misma especificación que antes (mismo run_id y caché). */
+export function statisticsFor(s: Pick<StudyState, "method" | "ic" | "prueba" | "conf">, anomaly = false): Record<string, unknown> {
+  const stats = { ...METHODS[s.method] } as Record<string, unknown>;
+  if (s.ic) stats.interval_method = s.ic;
+  if (s.prueba) stats.significance_test = s.prueba;
+  if (stats.interval_method === "moving_block_bootstrap") {
+    stats.block_length = anomaly ? 12 : 3;
+    stats.seed = 2026;
+  } else {
+    delete stats.block_length;
+    delete stats.seed;
+  }
+  if (s.conf && s.conf !== 0.95) stats.confidence_level = s.conf;
+  return stats;
 }

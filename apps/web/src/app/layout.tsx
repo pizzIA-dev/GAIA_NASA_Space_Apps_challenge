@@ -11,15 +11,16 @@ const serif = Source_Serif_4({ subsets: ["latin"], weight: ["400", "500"], varia
 const sans = Source_Sans_3({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-sans", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Earth Trend Studio",
-  description: "Un laboratorio visual para investigar cómo cambia la Tierra con datos NASA.",
+  title: "GaIA",
+  description: "Observatorio ambiental: tendencias de variables NASA para cualquier territorio, con método y confianza elegidos por el usuario.",
 };
 
+// Panel = experiencia principal; el resto es opcional (Explorar = detalle de una variable, enlazado desde el panel).
 const NAV = [
-  { href: "/explorar", label: "Explorar" },
-  { href: "/estudio", label: "Estudio" },
+  { href: "/", label: "Panel" },
+  { href: "/estudio", label: "Análisis avanzado" },
   { href: "/atlas", label: "Atlas" },
-  { href: "/historias", label: "Historias" },
+  { href: "/historias", label: "Casos de estudio" },
   { href: "/fuentes", label: "Fuentes" },
   { href: "/metodos", label: "Métodos" },
 ];
@@ -33,7 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a className="skip" href="#contenido">Saltar al contenido</a>
         <header className="top">
-          <Link href="/explorar" className="brand">Earth Trend Studio<small>nombre provisional</small></Link>
+          <Link href="/" className="brand">GaIA<small>observatorio ambiental</small></Link>
           <nav className="primary" aria-label="Secciones">
             {NAV.map((n) => <Link key={n.href} href={n.href}>{n.label}</Link>)}
           </nav>

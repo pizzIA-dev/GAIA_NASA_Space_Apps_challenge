@@ -39,7 +39,8 @@ export function Explorer() {
     if (!hydrated.current) { study.set(readStudyFromUrl(params.toString())); hydrated.current = true; return; }
     router.replace(`${pathname}${studyToUrl(study)}`, { scroll: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [study.focus, study.selected, study.datasetId, study.variableId, study.view, study.method, study.start, study.end, study.context]);
+  }, [study.focus, study.selected, study.datasetId, study.variableId, study.view, study.method, study.start, study.end, study.context,
+    study.ic, study.prueba, study.conf]);
 
   const variables = useQuery({ queryKey: ["variables"], queryFn: api.variables });
   const datasets = useQuery({ queryKey: ["datasets"], queryFn: api.datasets });
@@ -137,10 +138,12 @@ export function Explorer() {
           <h2>Método de tendencia</h2>
           <div className="seg" role="group" aria-label="Método">
             {(Object.keys(METHOD_LABEL) as Method[]).map((m) => (
-              <button key={m} type="button" aria-pressed={study.method === m} onClick={() => study.set({ method: m })}>{METHOD_LABEL[m]}</button>
+              <button key={m} type="button" aria-pressed={study.method === m && !study.ic && !study.prueba}
+                onClick={() => study.set({ method: m, ic: undefined, prueba: undefined })}>{METHOD_LABEL[m]}</button>
             ))}
           </div>
-          <p className="hint">IC 95 % del mismo estimador y prueba compatible. Los cálculos los hace la API, igual que desde Python.</p>
+          <p className="hint">IC {Math.round((study.conf ?? 0.95) * 100)} % del mismo estimador y prueba compatible
+            {(study.ic || study.prueba) && " (variante elegida en el panel)"}. Los cálculos los hace la API, igual que desde Python.</p>
         </section>
         {hasCase && (
           <section>
@@ -315,7 +318,7 @@ function Quality({ run, geo, pixelKm2 }: { run: Run; geo?: Geography; pixelKm2: 
   );
 }
 
-function Provenance({ dataset, attribution }: { dataset: Dataset; attribution?: string }) {
+export function Provenance({ dataset, attribution }: { dataset: Dataset; attribution?: string }) {
   return (
     <dl className="prov">
       <div><dt>Fuente</dt><dd>{dataset.title} (<code>{dataset.ee_collection_id}</code>), vía Google Earth Engine</dd></div>
@@ -339,7 +342,7 @@ function MapLegend({ pixelKm2, theme }: { pixelKm2: number; theme: string }) {
   );
 }
 
-function ErrorPanel({ error }: { error: ApiError }) {
+export function ErrorPanel({ error }: { error: ApiError }) {
   const p = error.problem;
   return (
     <section className="panel error" role="alert">

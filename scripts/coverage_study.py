@@ -87,6 +87,47 @@ def main(reps: int = 1000) -> None:
         flag_t = " ⚠" if r["type1"] > 0.08 else ""
         print(f"| {serie} | {r['method']} | {r['phi']} | {r['reps']} | {r['coverage']:.1%}{flag_c} | {r['type1']:.1%}{flag_t} |")
     print("\n⚠ = cobertura < 92 % o error tipo I > 8 %. Theil–Sen + bootstrap en series mensuales no se midió (coste).")
+    lv = run_levels(22, False, [0.0, 0.3, 0.6], max(400, reps // 2))
+    lv += run_levels(264, True, [0.0, 0.5], max(150, reps // 6))
+    print("\n## Otros niveles de confianza (métodos recomendados)\n")
+    print("Nominal: cobertura = nivel; error tipo I = 1 − nivel (se rechaza con p < 1 − nivel).\n")
+    print("| Serie | Método | Nivel | φ | Repeticiones | Cobertura | Error tipo I |")
+    print("|---|---|---|---|---|---|---|")
+    for r in lv:
+        serie = f"mensual n={r['n']}" if r["monthly"] else f"anual n={r['n']}"
+        print(f"| {serie} | {r['method']} | {r['level']:.0%} | {r['phi']} | {r['reps']} | {r['coverage']:.1%} "
+              f"| {r['type1']:.1%} |")
+
+
+RECOMMENDED = {k: v for k, v in METHODS.items() if "[nuevo" in k or "[corregido" in k}
+
+
+def run_levels(n: int, monthly: bool, phis: list[float], reps: int, levels=(0.90, 0.99)) -> list[dict]:
+    """Métodos recomendados a otros niveles: cobertura del IC al nivel elegido y rechazo con α = 1 − nivel."""
+    steps_per_decade = 120 if monthly else 10
+    out = []
+    for name, m in RECOMMENDED.items():
+        boot = m["interval_method"] == "moving_block_bootstrap"
+        if boot and monthly:
+            continue
+        r = max(150, reps // 4) if boot else reps
+        for level in levels:
+            for phi in phis:
+                s = TrendSettings(**m, confidence_level=level, resamples=500, block_length=12 if monthly else 3,
+                                  min_coverage_fraction=0.0)
+                rng = np.random.default_rng(int(phi * 100) + int(level * 1000))
+                hits = rej = 0
+                for k in range(r):
+                    s.seed = k
+                    t, y = simulate(n, monthly, phi, 0.5, rng)
+                    res = estimate_trend(t, y, s)
+                    hits += res.ci_lower <= 0.5 * steps_per_decade <= res.ci_upper
+                    t0, y0 = simulate(n, monthly, phi, 0.0, rng)
+                    p = estimate_trend(t0, y0, s).p_value
+                    rej += p is not None and p < 1 - level
+                out.append({"method": name, "phi": phi, "n": n, "monthly": monthly, "reps": r, "level": level,
+                            "coverage": hits / r, "type1": rej / r})
+    return out
 
 
 if __name__ == "__main__":

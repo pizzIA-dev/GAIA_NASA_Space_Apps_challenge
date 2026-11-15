@@ -197,3 +197,18 @@ code { background: var(--paper-2); padding: 1px 6px; border-radius: 3px; font-si
 .diff-pick { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 8px; }
 .diff-pick select { margin-left: 4px; max-width: 220px; padding: 3px 4px; border: 1px solid var(--rule); border-radius: var(--radius-control); background: var(--paper-2); color: var(--ink); }
 .diff-result { margin: 6px 0; max-width: 75ch; }
+
+/* Panel ambiental (experiencia principal) */
+.dash-head { margin-bottom: 14px; } .dash-head h1 { font-family: var(--font-serif); font-weight: 500; margin: 2px 0 6px; }
+.dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 16px; }
+.dash-card .panel-head h2 { margin: 0; font-size: 1.05rem; }
+.dash-card .facts { gap: 4px 24px; } .dash-card .facts dd { font-size: 16px; }
+.dash-card .chart { height: 230px; }
+.card-links { display: flex; gap: 16px; align-items: center; margin: 8px 0 0; font-size: var(--text-small); }
+.linkish { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font: inherit; }
+.field { display: grid; gap: 4px; font-size: var(--text-small); margin-bottom: 10px; }
+.field select { padding: 4px 6px; border: 1px solid var(--rule); border-radius: var(--radius-control); background: var(--paper-2); color: var(--ink); max-width: 100%; }
+.warn-hint { border-left: 3px solid var(--danger); padding-left: 8px; }
+.picker .children { margin-top: 8px; } .picker .children summary { cursor: pointer; font-size: var(--text-small); }
+.picker .children .list { max-height: 260px; overflow-y: auto; }
+.dash-more { margin-top: 18px; }

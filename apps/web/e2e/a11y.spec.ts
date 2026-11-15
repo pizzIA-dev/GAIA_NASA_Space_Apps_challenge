@@ -4,6 +4,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const PAGES = [
+  { path: "/", ready: ".dash-card .facts" },
   { path: "/explorar", ready: ".verdict h1" },
   { path: "/estudio", ready: ".compare-table tbody tr" },
   { path: "/fuentes", ready: "article.source" },

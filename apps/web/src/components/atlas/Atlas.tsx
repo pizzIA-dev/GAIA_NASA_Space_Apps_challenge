@@ -29,7 +29,13 @@ export function Atlas() {
   const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const parent = TERRITORIES.find((t) => t.id === params.get("territorio")) ?? TERRITORIES[0]!;
+  // Cualquier territorio con subdivisiones (p. ej. el que se eligió en el panel); los tres botones son atajos.
+  const asked = params.get("territorio");
+  const preset = TERRITORIES.find((t) => t.id === asked);
+  const askedGeo = useQuery({ queryKey: ["geo", asked], queryFn: () => api.geography(asked!), enabled: !!asked && !preset });
+  const parent = preset ?? (asked && askedGeo.data
+    ? { id: asked, label: askedGeo.data.name, units: askedGeo.data.children.length ? "subdivisiones" : "subdivisiones (no tiene)" }
+    : TERRITORIES[0]!);
   const features = useQuery({ queryKey: ["features", parent.id], queryFn: () => api.features(parent.id) });
   return (
     <main className="atlas" id="contenido">

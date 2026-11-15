@@ -1,3 +1,4 @@
+import type { Capabilities } from "./methods";
 import type { AtlasResult, SlopeDifference, CaseAssociationResult, CaseBacktest, CaseEnfen, CaseSummary, CaseEvents, CompareResult, Dataset, FeatureCollection, Geography, Problem, Run, Seasonal, Variable } from "./types";
 
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1").replace(/\/$/, "");
@@ -32,8 +33,11 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   variables: () => call<Variable[]>("catalog/variables"),
   datasets: () => call<Dataset[]>("catalog/datasets"),
-  searchGeographies: (q: string, country = "PER") =>
-    call<{ items: Geography[]; boundary_set_id: string }>(`geographies/search?q=${encodeURIComponent(q)}&country=${country}&limit=12`),
+  /** country = ISO3 para buscar dentro de un país; null = buscar países (alcance mundial). */
+  searchGeographies: (q: string, country: string | null = "PER") =>
+    call<{ items: Geography[]; boundary_set_id: string }>(
+      `geographies/search?q=${encodeURIComponent(q)}${country ? `&country=${country}` : ""}&limit=12`),
+  capabilities: () => call<Capabilities>("catalog/capabilities"),
   geography: (geoId: string) => call<Geography & { children: Geography[]; attribution: string }>(`geographies/${encodeURIComponent(geoId)}`),
   features: (geoId: string) => call<FeatureCollection>(`geographies/${encodeURIComponent(geoId)}/features`),
   caseEvents: (geoId: string, from: number, to: number) =>

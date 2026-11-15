@@ -28,7 +28,7 @@ export function exportCsv(run: Run, unit: string) {
 
 export function exportJson(run: Run) {
   const payload = {
-    note: "Resultado de Earth Trend Studio. Reproducible por API (GET /api/v1/analyses/{run_id}) o SDK Python con el run_id.",
+    note: "Resultado de GaIA. Reproducible por API (GET /api/v1/analyses/{run_id}) o SDK Python con el run_id.",
     exported_at: new Date().toISOString(),
     run_id: run.run_id,
     analysis_spec_hash: run.analysis_spec_hash,

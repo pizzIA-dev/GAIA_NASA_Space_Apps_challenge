@@ -1,7 +1,10 @@
 # ESTADO DEL PROYECTO — leer al inicio de cada sesión
 
-**Última actualización:** 2026-11-15 (sesión 3) · **Fase actual:** F2 ✅ cerrada (backend + API + SDK + notebook 01).
-**F1 en curso:** dirección A elegida; app Next.js con pantalla Explorar funcional contra la API real. 5 datasets NASA, fronteras global + Perú oficial, coste/tokens/límites.
+**Última actualización:** 2026-11-15 (sesión 3) · **Producto: GaIA** · F0–F4 entregadas; F5 entregada en lo que
+corresponde a la plataforma (el caso Trujillo/ENFEN lo trabajan los usuarios). **Realineación UX (ADR-0013):** la
+portada es el **Panel ambiental** (territorio mundial + periodo + variables + método + nivel de confianza). Módulos
+opcionales: Explorar (detalle), Análisis avanzado (`/estudio`), Atlas, Casos de estudio. Tag de recuperación
+`pre-dashboard-2026-11-15`.
 
 ## Commits
 - `5cefce7` F0 — repo, CLAUDE.md, motor estadístico, CSV→pendiente explicada.
@@ -120,6 +123,11 @@
   bootstrap de residuos subcubrían (66–89 %, error tipo I hasta 33 %) con n = 22. Nuevos por defecto: Theil–Sen +
   IC con n efectivo AR(1) + MK AR(1) (94–96 % / 3–7 % con φ ≤ 0,3); bootstrap por pares. Atlas Perú cambia:
   lluvia 7 → 0, temperatura 9 → 0, humedad del suelo 18 → 2, NDVI 18 → 18. Pruebas de cobertura en CI.
+- **Panel ambiental `/`** (ADR-0013): selector de territorio mundial (países geoBoundaries + subdivisiones; Perú IGN),
+  periodo, variables (tarjeta por variable, carga progresiva, caché compartida), estimador + IC + prueba según
+  `/catalog/capabilities`, nivel 90/95/99 % (veredicto con α = 1 − nivel), aviso si el método no corrige la
+  autocorrelación, procedencia y cobertura temporal por tarjeta, «Ver detalle» → Explorar con la misma configuración.
+  Atlas acepta cualquier territorio. E2E de paridad web = API (`e2e/panel.spec.ts`). Marca GaIA y navegación nueva.
 - API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
 - Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
 - **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
@@ -132,11 +140,13 @@
 1. Prueba con lector de pantalla (NVDA).
 2. **F4 restante:** brush temporal,
    Kendall estacional y dependencia de largo plazo (ENSO) más allá de AR(1) (ver ADR-0012, «Límites»).
-3. **F5 restante:** umbral ENFEN (PDF NT
-   01-2024, el usuario decidió seguir sin él), cartografía INEI con Alto Trujillo.
-4. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).
-5. MK corregido por autocorrelación, Kendall estacional. Docker pospuesto (no necesario aún).
+3. **Decisión pendiente:** variables «pesadas» (MERRA-2, GLDAS con ≥ 10–22 años) no se pueden calcular desde la web
+   sin token y la web no tiene dónde introducirlo (opciones: campo de token en la web, umbral «ligero» mayor en el
+   servidor desplegado, o caché precalculada de territorios).
+4. F6: despliegue, guía de uso, demo.
+5. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).
+6. Kendall estacional. Docker pospuesto (no necesario aún).
 
-## Pendiente para el caso Trujillo (F5)
-- Cartografía distrital INEI reciente que incluya Alto Trujillo (130112) como nuevo `boundary_set_id`.
-- Notebook 02 (Anexo D): eventos Trujillo vía API, contexto Niño ≠ causa, periodos de control.
+## Caso Trujillo (F5)
+Lo trabajan los usuarios sobre la plataforma (decisión 2026-11-15). ENFEN: no se continúa. Quedan disponibles en la
+plataforma: eventos SINPAD, episodios derivados del ICEN, asociación, evaluación de alertas e historia de 6 escenas.

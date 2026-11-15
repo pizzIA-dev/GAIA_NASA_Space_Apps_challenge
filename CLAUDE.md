@@ -1,4 +1,4 @@
-# CLAUDE.md — Earth Trend Studio (nombre provisional)
+# CLAUDE.md — GaIA (observatorio ambiental; antes «Earth Trend Studio»)
 
 > **Al iniciar sesión, lee SOLO este archivo y `ESTADO_PROYECTO.md`.** No releas el plan completo (146 KB):
 > consulta secciones puntuales con `grep -n "^#" PLAN_MAESTRO_PLATAFORMA_TENDENCIAS_NASA_WEB.md` y luego `Read` con offset.
@@ -7,6 +7,11 @@
 Plataforma web + API REST v1 + SDK Python para detectar tendencias del sistema terrestre con datos NASA vía
 Google Earth Engine (NASA Space Apps 2026 — "Be An Earth System Trend Detective!"). Responde: ¿qué cambia?,
 ¿dónde?, ¿cuánto?, ¿es significativo? Caso demo opcional: El Niño Costero + huaicos en Trujillo (NO es la marca).
+
+**Prioridad desde 2026-11-15 (ADR-0013):** la experiencia principal es el **Panel** (`/`): territorio (cualquier país) +
+periodo + variables + método + nivel de confianza → una tarjeta por variable. Módulos opcionales: Explorar (detalle de
+una variable), Análisis avanzado (`/estudio`), Atlas, Casos de estudio (`/historias`). El caso Trujillo y ENFEN los
+trabajan los usuarios: no ampliarlos. Punto de recuperación previo: tag `pre-dashboard-2026-11-15`.
 
 ## Mapa rápido del plan (líneas en PLAN_MAESTRO_...md)
 | Tema | Línea |

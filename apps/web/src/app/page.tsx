@@ -1,6 +1,14 @@
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { Dashboard } from "@/components/dashboard/Dashboard";
 
-// Entrada directa a Explorar con un ejemplo listo (plan §4.1), sin landing.
+export const metadata: Metadata = { title: "Panel ambiental · GaIA" };
+
+// Experiencia principal: panel unificado de un territorio (las demás secciones son opcionales).
 export default function Home() {
-  redirect("/explorar");
+  return (
+    <Suspense>
+      <Dashboard />
+    </Suspense>
+  );
 }

@@ -22,8 +22,10 @@ export function verdictOf(st: Statistics): { kind: VerdictKind; label: string; p
     return { kind: "none", label: "sin inferencia", phrase: "no tiene datos suficientes para estimar una tendencia" };
   }
   // Con varias pruebas (familia) manda el q-valor corregido BH-FDR; con una sola, el p-valor (plan §7.5).
+  // α = 1 − nivel de confianza elegido: IC y prueba se leen con el mismo umbral.
+  const alpha = 1 - (st.confidence_level ?? 0.95);
   const evidence = st.q_value ?? st.p_value;
-  const sig = evidence != null && evidence < 0.05 && st.ci_lower != null && st.ci_upper != null &&
+  const sig = evidence != null && evidence < alpha && st.ci_lower != null && st.ci_upper != null &&
     (st.ci_lower > 0 || st.ci_upper < 0);
   if (!sig) return { kind: "nc", label: "no concluyente", phrase: "no muestra un cambio distinguible de cero" };
   return st.estimate > 0
