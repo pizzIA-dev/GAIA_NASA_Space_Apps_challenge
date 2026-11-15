@@ -110,7 +110,7 @@ export function Studio() {
         </aside>
 
         <main className="main">
-          <h1 className="page-title">Análisis avanzado: comparar territorios</h1>
+          <h1 className="page-title">Análisis avanzado</h1>
           <p className="lead">Compara cómo cambia cada variable en varios territorios, con el mismo periodo y el mismo método. Pasa el cursor sobre un panel para ver la misma fecha en todos.</p>
           {st.panels.map((key, i) => (
             <PanelDrop key={key} index={i}>

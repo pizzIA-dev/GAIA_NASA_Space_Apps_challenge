@@ -5,13 +5,15 @@ const API = "http://localhost:8000/api/v1";
 
 /** Arrastre realista (dnd-kit necesita movimiento progresivo del puntero, no un salto). */
 async function drag(page: import("@playwright/test").Page, from: import("@playwright/test").Locator, to: import("@playwright/test").Locator) {
+  // Origen y destino a la vista ANTES de pulsar: desplazar la página con el botón pulsado depende del navegador
+  // (falló en Chromium/Linux cuando el destino quedaba justo bajo el borde de la ventana).
+  await to.scrollIntoViewIfNeeded();
   await from.scrollIntoViewIfNeeded();
   const a = (await from.boundingBox())!;
+  const b = (await to.boundingBox())!;
   await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2);
   await page.mouse.down();
   await page.mouse.move(a.x + a.width / 2 + 12, a.y + a.height / 2 + 12, { steps: 4 });
-  await to.scrollIntoViewIfNeeded();
-  const b = (await to.boundingBox())!;
   await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2, { steps: 20 });
   await page.mouse.up();
 }
