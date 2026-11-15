@@ -7,22 +7,16 @@ import { cssVar } from "@/lib/colors";
 import { exportCsv, exportJson, exportPng, exportSvg } from "@/lib/export";
 import { divergentStops } from "@/lib/colors";
 import { digitsFor, fmt, fmtP, signed, TEST_LABEL, unitPerDecade, verdictOf } from "@/lib/format";
+import { simpleName, simpleNameLower, simpleUnit } from "@/lib/variables";
 import { buildSpec, METHOD_LABEL, readStudyFromUrl, studyToUrl, useStudy, type Method } from "@/lib/study";
 import type { CompareResult, Dataset, Geography, Run, Variable } from "@/lib/types";
 import { useResolvedTheme } from "@/lib/theme";
 import { TerritoryMap, type UnitResult } from "./TerritoryMap";
-import { CaseAssociation } from "./CaseAssociation";
-import { CaseEventsPanel } from "./CaseEventsPanel";
 import { SeasonalPanel } from "./SeasonalPanel";
 import { TrendChart } from "./TrendChart";
 
 const ARTICLE: Record<string, string> = { ADM0: "", ADM1: "el departamento de ", ADM2: "la provincia de ", ADM3: "el distrito de " };
 const where = (g?: Pick<Geography, "admin_level" | "name">) => (g ? `${ARTICLE[g.admin_level] ?? ""}${g.name}` : "el territorio");
-const cleanQuantity = (q: string) => q.replace(/\s*\(.*?\)\s*/g, " ").trim();
-const SHORT_SOURCE: Record<string, string> = {
-  "nasa-gpm-imerg-monthly-v07": "IMERG", "nasa-gldas-noah-v21-3h": "GLDAS", "nasa-merra2-slv": "MERRA-2",
-  "nasa-modis-mod13q1-061": "MODIS", "nasa-modis-aqua-sst-l3smi": "MODIS-Aqua",
-};
 const MAP_AUTO_MAX_UNITS = 12; // calcular el mapa automáticamente solo para productos mensuales y pocas unidades
 
 export function Explorer() {
@@ -39,7 +33,7 @@ export function Explorer() {
     if (!hydrated.current) { study.set(readStudyFromUrl(params.toString())); hydrated.current = true; return; }
     router.replace(`${pathname}${studyToUrl(study)}`, { scroll: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [study.focus, study.selected, study.datasetId, study.variableId, study.view, study.method, study.start, study.end, study.context,
+  }, [study.focus, study.selected, study.datasetId, study.variableId, study.view, study.method, study.start, study.end,
     study.ic, study.prueba, study.conf]);
 
   const variables = useQuery({ queryKey: ["variables"], queryFn: api.variables });
@@ -72,17 +66,9 @@ export function Explorer() {
   });
   const mapDone = unitFamily.data ? units.length : 0;
 
-  // Capa de contexto local: solo donde existe un caso con fuente nacional conectada (plan §9.3).
-  const hasCase = study.selected.startsWith("pe-ign2020:1301");
-  const showCase = hasCase && study.context;
-  const caseEvents = useQuery({ queryKey: ["case-events", study.selected, study.start, study.end],
-    queryFn: () => api.caseEvents(study.selected, study.start, study.end), enabled: showCase });
-  const caseEnfen = useQuery({ queryKey: ["case-enfen", study.start, study.end],
-    queryFn: () => api.caseEnfen(study.start, study.end), enabled: showCase });
-
   const selectedGeo: Geography | undefined =
     study.selected === study.focus ? focus.data : units.find((u) => u.geo_id === study.selected);
-  const unit = variable?.unit_display ?? "";
+  const unit = simpleUnit(variable?.unit_display ?? "");
 
   return (
     <div className="layout" id="contenido">
@@ -90,7 +76,7 @@ export function Explorer() {
         <section>
           <h2>Territorio</h2>
           <p className="crumb">{focus.data ? [...(focus.data.path ?? []), focus.data.name].join(" › ") : "Cargando…"}</p>
-          <TerritorySearch onPick={(g) => study.set({ focus: g.geo_id, selected: g.geo_id })} />
+          <TerritorySearch iso3={focus.data?.iso3} onPick={(g) => study.set({ focus: g.geo_id, selected: g.geo_id })} />
           <div className="list" role="group" aria-label="Elegir territorio">
             <button type="button" className="terr" aria-pressed={study.selected === study.focus}
               onClick={() => study.set({ selected: study.focus })}>
@@ -116,7 +102,7 @@ export function Explorer() {
               <button key={`${v.dataset_id}/${v.variable_id}`} type="button" className="chip"
                 aria-pressed={v.variable_id === study.variableId && v.dataset_id === study.datasetId}
                 onClick={() => study.set({ datasetId: v.dataset_id, variableId: v.variable_id })}>
-                {cleanQuantity(v.physical_quantity)} <small>{SHORT_SOURCE[v.dataset_id] ?? v.dataset_id}</small>
+                {simpleName(v.dataset_id, v.variable_id, v.physical_quantity)}
               </button>
             ))}
           </div>
@@ -145,23 +131,13 @@ export function Explorer() {
           <p className="hint">IC {Math.round((study.conf ?? 0.95) * 100)} % del mismo estimador y prueba compatible
             {(study.ic || study.prueba) && " (variante elegida en el panel)"}. Los cálculos los hace la API, igual que desde Python.</p>
         </section>
-        {hasCase && (
-          <section>
-            <h2>Contexto local</h2>
-            <label className="check">
-              <input type="checkbox" checked={study.context} onChange={(e) => study.set({ context: e.target.checked })} />
-              Eventos SINPAD y episodios El Niño Costero (caso Trujillo)
-            </label>
-            <p className="hint">Registros oficiales de emergencias y contexto ENFEN. Coincidencia temporal no es causa.</p>
-          </section>
-        )}
       </aside>
 
       <main className="main">
         {main.isPending && variable && <p className="state" role="status">Calculando con datos NASA en Earth Engine…</p>}
         {main.error && <ErrorPanel error={main.error} />}
         {main.data && (
-          <Verdict run={main.data} geo={selectedGeo} quantity={cleanQuantity(variable?.physical_quantity ?? "")}
+          <Verdict run={main.data} geo={selectedGeo} quantity={simpleNameLower(study.datasetId, study.variableId, variable?.physical_quantity ?? "")}
             anomaly={anomaly} start={study.start} end={study.end} />
         )}
 
@@ -175,13 +151,12 @@ export function Explorer() {
                 )}
                 <ExportMenu run={main.data} unit={unit} chartRef={chartRef}
                   caption={{
-                    title: `${cleanQuantity(variable?.physical_quantity ?? "")}, ${selectedGeo?.name ?? ""} (${study.start}–${study.end}${anomaly ? ", anomalía mensual" : ""})`,
+                    title: `${simpleName(study.datasetId, study.variableId, variable?.physical_quantity ?? "")}, ${selectedGeo?.name ?? ""} (${study.start}–${study.end}${anomaly ? ", anomalía mensual" : ""})`,
                     subtitle: `${dataset?.title ?? ""} · ${main.data.statistics.estimator === "ols" ? "OLS" : "Theil–Sen"} ${signed(main.data.statistics.estimate, digitsFor(main.data.statistics.estimate))} ${unitPerDecade(main.data.statistics.estimate_unit)} · run_id ${main.data.run_id}`,
                   }} />
               </div>
             </div>
-            <TrendChart run={main.data} unit={unit} anomaly={anomaly} theme={theme} onReady={(c) => { chartRef.current = c; }}
-              events={showCase ? caseEvents.data?.items : undefined} episodes={showCase ? caseEnfen.data?.episodes : undefined} />
+            <TrendChart run={main.data} unit={unit} anomaly={anomaly} theme={theme} onReady={(c) => { chartRef.current = c; }} />
             <p className="legend-line">
               <span className="lg series-k" />{anomaly ? "anomalía mensual" : "valor anual"}
               <span className="lg trend-k" />tendencia {main.data.statistics.estimator === "ols" ? "OLS" : "Theil–Sen"}
@@ -213,14 +188,6 @@ export function Explorer() {
             {dataset && <Provenance dataset={dataset} attribution={features.data?.attribution} />}
           </section>
         </div>
-        {showCase && caseEvents.data && (
-          <CaseEventsPanel data={caseEvents.data} enfen={caseEnfen.data} place={selectedGeo?.name ?? "el territorio"} />
-        )}
-        {showCase && study.selected === "pe-ign2020:1301" && variable && (
-          <CaseAssociation key={`${study.datasetId}/${study.variableId}/${study.start}/${study.end}`} datasetId={study.datasetId}
-            variableId={study.variableId} quantity={cleanQuantity(variable.physical_quantity)} start={study.start} end={study.end} />
-        )}
-        {showCase && caseEvents.error && <p className="state" role="alert">{(caseEvents.error as ApiError).problem.detail}</p>}
         {main.data && <SeasonalPanel runId={main.data.run_id} theme={theme} place={selectedGeo?.name ?? "el territorio"} />}
       </main>
     </div>
@@ -242,21 +209,24 @@ function ExportMenu({ run, unit, chartRef, caption }:
 
 function range(a: number, b: number) { return Array.from({ length: Math.max(0, b - a + 1) }, (_, i) => a + i); }
 
-function TerritorySearch({ onPick }: { onPick: (g: Geography) => void }) {
+function TerritorySearch({ onPick, iso3 }: { onPick: (g: Geography) => void; iso3?: string }) {
   const [q, setQ] = useState("");
-  const search = useQuery({ queryKey: ["search", q], queryFn: () => api.searchGeographies(q), enabled: q.trim().length >= 2 });
+  const term = q.trim();
+  const country = iso3 && iso3.length === 3 ? iso3 : null;
+  const countries = useQuery({ queryKey: ["search-countries", term], queryFn: () => api.searchGeographies(term, null), enabled: term.length >= 2 });
+  const inside = useQuery({ queryKey: ["search", term, country], queryFn: () => api.searchGeographies(term, country), enabled: term.length >= 2 && !!country });
+  const items = [...(inside.data?.items ?? []), ...(countries.data?.items ?? [])];
   return (
     <div className="search-wrap">
       <input className="search" type="search" value={q} onChange={(e) => setQ(e.target.value)}
-        placeholder="Buscar distrito, provincia o UBIGEO" aria-label="Buscar territorio en Perú" />
-      {q.trim().length >= 2 && search.data && (
+        placeholder="Buscar país o región" aria-label="Buscar territorio" />
+      {term.length >= 2 && (
         <ul className="results" role="listbox" aria-label="Resultados">
-          {search.data.items.length === 0 && <li className="muted">Sin resultados en las fronteras oficiales.</li>}
-          {search.data.items.map((g) => (
+          {items.length === 0 && !countries.isPending && <li className="muted">Sin resultados.</li>}
+          {items.map((g) => (
             <li key={g.geo_id}>
               <button type="button" className="terr" onClick={() => { onPick(g); setQ(""); }}>
                 <span>{g.name} <small className="muted">{g.path?.slice(1).join(" › ")}</small></span>
-                <span className="muted">{g.admin_level === "ADM3" ? "distrito" : g.admin_level === "ADM2" ? "provincia" : "departamento"}</span>
               </button>
             </li>
           ))}

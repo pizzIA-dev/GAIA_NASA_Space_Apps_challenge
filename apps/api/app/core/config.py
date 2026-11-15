@@ -51,6 +51,8 @@ class Settings:
     key_extractions_per_hour: int = int(_env("KEY_EXTRACTIONS_PER_HOUR", "200") or 200)
     max_concurrent_extractions: int = int(_env("MAX_CONCURRENT_EXTRACTIONS", "4") or 4)
     extraction_wait_s: float = float(_env("EXTRACTION_WAIT_S", "30") or 30)
+    # Casos de estudio locales (endpoints /cases): desactivados por defecto; la plataforma es general.
+    enable_case_studies: bool = (_env("ENABLE_CASE_STUDIES", "false") or "false").lower() in ("1", "true", "yes")
     atlas_parallel_extractions: int = int(_env("ATLAS_PARALLEL_EXTRACTIONS", "6") or 6)
     # Orígenes web permitidos (CORS estricto, plan §12A.2). Los notebooks no dependen de CORS.
     allowed_origins: tuple[str, ...] = field(default_factory=lambda: tuple(

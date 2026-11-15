@@ -13,7 +13,7 @@ async function runId(page: import("@playwright/test").Page) {
 }
 
 test("el estudio por defecto muestra el mismo resultado que la API", async ({ page, request }) => {
-  await page.goto("/explorar");
+  await page.goto("/explorar?focus=pe-ign2020%3A1301&selected=pe-ign2020%3A1301");
   await expect(page.locator(".verdict h1")).toContainText("provincia de Trujillo");
   const id = await runId(page);
   const st = await (await request.get(`${API}/analyses/${id}/statistics`)).json();
@@ -25,7 +25,7 @@ test("el estudio por defecto muestra el mismo resultado que la API", async ({ pa
 });
 
 test("la exportación CSV contiene la serie y el run_id mostrado", async ({ page }) => {
-  await page.goto("/explorar");
+  await page.goto("/explorar?focus=pe-ign2020%3A1301&selected=pe-ign2020%3A1301");
   const id = await runId(page);
   const [dl] = await Promise.all([page.waitForEvent("download"), page.getByRole("button", { name: "CSV" }).click()]);
   const text = await (await import("node:fs/promises")).readFile((await dl.path())!, "utf8");
@@ -36,7 +36,7 @@ test("la exportación CSV contiene la serie y el run_id mostrado", async ({ page
 });
 
 test("elegir un distrito y cambiar de método recalcula y queda en la URL", async ({ page, request }) => {
-  await page.goto("/explorar");
+  await page.goto("/explorar?focus=pe-ign2020%3A1301&selected=pe-ign2020%3A1301");
   await page.getByRole("group", { name: "Elegir territorio" }).getByRole("button", { name: /Laredo/ }).click();
   await expect(page).toHaveURL(/selected=pe-ign2020%3A130106/);
   await expect(page.locator(".verdict h1")).toContainText("distrito de Laredo");
@@ -52,14 +52,14 @@ test("elegir un distrito y cambiar de método recalcula y queda en la URL", asyn
 
 test("un análisis pesado sin token muestra el motivo y el coste, no un error genérico", async ({ page }) => {
   // MERRA-2 horario 1981–2024 (≈ 385 000 imágenes) sigue siendo «pesado» con el umbral de 2026-11-15
-  await page.goto("/explorar?datasetId=nasa-merra2-slv&variableId=air_temperature_2m_c&start=1981");
+  await page.goto("/explorar?focus=pe-ign2020%3A1301&selected=pe-ign2020%3A1301&datasetId=nasa-merra2-slv&variableId=air_temperature_2m_c&start=1981");
   const err = page.locator("section.panel.error[role=alert]");
   await expect(err).toContainText("requiere un token de API");
   await expect(err).toContainText("imágenes fuente");
 });
 
 test("el tema se puede cambiar y se recuerda", async ({ page }) => {
-  await page.goto("/explorar");
+  await page.goto("/explorar?focus=pe-ign2020%3A1301&selected=pe-ign2020%3A1301");
   await page.getByRole("group", { name: "Tema de color" }).getByRole("button", { name: "Oscuro" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await page.reload();
@@ -81,7 +81,7 @@ test("Fuentes y Métodos muestran el catálogo y las combinaciones reales de la 
 test("sin scroll horizontal en 1024, 768 y 390 px", async ({ page }) => {
   for (const width of [1024, 768, 390]) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto("/explorar");
+    await page.goto("/explorar?focus=pe-ign2020%3A1301&selected=pe-ign2020%3A1301");
     await expect(page.locator(".verdict h1")).toBeVisible();
     const { sw, cw } = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
     expect(sw, `ancho ${width}`).toBeLessThanOrEqual(cw);
@@ -89,7 +89,7 @@ test("sin scroll horizontal en 1024, 768 y 390 px", async ({ page }) => {
 });
 
 test("JSON y SVG exportados llevan run_id, estadística y fuente", async ({ page }) => {
-  await page.goto("/explorar");
+  await page.goto("/explorar?focus=pe-ign2020%3A1301&selected=pe-ign2020%3A1301");
   const id = await runId(page);
   const fs = await import("node:fs/promises");
   const [j] = await Promise.all([page.waitForEvent("download"), page.getByRole("button", { name: "JSON" }).click()]);
@@ -109,7 +109,7 @@ test("JSON y SVG exportados llevan run_id, estadística y fuente", async ({ page
 });
 
 test("el ciclo estacional muestra la climatología y los extremos que calcula la API", async ({ page, request }) => {
-  await page.goto("/explorar");
+  await page.goto("/explorar?focus=pe-ign2020%3A1301&selected=pe-ign2020%3A1301");
   const id = await runId(page);
   const s = await (await request.get(`${API}/analyses/${id}/seasonal`)).json();
   const panel = page.getByRole("region", { name: "Ciclo estacional" });

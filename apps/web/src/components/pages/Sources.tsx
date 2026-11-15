@@ -1,4 +1,5 @@
 "use client";
+import { simpleName } from "@/lib/variables";
 // Catálogo de fuentes (plan §4.1 «Fuentes» y §5.4 SourceCard): todo viene de la API, nada escrito a mano aquí.
 import { useQuery } from "@tanstack/react-query";
 import { api, API_URL } from "@/lib/api";
@@ -38,7 +39,7 @@ export function Sources() {
               <div><dt>Frecuencia nativa</dt><dd>{GRANULARITY[d.native_granularity] ?? d.native_granularity}</dd></div>
               <div><dt>Disponible desde</dt><dd className="num">{d.temporal_coverage_start}</dd></div>
               <div><dt>Variables</dt><dd>{variables.data?.filter((v) => v.dataset_id === d.dataset_id)
-                .map((v) => `${v.physical_quantity} (${v.unit_display})`).join("; ")}</dd></div>
+                .map((v) => `${simpleName(v.dataset_id, v.variable_id, v.physical_quantity)} = ${v.physical_quantity} (${v.unit_display}; banda ${v.band})`).join("; ")}</dd></div>
               <div><dt>Licencia</dt><dd>{d.license}</dd></div>
             </dl>
             {d.notes.length > 0 && <ul className="warn">{d.notes.map((n) => <li key={n}>{n}</li>)}</ul>}

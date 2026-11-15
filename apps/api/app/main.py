@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 
-from app.api.v1.routes import Problem, problem_response, router
+from app.api.v1.routes import Problem, cases_router, problem_response, router
 from app.core.config import settings
 from app.services.earth_engine.adapters import ADAPTERS
 from app.services.earth_engine.client import auth_mode
@@ -50,6 +50,8 @@ app.add_middleware(
     expose_headers=["Retry-After"],
 )
 app.include_router(router)
+if settings.enable_case_studies:
+    app.include_router(cases_router)
 
 
 @app.exception_handler(Problem)

@@ -3,7 +3,8 @@
 **Última actualización:** 2026-11-15 (sesión 3) · **Producto: GaIA** · F0–F4 entregadas; F5 entregada en lo que
 corresponde a la plataforma (el caso Trujillo/ENFEN lo trabajan los usuarios). **Realineación UX (ADR-0013):** la
 portada es el **Panel ambiental** (territorio mundial + periodo + variables + método + nivel de confianza). Módulos
-opcionales: Explorar (detalle), Análisis avanzado (`/estudio`), Atlas, Casos de estudio. Tag de recuperación
+opcionales: Explorar (detalle), Análisis avanzado (`/estudio`), Atlas. **Sin caso de estudio en la plataforma**
+(`/cases` desactivado por defecto con `ENABLE_CASE_STUDIES`); nombres de variables sencillos; ejemplo por defecto Lima. Tag de recuperación
 `pre-dashboard-2026-11-15`. **Git:** el ruleset «main protegida» exige PR + 3 checks (API/SDK, Web, E2E): rama → PR → merge.
 
 ## Commits

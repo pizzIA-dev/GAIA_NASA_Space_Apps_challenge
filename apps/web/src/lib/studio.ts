@@ -17,7 +17,7 @@ export interface StudioState {
 export const DEFAULT_STUDIO: StudioState = {
   panels: ["nasa-gpm-imerg-monthly-v07/precipitation_mm_month"],
   // Ejemplo del plan §4.3: «Comparar Huanchaco vs Moche».
-  geos: ["pe-ign2020:130104", "pe-ign2020:130107"],
+  geos: ["pe-ign2020:15", "pe-ign2020:04"],
   method: "sen",
   start: 2003,
   end: 2024,

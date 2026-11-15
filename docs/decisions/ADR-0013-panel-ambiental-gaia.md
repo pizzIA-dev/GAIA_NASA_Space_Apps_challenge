@@ -27,3 +27,20 @@
   o caché precalculada. Mientras tanto la tarjeta muestra el motivo y el coste (nunca un valor inventado).
 - **Pruebas:** E2E `panel.spec.ts` (portada, paridad web = API con método y nivel elegidos, «Ver detalle», quitar
   variable) + axe en `/`. Regresión completa: backend 122, E2E 39, contraste AA.
+
+## Actualización 2026-11-15 — plataforma general y lectura rápida (pedido del usuario)
+- **Sin caso de estudio en la plataforma:** se eliminaron de la web la sección «Casos de estudio», la historia de
+  Trujillo, la capa de eventos SINPAD/ENFEN y la asociación de Explorar. En la API, los endpoints `/cases` quedan
+  **desactivados por defecto** (`ENABLE_CASE_STUDIES=false`): no aparecen en la API pública ni en `/docs`; el código
+  y los datos se conservan para el trabajo propio del equipo (las pruebas los activan).
+- **Ejemplo por defecto:** Lima (Perú) en el Panel, Explorar, Atlas y Análisis avanzado (antes Trujillo).
+- **Marca:** solo «GaIA».
+- **Nombres sencillos** (`apps/web/src/lib/variables.ts`): Lluvia, Temperatura del aire, Humedad del suelo,
+  Vegetación (verdor), Temperatura del mar, etc. Los nombres técnicos, productos, bandas y versiones están en
+  Fuentes. Los términos estadísticos conservan su nombre.
+- **Menos elementos:** tarjeta = valor + una línea «IC · prueba · p» + gráfico; años con dato, advertencias y
+  procedencia en «Fuente y detalles». En el método: Tendencia + Nivel de confianza; IC y prueba en «Opciones
+  avanzadas» (★ = recomendado). Sin textos explicativos largos en la columna.
+- **Desbordes corregidos:** selectores al 100 % del ancho de la columna; tabla de comparación con desplazamiento
+  propio. Verificado sin desbordes en 1440/1024/768/390 px en las 6 páginas.
+

@@ -10,8 +10,9 @@ Google Earth Engine (NASA Space Apps 2026 — "Be An Earth System Trend Detectiv
 
 **Prioridad desde 2026-11-15 (ADR-0013):** la experiencia principal es el **Panel** (`/`): territorio (cualquier país) +
 periodo + variables + método + nivel de confianza → una tarjeta por variable. Módulos opcionales: Explorar (detalle de
-una variable), Análisis avanzado (`/estudio`), Atlas, Casos de estudio (`/historias`). El caso Trujillo y ENFEN los
-trabajan los usuarios: no ampliarlos. Punto de recuperación previo: tag `pre-dashboard-2026-11-15`.
+una variable), Análisis avanzado (`/estudio`), Atlas. **La plataforma es general: nada del caso Trujillo en la web**;
+los endpoints `/cases` están desactivados por defecto (`ENABLE_CASE_STUDIES`). Nombres de variables sencillos en la UI
+(`lib/variables.ts`); los técnicos van en Fuentes. Interfaz de lectura rápida: no añadir elementos sin necesidad. Punto de recuperación previo: tag `pre-dashboard-2026-11-15`.
 
 ## Mapa rápido del plan (líneas en PLAN_MAESTRO_...md)
 | Tema | Línea |

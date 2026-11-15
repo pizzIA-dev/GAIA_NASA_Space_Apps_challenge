@@ -20,7 +20,6 @@ const NAV = [
   { href: "/", label: "Panel" },
   { href: "/estudio", label: "Análisis avanzado" },
   { href: "/atlas", label: "Atlas" },
-  { href: "/historias", label: "Casos de estudio" },
   { href: "/fuentes", label: "Fuentes" },
   { href: "/metodos", label: "Métodos" },
 ];
@@ -34,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a className="skip" href="#contenido">Saltar al contenido</a>
         <header className="top">
-          <Link href="/" className="brand">GaIA<small>observatorio ambiental</small></Link>
+          <Link href="/" className="brand">GaIA</Link>
           <nav className="primary" aria-label="Secciones">
             {NAV.map((n) => <Link key={n.href} href={n.href}>{n.label}</Link>)}
           </nav>

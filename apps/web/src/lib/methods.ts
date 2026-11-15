@@ -21,3 +21,12 @@ export const RECOMMENDED: Record<string, { interval_method: string; significance
   theil_sen: { interval_method: "theil_sen_ar1", significance_test: "mann_kendall_ar1" },
   ols: { interval_method: "ar1_effective_n", significance_test: "ols_ar1_t" },
 };
+
+/** Nombres cortos para los selectores del panel (conservan el nombre estadístico; caben en la columna). */
+export const METHOD_SHORT: Record<string, string> = {
+  ols: "OLS (regresión lineal)", theil_sen: "Theil–Sen",
+  theil_sen_ar1: "Theil–Sen, n efectivo", theil_sen_analytic: "Theil–Sen analítico", moving_block_bootstrap: "Bootstrap por bloques",
+  ar1_effective_n: "OLS, n efectivo", hac_newey_west: "HAC (Newey–West)", ols_classic: "OLS clásico",
+  mann_kendall_ar1: "Mann–Kendall, n efectivo", mann_kendall: "Mann–Kendall", ols_ar1_t: "t, n efectivo",
+  ols_hac_t: "t con HAC", ols_t: "t clásica", none: "Sin prueba",
+};

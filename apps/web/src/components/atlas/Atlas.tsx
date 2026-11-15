@@ -10,18 +10,15 @@ import { divergentStops } from "@/lib/colors";
 import { digitsFor, fmt, fmtP, signed, unitPerDecade, verdictOf } from "@/lib/format";
 import { useResolvedTheme } from "@/lib/theme";
 import type { AtlasResult, FeatureCollection } from "@/lib/types";
+import { TerritoryPicker } from "../dashboard/Dashboard";
 import { TerritoryMap, type UnitResult } from "../explorer/TerritoryMap";
 
-const TERRITORIES = [
-  { id: "gb6:PER", label: "Perú", units: "departamentos" },
-  { id: "pe-ign2020:13", label: "La Libertad", units: "provincias" },
-  { id: "pe-ign2020:1301", label: "Provincia de Trujillo", units: "distritos" },
-];
+const DEFAULT_PARENT = "pe-ign2020:15"; // Lima: ejemplo inicial, cambiable
 const VARIABLES = [
-  { dataset_id: "nasa-gpm-imerg-monthly-v07", variable_id: "precipitation_mm_month", label: "Lluvia anual", source: "IMERG" },
-  { dataset_id: "nasa-merra2-slv", variable_id: "air_temperature_2m_c", label: "Temperatura del aire a 2 m", source: "MERRA-2" },
-  { dataset_id: "nasa-gldas-noah-v21-3h", variable_id: "soil_moisture_0_10cm_kgm2", label: "Humedad del suelo 0–10 cm", source: "GLDAS" },
-  { dataset_id: "nasa-modis-mod13q1-061", variable_id: "ndvi", label: "Vegetación (NDVI)", source: "MODIS" },
+  { dataset_id: "nasa-gpm-imerg-monthly-v07", variable_id: "precipitation_mm_month", label: "Lluvia" },
+  { dataset_id: "nasa-merra2-slv", variable_id: "air_temperature_2m_c", label: "Temperatura del aire" },
+  { dataset_id: "nasa-gldas-noah-v21-3h", variable_id: "soil_moisture_0_10cm_kgm2", label: "Humedad del suelo" },
+  { dataset_id: "nasa-modis-mod13q1-061", variable_id: "ndvi", label: "Vegetación (verdor)" },
 ];
 const START = 2003, END = 2024;
 
@@ -29,30 +26,18 @@ export function Atlas() {
   const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  // Cualquier territorio con subdivisiones (p. ej. el que se eligió en el panel); los tres botones son atajos.
-  const asked = params.get("territorio");
-  const preset = TERRITORIES.find((t) => t.id === asked);
-  const askedGeo = useQuery({ queryKey: ["geo", asked], queryFn: () => api.geography(asked!), enabled: !!asked && !preset });
-  const parent = preset ?? (asked && askedGeo.data
-    ? { id: asked, label: askedGeo.data.name, units: askedGeo.data.children.length ? "subdivisiones" : "subdivisiones (no tiene)" }
-    : TERRITORIES[0]!);
+  const parentId = params.get("territorio") || DEFAULT_PARENT;
+  const parentGeo = useQuery({ queryKey: ["geo", parentId], queryFn: () => api.geography(parentId) });
+  const parent = { id: parentId, label: parentGeo.data?.name ?? "…" };
   const features = useQuery({ queryKey: ["features", parent.id], queryFn: () => api.features(parent.id) });
   return (
     <main className="atlas" id="contenido">
       <header className="atlas-head">
-        <h1>Atlas de tendencias</h1>
-        <p className="lead">
-          Pendiente {START}–{END} de cada variable NASA en todos los {parent.units} de {parent.label}. Cada mapa compara sus
-          unidades entre sí con corrección por pruebas múltiples (BH-FDR): el color dice cuánto cambia; el rayado, que no
-          hay evidencia de cambio.
-        </p>
-        <div className="chips" role="group" aria-label="Territorio del atlas">
-          {TERRITORIES.map((t) => (
-            <button key={t.id} type="button" className="chip" aria-pressed={t.id === parent.id}
-              onClick={() => router.replace(t.id === TERRITORIES[0]!.id ? pathname : `${pathname}?territorio=${encodeURIComponent(t.id)}`, { scroll: false })}>
-              {t.label} <small>{t.units}</small>
-            </button>
-          ))}
+        <h1>Atlas · {parent.label}</h1>
+        <p className="lead">Cómo cambia cada variable en las subdivisiones del territorio ({START}–{END}). El rayado indica que no hay evidencia de cambio.</p>
+        <div className="atlas-picker">
+          <TerritoryPicker geo={parentGeo.data}
+            onPick={(id) => router.replace(id === DEFAULT_PARENT ? pathname : `${pathname}?territorio=${encodeURIComponent(id)}`, { scroll: false })} />
         </div>
       </header>
       <div className="atlas-grid">
@@ -83,7 +68,7 @@ function AtlasMap({ parentId, v, fc }: { parentId: string; v: (typeof VARIABLES)
     `/explorar?focus=${encodeURIComponent(parentId)}&selected=${encodeURIComponent(geoId)}&datasetId=${v.dataset_id}&variableId=${v.variable_id}`;
   return (
     <section className="panel atlas-card" aria-labelledby={`h-${v.variable_id}`} data-variable={v.variable_id}>
-      <h2 id={`h-${v.variable_id}`}>{v.label} <small className="muted">{v.source}</small></h2>
+      <h2 id={`h-${v.variable_id}`}>{v.label}</h2>
       {q.isPending && <p className="state" role="status">Calculando una tendencia por unidad…</p>}
       {q.error && (
         <div className="state" role="alert">
