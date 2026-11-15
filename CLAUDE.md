@@ -1,4 +1,4 @@
-# CLAUDE.md — GaIA (observatorio ambiental; antes «Earth Trend Studio»)
+# CLAUDE.md — GaIA (antes «Earth Trend Studio»)
 
 > **Al iniciar sesión, lee SOLO este archivo y `ESTADO_PROYECTO.md`.** No releas el plan completo (146 KB):
 > consulta secciones puntuales con `grep -n "^#" PLAN_MAESTRO_PLATAFORMA_TENDENCIAS_NASA_WEB.md` y luego `Read` con offset.
@@ -6,7 +6,7 @@
 ## Qué es
 Plataforma web + API REST v1 + SDK Python para detectar tendencias del sistema terrestre con datos NASA vía
 Google Earth Engine (NASA Space Apps 2026 — "Be An Earth System Trend Detective!"). Responde: ¿qué cambia?,
-¿dónde?, ¿cuánto?, ¿es significativo? Caso demo opcional: El Niño Costero + huaicos en Trujillo (NO es la marca).
+¿dónde?, ¿cuánto?, ¿es significativo? **Publicado y funcional** (web, API, SDK); ver enlaces en `ESTADO_PROYECTO.md`.
 
 **Prioridad desde 2026-11-15 (ADR-0013):** la experiencia principal es el **Panel** (`/`): territorio (cualquier país) +
 periodo + variables + método + nivel de confianza → una tarjeta por variable. Módulos opcionales: Explorar (detalle de
@@ -42,16 +42,18 @@ los endpoints `/cases` están desactivados por defecto (`ENABLE_CASE_STUDIES`). 
 - Sin notebooks/ZIP/Base64 como dependencia. Coincidencia temporal El Niño ≠ causalidad.
 - UI editorial/cartográfica propia; prohibido look de "dashboard IA" (glassmorphism, degradado púrpura, tarjetas genéricas).
 
-## Entorno (verificado 2026-11-14)
+## Entorno (verificado 2026-11-15)
 Windows 11 · Python 3.13.5 · Node 24 / npm 11 · git 2.37. **No instalados:** uv, pnpm, docker, gcloud (no necesarios).
 Backend: venv `apps/api/.venv` (pip). Tests: `cd apps/api && .venv/Scripts/python -m pytest -q`.
 Web: `apps/web` (npm; Next 16, TS 5.9). `npm --prefix apps/web run dev` (genera tokens y copia worker MapLibre) ·
 `npx tsc --noEmit` · `npx next build` · `npm run test:e2e` (Playwright, Edge) · `npm run check:contrast`. Servidores para el panel del navegador: `.claude/launch.json` (api, web).
 Earth Engine: cuenta de servicio (ruta en `.env`, clave fuera del repo); diagnóstico `scripts/check_ee_auth.py`.
+Vercel CLI con sesión iniciada (`npx vercel`, proyecto vinculado en `apps/web/.vercel`). Sin clave de API de Render (revocada):
+Render despliega solo desde `main`.
 CI: `.github/workflows/ci.yml` sin EE (fixtures reales en `scientific/fixtures/e2e`); ver `docs/runbooks/ci.md`.
 
 ## Flujo git (actualizado por el usuario 2026-11-15)
-- Remoto `github.com/pizzIA-dev/NASA_Space_Apps_challenge` (privado, organización pizzIA-dev).
+- Remoto `github.com/pizzIA-dev/NASA_Space_Apps_challenge` (**público** desde 2026-11-15, organización pizzIA-dev).
 - El usuario pidió push directo, pero GitHub aplica el ruleset «main protegida» (PR + checks API/SDK, Web y E2E):
   rama → PR → `gh pr merge --squash --delete-branch` cuando los 3 estén en verde. Pruebas locales antes de subir.
 - Publicación: web https://gaia-chi-five.vercel.app (`cd apps/web && npx vercel deploy --prod`), API
