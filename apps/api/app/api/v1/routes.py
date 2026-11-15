@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import math
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 from typing import Literal
 
@@ -23,6 +25,8 @@ from app.services.statistics.trend_core import IncompatibleMethodError, benjamin
 
 router = APIRouter(prefix="/api/v1")
 COMPARE_MAX_SPECS = 12
+ATLAS_MAX_UNITS = 250
+ATLAS_UNITS_PER_QUOTA = 12
 
 
 def problem(status: int, code: str, detail: str, request: Request | None = None) -> JSONResponse:
@@ -354,6 +358,125 @@ def compare_analyses(req: CompareRequest, identity: Identity = Depends(get_ident
         "items": sorted(items, key=lambda it: it["index"]),
         "note": "q-valores BH-FDR sobre los ítems con p-valor de esta familia. La diferencia entre pendientes no se "
                 "estima aquí: un solapamiento de IC no equivale a una prueba de diferencia.",
+    }
+
+
+class AtlasRequest(BaseModel):
+    """Atlas (plan §4.1, §8 «mapa de tendencias», MAP-01): pendiente de una variable en TODAS las subunidades de un
+    territorio, con la misma especificación que Explorar (comparten caché) y BH-FDR sobre la familia de unidades."""
+
+    model_config = ConfigDict(extra="forbid")
+    parent_geo_id: str
+    dataset_id: str
+    variable_id: str
+    start_year: int = Field(2003, ge=1980, le=2100)
+    end_year: int = Field(2024, ge=1980, le=2100)
+    method: Literal["sen", "ols"] = "sen"
+
+
+ATLAS_METHODS = {
+    "sen": {"estimator": "theil_sen", "interval_method": "theil_sen_analytic", "significance_test": "mann_kendall"},
+    "ols": {"estimator": "ols", "interval_method": "hac_newey_west", "significance_test": "ols_hac_t"},
+}
+
+
+def _atlas_unit(slot: dict) -> dict:
+    u = slot["unit"]
+    base = {"geo_id": u.geo_id, "name": u.name, "admin_level": u.admin_level, "area_km2": u.area_km2}
+    if "error" in slot:
+        return base | {"status": "failed", "error": slot["error"]}
+    try:
+        run = runner.execute(slot["prepared"])
+    except runner.AnalysisError as e:
+        return base | {"status": "failed", "error": {"status": e.status, "code": e.code, "detail": e.detail}}
+    except IncompatibleMethodError as e:
+        return base | {"status": "failed", "error": {"status": 409, "code": "incompatible_method", "detail": str(e)}}
+    except Exception as e:  # noqa: BLE001 — fallo de Earth Engine en esta unidad: se informa, no tumba el atlas
+        return base | {"status": "failed", "error": {"status": 503, "code": "source_error",
+                                                     "detail": f"Earth Engine: {type(e).__name__}: {str(e)[:160]}"}}
+    return base | {"status": "succeeded", "run_id": run["run_id"], "statistics": dict(run["statistics"])}
+
+
+@router.post("/atlas", tags=["analyses"])
+def atlas(req: AtlasRequest, identity: Identity = Depends(get_identity), store=Depends(get_store),
+          adapters=Depends(get_adapters), geos=Depends(get_geographies), limiter=Depends(get_limiter),
+          gate=Depends(get_gate)):
+    """Pendiente anual por subunidad, con la MISMA especificación que Explorar (comparten caché). Las series nuevas se
+    extraen en paralelo bajo un turno del semáforo de EE; cada 12 unidades nuevas cuentan como una extracción del cupo.
+
+    Cada unidad falla o tiene éxito por separado (p. ej. sin píxeles válidos). q-valores BH-FDR sobre las unidades.
+    """
+    if req.end_year - req.start_year < 9:
+        raise Problem(422, "invalid_request", "El atlas requiere al menos 10 años (end_year − start_year ≥ 9)")
+    try:
+        parent = geos.get(req.parent_geo_id)
+        units = geos.children(parent)
+    except reg.GeographyNotFound as e:
+        raise Problem(404, "unknown_geography", f"geo_id no encontrado: {req.parent_geo_id}") from e
+    except BoundariesNotIngested as e:
+        raise Problem(503, "source_unavailable", str(e)) from e
+    if not units:
+        raise Problem(422, "no_subunits", f"{parent.name} no tiene subunidades en el sistema de fronteras")
+    if len(units) > ATLAS_MAX_UNITS:
+        raise Problem(413, "too_many_units", f"{len(units)} subunidades superan el máximo de {ATLAS_MAX_UNITS} por atlas")
+    slots: list[dict] = []
+    for u in units:
+        spec = AnalysisSpec.model_validate({
+            "data": {"dataset_id": req.dataset_id, "variable_id": req.variable_id},
+            "geography": {"geo_ids": [u.geo_id]},
+            "time": {"start": f"{req.start_year}-01-01", "end_exclusive": f"{req.end_year + 1}-01-01",
+                     "granularity": "year"},
+            "statistics": ATLAS_METHODS[req.method],
+        })
+        try:
+            slots.append({"unit": u, "prepared": _prepare(spec, store, adapters, geos)})
+        except Problem as e:
+            if e.code in ("unknown_dataset", "unknown_variable", "incompatible_method", "insufficient_coverage"):
+                raise  # el error es de la petición (igual para todas las unidades), no de un territorio
+            slots.append({"unit": u, "error": {"status": e.status, "code": e.code, "detail": e.detail}})
+    preps = [s["prepared"] for s in slots if "prepared" in s]
+    est = cost.estimate_batch(preps)
+    _authorize(identity, est)
+    new = [p for p in preps if p.needs_extraction]
+    if new:
+        # Cupo: cada ATLAS_UNITS_PER_QUOTA unidades nuevas cuentan como una extracción (como una familia de /compare).
+        need = math.ceil(len(new) / ATLAS_UNITS_PER_QUOTA)
+        limit = _extraction_limit(identity)
+        if need > limiter.remaining(identity.subject, limit):
+            raise Problem(429, "quota_exceeded", f"El atlas requiere {need} extracciones de tu cupo y te quedan "
+                          f"{limiter.remaining(identity.subject, limit)} esta hora. Usa un token o un territorio menor.",
+                          retry_after=60)
+        for _ in range(need):
+            limiter.check_and_add(identity.subject, limit)
+        try:
+            # Un turno del semáforo global; dentro, extracciones individuales en paralelo (mismo código que Explorar:
+            # resultados idénticos y caché compartida). La reducción multibanda por lotes resultó más lenta en EE.
+            with gate.slot(), ThreadPoolExecutor(max_workers=runner.settings.atlas_parallel_extractions) as pool:
+                items = list(pool.map(_atlas_unit, slots))
+        except RateLimited as e:
+            raise Problem(503, "source_busy", e.detail, retry_after=e.retry_after) from e
+    else:
+        items = [_atlas_unit(s) for s in slots]
+    ok = [it for it in items if it["status"] == "succeeded"]
+    for it, q in zip(ok, benjamini_hochberg([it["statistics"]["p_value"] for it in ok]), strict=True):
+        it["statistics"]["q_value"] = q
+        it["statistics"]["multiple_tests_family"] = f"atlas:{parent.geo_id}"
+    adapter = adapters[req.dataset_id]
+    var = adapter.info.variable(req.variable_id)
+    abs_est = [abs(it["statistics"]["estimate"]) for it in ok if it["statistics"].get("estimate") is not None]
+    return {
+        "parent": {"geo_id": parent.geo_id, "name": parent.name, "admin_level": parent.admin_level},
+        "variable": {"dataset_id": req.dataset_id, "variable_id": req.variable_id, "unit": var.unit_display,
+                     "physical_quantity": var.physical_quantity},
+        "period": [req.start_year, req.end_year], "method": ATLAS_METHODS[req.method],
+        "n_units": len(items), "n_succeeded": len(ok),
+        "scale": {"center": 0, "max_abs_estimate": max(abs_est) if abs_est else None},
+        "pixel_km2": (adapter.info.native_scale_m / 1000.0) ** 2,
+        "source_versions": [{"dataset_id": adapter.info.dataset_id, "ee_collection_id": adapter.info.ee_collection_id,
+                             "version": adapter.info.version, "native_scale_m": adapter.info.native_scale_m}],
+        "cost": est.to_dict(), "new_extractions": len(new), "items": items,
+        "note": "Pendiente por unidad con su propio IC; q-valores BH-FDR sobre las unidades del atlas. Escala divergente "
+                "centrada en 0, común a todas las unidades; las unidades sin evidencia se marcan, no se ocultan.",
     }
 
 

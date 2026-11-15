@@ -107,6 +107,11 @@
   (umbral 2017–2021, prueba 2022–2025, VP/FP/FN/VN, POD Wilson, azar esperado, 27 combinaciones). Regla principal
   P95/3 d/3 d: **0 de 3 anticipados, 755 falsas alarmas (17 por distrito-año)** — resultado nulo publicado, coincide
   con v13.1. Tests backend 106, Playwright historia + axe verdes.
+- **Atlas `/atlas`** (ADR-0010): `POST /api/v1/atlas` = pendiente anual de todas las subunidades (≤ 250) con la misma
+  spec que Explorar (caché compartida), BH-FDR por mapa, coste por suma de píxeles, 12 unidades nuevas = 1 extracción
+  del cupo, extracciones individuales en paralelo (`ATLAS_PARALLEL_EXTRACTIONS`=6). UI: small multiples (lluvia,
+  temperatura 2 m, humedad del suelo, NDVI) para Perú/departamentos, La Libertad/provincias, Trujillo/distritos.
+  Real: lluvia 25 departamentos → 7 disminución, 18 sin evidencia. La reducción multibanda por lotes se descartó (más lenta).
 - API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
 - Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
 - **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
@@ -117,7 +122,7 @@
 
 ## Siguiente
 1. Prueba con lector de pantalla (NVDA).
-2. **F4 restante:** Atlas (mapas de tendencia por variable), brush temporal,
+2. **F4 restante:** brush temporal,
    diferencia de pendientes con IC (bootstrap conjunto) para comparaciones.
 3. **F5 restante:** umbral ENFEN (PDF NT
    01-2024, el usuario decidió seguir sin él), cartografía INEI con Alto Trujillo.

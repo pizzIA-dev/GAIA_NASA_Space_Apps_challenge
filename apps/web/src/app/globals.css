@@ -181,3 +181,12 @@ code { background: var(--paper-2); padding: 1px 6px; border-radius: 3px; font-si
   .map { height: 300px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* Atlas: small multiples, un mapa por variable */
+.atlas { padding: 24px 32px 48px; max-width: 1400px; margin: 0 auto; }
+.atlas-head { max-width: 80ch; margin-bottom: 16px; } .atlas-head .chips { margin-top: 12px; }
+.atlas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); gap: 16px; }
+.atlas-card h2 { margin-top: 0; } .atlas-summary { margin: 0 0 10px; }
+.atlas-card .map { height: 420px; }
+.atlas-table { margin-top: 10px; overflow-x: auto; } .atlas-table summary { cursor: pointer; font-weight: 600; }
+@media (max-width: 640px) { .atlas { padding: 16px; } .atlas-card .map { height: 280px; } }

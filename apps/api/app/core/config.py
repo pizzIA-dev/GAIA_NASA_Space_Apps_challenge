@@ -46,6 +46,7 @@ class Settings:
     anon_extractions_per_hour: int = int(_env("ANON_EXTRACTIONS_PER_HOUR", "20") or 20)
     key_extractions_per_hour: int = int(_env("KEY_EXTRACTIONS_PER_HOUR", "200") or 200)
     max_concurrent_extractions: int = int(_env("MAX_CONCURRENT_EXTRACTIONS", "2") or 2)
+    atlas_parallel_extractions: int = int(_env("ATLAS_PARALLEL_EXTRACTIONS", "6") or 6)
     # Orígenes web permitidos (CORS estricto, plan §12A.2). Los notebooks no dependen de CORS.
     allowed_origins: tuple[str, ...] = field(default_factory=lambda: tuple(
         o.strip() for o in (_env("ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000") or "").split(",")
