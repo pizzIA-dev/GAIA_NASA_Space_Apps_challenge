@@ -7,7 +7,7 @@ const TRUJILLO = "pe-ign2020:1301";
 test("atlas de la provincia de Trujillo: resumen y tabla = API, enlace a Explorar", async ({ page, request }) => {
   await page.goto(`/atlas?territorio=${encodeURIComponent(TRUJILLO)}`);
   await expect(page.locator(".atlas-card")).toHaveCount(4);
-  await expect(page.getByRole("button", { name: /Provincia de Trujillo/ })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".atlas-head h1")).toContainText("Trujillo");
 
   const r = await (await request.post(`${API}/atlas`, { data: {
     parent_geo_id: TRUJILLO, dataset_id: "nasa-gpm-imerg-monthly-v07", variable_id: "precipitation_mm_month",

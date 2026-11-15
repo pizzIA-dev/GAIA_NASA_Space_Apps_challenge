@@ -18,12 +18,16 @@ async function drag(page: import("@playwright/test").Page, from: import("@playwr
   await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2);
   await page.mouse.down();
   await page.mouse.move(a.x + a.width / 2 + 12, a.y + a.height / 2 + 12, { steps: 4 });
-  await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2, { steps: 20 });
+  // Al activarse el arrastre, el destino puede cambiar de tamaño/posición: se mide de nuevo antes de soltar.
+  await page.waitForTimeout(100);
+  const b2 = (await to.boundingBox()) ?? b;
+  await page.mouse.move(b2.x + b2.width / 2, b2.y + b2.height / 2, { steps: 20 });
+  await page.waitForTimeout(100);
   await page.mouse.up();
 }
 
 test("compara Huanchaco y Moche con los mismos números que /analyses/compare", async ({ page, request }) => {
-  await page.goto("/estudio");
+  await page.goto("/estudio?geos=pe-ign2020:130104,pe-ign2020:130107");
   const rows = page.locator(".compare-table tbody tr");
   await expect(rows).toHaveCount(2);
   await expect(rows.nth(0)).toContainText("Huanchaco");
@@ -43,27 +47,27 @@ test("arrastrar una variable al hueco crea un panel y a un panel lo reemplaza", 
   // Ventana alta: origen (columna izquierda) y destino (hueco bajo el panel) visibles a la vez, sin desplazar la
   // página durante el arrastre (con las fuentes de Linux la página es más alta y el desplazamiento los separaba).
   await page.setViewportSize({ width: 1440, height: 1800 });
-  await page.goto("/estudio");
+  await page.goto("/estudio?geos=pe-ign2020:130104,pe-ign2020:130107");
   await expect(page.locator(".studio-panel")).toHaveCount(1);
-  const ndvi = page.locator(".chip.draggable", { hasText: "índice de vegetación" });
+  const ndvi = page.locator(".chip.draggable", { hasText: "Vegetación (verdor)" });
   await drag(page, ndvi, page.locator(".new-panel"));
   await expect(page.locator(".studio-panel")).toHaveCount(2);
-  await expect(page.locator(".studio-panel").nth(1)).toContainText("índice de vegetación");
+  await expect(page.locator(".studio-panel").nth(1)).toContainText("Vegetación (verdor)");
   await expect(page).toHaveURL(/panels=.*ndvi/);
-  const t2m = page.locator(".chip.draggable", { hasText: "temperatura del aire a 2 m" });
+  const t2m = page.locator(".chip.draggable", { hasText: "Temperatura del aire" });
   await drag(page, t2m, page.locator(".studio-panel").nth(1));
-  await expect(page.locator(".studio-panel").nth(1)).toContainText("temperatura del aire a 2 m");
+  await expect(page.locator(".studio-panel").nth(1)).toContainText("Temperatura del aire");
 });
 
 test("alternativa sin arrastrar: añadir, mover y quitar paneles con botones", async ({ page }) => {
-  await page.goto("/estudio");
-  await page.getByRole("button", { name: /Añadir panel de humedad del suelo/ }).click();
+  await page.goto("/estudio?geos=pe-ign2020:130104,pe-ign2020:130107");
+  await page.getByRole("button", { name: /Añadir panel de Humedad del suelo/ }).click();
   await expect(page.locator(".studio-panel")).toHaveCount(2);
   await page.getByRole("group", { name: "Panel 2" }).getByRole("button", { name: "Subir" }).click();
-  await expect(page.locator(".studio-panel").first()).toContainText("humedad del suelo");
+  await expect(page.locator(".studio-panel").first()).toContainText("Humedad del suelo");
   await page.getByRole("group", { name: "Panel 1" }).getByRole("button", { name: "Quitar" }).click();
   await expect(page.locator(".studio-panel")).toHaveCount(1);
-  await expect(page.locator(".studio-panel").first()).toContainText("precipitación");
+  await expect(page.locator(".studio-panel").first()).toContainText("Lluvia");
 });
 
 test("en una familia de comparaciones el veredicto usa q (BH-FDR), no p", async ({ page }) => {
@@ -81,7 +85,7 @@ test("en una familia de comparaciones el veredicto usa q (BH-FDR), no p", async 
 
 test("diferencia de pendientes A − B con IC propio: el texto coincide con la API", async ({ page }) => {
   const resp = page.waitForResponse((r) => r.url().includes("/analyses/difference") && r.request().method() === "POST");
-  await page.goto("/estudio");
+  await page.goto("/estudio?geos=pe-ign2020:130104,pe-ign2020:130107");
   const body = await (await resp).json();
   const d = body.difference;
   expect(d.status).toBe("ok");

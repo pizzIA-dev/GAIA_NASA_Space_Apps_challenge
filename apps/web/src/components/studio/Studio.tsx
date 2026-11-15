@@ -11,18 +11,14 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { digitsFor, fmt, fmtP, signed, unitPerDecade, verdictOf } from "@/lib/format";
+import { simpleName, simpleUnit } from "@/lib/variables";
 import { buildSpec, METHOD_LABEL, type Method } from "@/lib/study";
 import { LINE_TYPES, MAX_PANELS, MAX_TERRITORIES, splitKey, studioFromUrl, studioToUrl, useStudio } from "@/lib/studio";
 import { useResolvedTheme } from "@/lib/theme";
 import type { CompareResult, Geography, SlopeDifference, Variable } from "@/lib/types";
 import { CompareChart } from "./CompareChart";
 
-const cleanQuantity = (q: string) => q.replace(/\s*\(.*?\)\s*/g, " ").trim();
 const keyOf = (v: Variable) => `${v.dataset_id}/${v.variable_id}`;
-const SOURCE: Record<string, string> = {
-  "nasa-gpm-imerg-monthly-v07": "IMERG", "nasa-gldas-noah-v21-3h": "GLDAS", "nasa-merra2-slv": "MERRA-2",
-  "nasa-modis-mod13q1-061": "MODIS", "nasa-modis-aqua-sst-l3smi": "MODIS-Aqua",
-};
 
 export function Studio() {
   const st = useStudio();
@@ -53,7 +49,7 @@ export function Studio() {
     if (target === "nuevo-panel") st.addPanel(key);
     else if (String(target).startsWith("panel-")) st.replacePanel(Number(String(target).slice(6)), key);
   };
-  const name = (key: string) => (byKey[key] ? cleanQuantity(byKey[key].physical_quantity) : key);
+  const name = (key: string) => (byKey[key] ? simpleName(byKey[key].dataset_id, byKey[key].variable_id, byKey[key].physical_quantity) : key);
 
   return (
     <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragCancel={() => setDragging(null)}
@@ -73,7 +69,7 @@ export function Studio() {
             <p className="hint">Arrastra una variable a un panel para cambiarla, o al hueco final para añadir otra.</p>
             <div className="palette">
               {variables.data?.map((v) => (
-                <VariableChip key={keyOf(v)} id={keyOf(v)} label={cleanQuantity(v.physical_quantity)} source={SOURCE[v.dataset_id] ?? ""}
+                <VariableChip key={keyOf(v)} id={keyOf(v)} label={simpleName(v.dataset_id, v.variable_id, v.physical_quantity)}
                   inUse={st.panels.includes(keyOf(v))} canAdd={st.panels.length < MAX_PANELS} onAdd={() => st.addPanel(keyOf(v))} />
               ))}
             </div>
@@ -137,14 +133,14 @@ function LineKey({ index }: { index: number }) {
   );
 }
 
-function VariableChip({ id, label, source, inUse, canAdd, onAdd }:
-  { id: string; label: string; source: string; inUse: boolean; canAdd: boolean; onAdd: () => void }) {
+function VariableChip({ id, label, inUse, canAdd, onAdd }:
+  { id: string; label: string; inUse: boolean; canAdd: boolean; onAdd: () => void }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id });
   return (
     <div className="palette-row">
       <button ref={setNodeRef} type="button" className="chip draggable" data-in-use={inUse || undefined} data-dragging={isDragging || undefined}
         {...listeners} {...attributes} aria-roledescription="variable arrastrable">
-        {label} <small>{source}</small>
+        {label}
       </button>
       <button type="button" className="btn small" onClick={onAdd} disabled={inUse || !canAdd}>
         {inUse ? "En uso" : "Añadir panel"}<span className="sr-only"> {inUse ? `: ${label}` : `de ${label}`}</span>
@@ -195,15 +191,15 @@ function StudioPanel({ index, total, variable, panelKey, names, theme }:
   const st = useStudio();
   const { datasetId, variableId } = splitKey(panelKey);
   const specs = useMemo(() => st.geos.map((g) => buildSpec(
-    { focus: g, selected: g, datasetId, variableId, view: "annual", method: st.method, start: st.start, end: st.end, context: false }, g, "annual",
+    { focus: g, selected: g, datasetId, variableId, view: "annual", method: st.method, start: st.start, end: st.end }, g, "annual",
   )), [st.geos, st.method, st.start, st.end, datasetId, variableId]);
   const fam = useQuery<CompareResult, ApiError>({ queryKey: ["compare", specs], queryFn: () => api.compare(specs, `estudio:${panelKey}`), enabled: !!variable });
-  const label = variable ? cleanQuantity(variable.physical_quantity) : panelKey;
-  const unit = variable?.unit_display ?? "";
+  const label = variable ? simpleName(variable.dataset_id, variable.variable_id, variable.physical_quantity) : panelKey;
+  const unit = simpleUnit(variable?.unit_display ?? "");
   return (
     <>
       <div className="panel-head">
-        <h2>{label} <small className="muted">{SOURCE[datasetId] ?? datasetId} · valor anual</small></h2>
+        <h2>{label} <small className="muted">· valor anual</small></h2>
         <div className="toolbar" role="group" aria-label={`Panel ${index + 1}`}>
           <button type="button" className="btn small" onClick={() => st.movePanel(index, -1)} disabled={index === 0}>Subir</button>
           <button type="button" className="btn small" onClick={() => st.movePanel(index, 1)} disabled={index === total - 1}>Bajar</button>

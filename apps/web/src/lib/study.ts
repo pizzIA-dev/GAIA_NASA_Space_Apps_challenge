@@ -14,22 +14,20 @@ export interface StudyState {
   method: Method;
   start: number;
   end: number; // año final inclusivo
-  context: boolean; // capa de contexto local (eventos SINPAD + episodios ENFEN) cuando el territorio la tiene
   ic?: string; // variante de intervalo dentro del estimador del preset (vacío = la del preset)
   prueba?: string; // variante de prueba de significancia (vacío = la del preset)
   conf?: number; // nivel de confianza (vacío = 0,95)
 }
 
 export const DEFAULT_STUDY: StudyState = {
-  focus: "pe-ign2020:1301",
-  selected: "pe-ign2020:1301",
+  focus: "pe-ign2020:15",
+  selected: "pe-ign2020:15",
   datasetId: "nasa-gpm-imerg-monthly-v07",
   variableId: "precipitation_mm_month",
   view: "annual",
   method: "sen",
   start: 2003,
   end: 2024,
-  context: false,
 };
 
 interface Store extends StudyState {
@@ -38,7 +36,7 @@ interface Store extends StudyState {
 
 export const useStudy = create<Store>((set) => ({ ...DEFAULT_STUDY, set: (patch) => set(patch) }));
 
-const KEYS: (keyof StudyState)[] = ["focus", "selected", "datasetId", "variableId", "view", "method", "start", "end", "context",
+const KEYS: (keyof StudyState)[] = ["focus", "selected", "datasetId", "variableId", "view", "method", "start", "end",
   "ic", "prueba", "conf"];
 
 export function readStudyFromUrl(search: string): Partial<StudyState> {
@@ -47,7 +45,7 @@ export function readStudyFromUrl(search: string): Partial<StudyState> {
   for (const k of KEYS) {
     const v = q.get(k);
     if (v == null) continue;
-    out[k] = k === "start" || k === "end" || k === "conf" ? Number(v) : k === "context" ? v === "true" : v;
+    out[k] = k === "start" || k === "end" || k === "conf" ? Number(v) : v;
   }
   return out as Partial<StudyState>;
 }

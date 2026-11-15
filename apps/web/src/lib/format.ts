@@ -12,7 +12,8 @@ export const digitsFor = (v: number | null | undefined) => {
   return a >= 10 ? 1 : a >= 1 ? 2 : a >= 0.01 ? 3 : 4;
 };
 
-export const unitPerDecade = (u: string) => u.replace("/decade", " por década").replace("/year", " por año");
+export const unitPerDecade = (u: string) =>
+  u.replace(/^adimensional/, "índice").replace("/decade", " por década").replace("/year", " por año");
 
 export type VerdictKind = "up" | "down" | "nc" | "none";
 

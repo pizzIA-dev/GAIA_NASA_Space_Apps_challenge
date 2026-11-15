@@ -8,24 +8,20 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api, ApiError, isTransient } from "@/lib/api";
 import { digitsFor, fmt, fmtP, signed, TEST_LABEL, unitPerDecade, verdictOf } from "@/lib/format";
-import { METHOD_NAMES, RECOMMENDED, UNCORRECTED } from "@/lib/methods";
+import { METHOD_SHORT, RECOMMENDED, UNCORRECTED } from "@/lib/methods";
+import { simpleName, simpleUnit } from "@/lib/variables";
 import { statisticsFor, type Method } from "@/lib/study";
 import { useResolvedTheme } from "@/lib/theme";
 import type { CostEstimate, Dataset, Geography, Run, Variable } from "@/lib/types";
 import { ErrorPanel, Provenance } from "../explorer/Explorer";
 import { TrendChart } from "../explorer/TrendChart";
 
-const DEFAULT_GEO = "pe-ign2020:1301"; // ejemplo inicial, cambiable; la plataforma no depende de él
+const DEFAULT_GEO = "pe-ign2020:15"; // Lima (Perú): ejemplo inicial, cambiable a cualquier territorio
 const DEFAULT_VARS = [
   "nasa-gpm-imerg-monthly-v07/precipitation_mm_month", "nasa-merra2-slv/air_temperature_2m_c",
   "nasa-gldas-noah-v21-3h/soil_moisture_0_10cm_kgm2", "nasa-modis-mod13q1-061/ndvi",
 ];
 const FIRST_YEAR = 2001, LAST_YEAR = 2024;
-const SHORT: Record<string, string> = {
-  "nasa-gpm-imerg-monthly-v07": "IMERG", "nasa-gldas-noah-v21-3h": "GLDAS", "nasa-merra2-slv": "MERRA-2",
-  "nasa-modis-mod13q1-061": "MODIS Terra", "nasa-modis-aqua-sst-l3smi": "MODIS-Aqua",
-};
-const clean = (q: string) => { const t = q.replace(/\s*\(.*?\)\s*/g, " ").trim(); return t.charAt(0).toUpperCase() + t.slice(1); };
 const range = (a: number, b: number) => Array.from({ length: Math.max(0, b - a + 1) }, (_, i) => a + i);
 
 interface Config {
@@ -101,7 +97,6 @@ export function Dashboard() {
             <label>hasta <select value={c.end} onChange={(e) => set({ hasta: e.target.value })}>
               {range(c.start + 9, LAST_YEAR).map((y) => <option key={y}>{y}</option>)}</select></label>
           </div>
-          <p className="hint">Valores anuales; mínimo 10 años para estimar una tendencia.</p>
         </section>
         <section>
           <h2>Variables</h2>
@@ -111,27 +106,17 @@ export function Dashboard() {
               return (
                 <button key={key} type="button" className="chip" aria-pressed={on}
                   onClick={() => set({ variables: (on ? c.vars.filter((k) => k !== key) : [...c.vars, key]).join(",") || null })}>
-                  {clean(v.physical_quantity)} <small>{SHORT[v.dataset_id] ?? v.dataset_id}</small>
+                  {simpleName(v.dataset_id, v.variable_id, v.physical_quantity)}
                 </button>
               );
             })}
           </div>
         </section>
         <section>
-          <h2>Método de tendencia</h2>
-          <label className="field">Estimador
+          <h2>Método</h2>
+          <label className="field">Tendencia
             <select value={c.estimator} onChange={(e) => set({ estimador: e.target.value === "ols" ? "ols" : null, ic: null, prueba: null })}>
-              {Object.keys(caps.data?.estimators ?? { theil_sen: 1, ols: 1 }).map((k) => <option key={k} value={k}>{METHOD_NAMES[k] ?? k}</option>)}
-            </select>
-          </label>
-          <label className="field">Intervalo de confianza
-            <select value={c.ic} onChange={(e) => set({ ic: e.target.value === RECOMMENDED[c.estimator]!.interval_method ? null : e.target.value })}>
-              {(est?.interval_methods ?? [c.ic]).map((m) => <option key={m} value={m}>{METHOD_NAMES[m] ?? m}{m === RECOMMENDED[c.estimator]!.interval_method ? " (recomendado)" : ""}</option>)}
-            </select>
-          </label>
-          <label className="field">Prueba de significancia
-            <select value={c.prueba} onChange={(e) => set({ prueba: e.target.value === RECOMMENDED[c.estimator]!.significance_test ? null : e.target.value })}>
-              {(est?.significance_tests ?? [c.prueba]).map((m) => <option key={m} value={m}>{METHOD_NAMES[m] ?? m}{m === RECOMMENDED[c.estimator]!.significance_test ? " (recomendada)" : ""}</option>)}
+              {Object.keys(caps.data?.estimators ?? { theil_sen: 1, ols: 1 }).map((k) => <option key={k} value={k}>{METHOD_SHORT[k] ?? k}</option>)}
             </select>
           </label>
           <label className="field">Nivel de confianza
@@ -139,16 +124,23 @@ export function Dashboard() {
               {(caps.data?.confidence_levels ?? [0.9, 0.95, 0.99]).map((l) => <option key={l} value={l}>{Math.round(l * 100)} %</option>)}
             </select>
           </label>
+          <details className="advanced" open={c.ic !== RECOMMENDED[c.estimator]!.interval_method || c.prueba !== RECOMMENDED[c.estimator]!.significance_test}>
+            <summary>Opciones avanzadas</summary>
+            <label className="field">Intervalo de confianza
+              <select value={c.ic} onChange={(e) => set({ ic: e.target.value === RECOMMENDED[c.estimator]!.interval_method ? null : e.target.value })}>
+                {(est?.interval_methods ?? [c.ic]).map((m) => <option key={m} value={m}>{METHOD_SHORT[m] ?? m}{m === RECOMMENDED[c.estimator]!.interval_method ? " ★" : ""}</option>)}
+              </select>
+            </label>
+            <label className="field">Prueba de significancia
+              <select value={c.prueba} onChange={(e) => set({ prueba: e.target.value === RECOMMENDED[c.estimator]!.significance_test ? null : e.target.value })}>
+                {(est?.significance_tests ?? [c.prueba]).map((m) => <option key={m} value={m}>{METHOD_SHORT[m] ?? m}{m === RECOMMENDED[c.estimator]!.significance_test ? " ★" : ""}</option>)}
+              </select>
+            </label>
+            <p className="hint">★ recomendado: corrige la autocorrelación. <Link href="/metodos">Métodos</Link></p>
+          </details>
           {(UNCORRECTED.has(c.ic) || UNCORRECTED.has(c.prueba)) && (
-            <p className="hint warn-hint">Este método no corrige la autocorrelación: con series cortas sus intervalos son más estrechos de
-              lo que dicen y su prueba da más falsos positivos. <Link href="/metodos">Ver mediciones</Link>.</p>
+            <p className="hint warn-hint">Este método no corrige la autocorrelación: su confianza real es menor que la indicada.</p>
           )}
-          {c.conf !== 0.95 && (
-            <p className="hint">Con {Math.round(c.conf * 100)} %, una tendencia tiene evidencia si p &lt; {fmt(1 - c.conf, 2)} y el intervalo excluye 0.
-              Validado por simulación: cercano al nominal con poca autocorrelación; con autocorrelación alta la confianza real
-              es menor (90 % → ≈ 85 %; 99 % → ≈ 95 %).</p>
-          )}
-          <p className="hint">Los cálculos los hace la API: el mismo resultado se obtiene desde Python con el SDK.</p>
         </section>
       </aside>
 
@@ -156,10 +148,6 @@ export function Dashboard() {
         <header className="dash-head">
           <p className="muted small">{geo.data ? [...(geo.data.path ?? []), geo.data.name].join(" › ") : "Cargando territorio…"}</p>
           <h1>{geo.data?.name ?? "Territorio"} · {c.start}–{c.end}</h1>
-          <p className="lead">
-            Evolución anual y tendencia de cada variable con {METHOD_NAMES[c.estimator]?.toLowerCase()}, intervalo del {Math.round(c.conf * 100)} %
-            y su prueba. Cada variable se evalúa por separado (sin corrección por comparar varias).
-          </p>
           {geo.error && <p className="state" role="alert">{(geo.error as ApiError).problem.detail}</p>}
         </header>
         {c.vars.length === 0 && <p className="state">Elige al menos una variable.</p>}
@@ -171,9 +159,7 @@ export function Dashboard() {
           ))}
         </div>
         <p className="hint dash-more">
-          ¿Más? <Link href={`/atlas?territorio=${encodeURIComponent(c.geo)}`}>Mapa de tendencias de sus subdivisiones (Atlas)</Link> ·{" "}
-          <Link href="/estudio">Comparar territorios (Análisis avanzado)</Link> · <Link href="/fuentes">Fuentes</Link> ·{" "}
-          <Link href="/metodos">Métodos</Link>
+          <Link href={`/atlas?territorio=${encodeURIComponent(c.geo)}`}>Ver el mapa por subdivisiones</Link>
         </p>
       </main>
     </div>
@@ -189,7 +175,7 @@ function VariableCard({ cfg, varKey, variable, dataset }:
     retry: (n, e) => n < 12 && isTransient(e), retryDelay: 10_000 });
   const est = useQuery({ queryKey: ["cost", spec], queryFn: () => api.estimateCost(spec), enabled: q.isPending, staleTime: Infinity });
   const st = q.data?.statistics, vd = st ? verdictOf(st) : null, d = digitsFor(st?.estimate);
-  const unit = variable?.unit_display ?? "";
+  const unit = simpleUnit(variable?.unit_display ?? "");
   const ms = methodState(cfg);
   const detail = `/explorar?focus=${encodeURIComponent(cfg.geo)}&selected=${encodeURIComponent(cfg.geo)}&datasetId=${varKey.split("/")[0]}` +
     `&variableId=${varKey.split("/")[1]}&start=${cfg.start}&end=${cfg.end}${ms.method !== "sen" ? `&method=${ms.method}` : ""}` +
@@ -198,39 +184,39 @@ function VariableCard({ cfg, varKey, variable, dataset }:
   return (
     <section className="panel dash-card" aria-labelledby={`h-${varKey}`} data-variable={varKey.split("/")[1]}>
       <div className="panel-head">
-        <h2 id={`h-${varKey}`}>{variable ? clean(variable.physical_quantity) : varKey} <small className="muted">{SHORT[varKey.split("/")[0] ?? ""]}</small></h2>
+        <h2 id={`h-${varKey}`}>{simpleName(varKey.split("/")[0] ?? "", varKey.split("/")[1] ?? "", variable?.physical_quantity ?? varKey)}</h2>
         {vd && <span className="tag" data-kind={vd.kind}>{vd.label}</span>}
       </div>
       {q.isPending && <Waiting cost={est.data?.cost} granularity={dataset?.native_granularity} retrying={q.failureCount > 0} />}
       {q.error && <ErrorPanel error={q.error} />}
       {st && q.data && (
         <>
-          <dl className="facts">
-            <div><dt>Cambio</dt><dd className="num">{st.estimate != null ? `${signed(st.estimate, d)} ${unitPerDecade(st.estimate_unit)}` : "sin estimación"}</dd></div>
-            <div><dt>IC {Math.round(st.confidence_level * 100)} %</dt><dd className="num">{st.ci_lower != null ? `${signed(st.ci_lower, d)} a ${signed(st.ci_upper, d)}` : "—"}</dd></div>
-            <div><dt>{TEST_LABEL[st.test_method] ?? st.test_method}</dt><dd className="num">p = {fmtP(st.p_value)}</dd></div>
-            <div><dt>Años con dato</dt><dd className="num">{st.n_observations} de {st.n_observations + st.n_missing}</dd></div>
-          </dl>
+          <p className="dash-value num">{st.estimate != null ? `${signed(st.estimate, d)} ${unitPerDecade(st.estimate_unit)}` : "Sin datos suficientes"}</p>
+          {st.estimate != null && (
+            <p className="dash-stats num">
+              IC {Math.round(st.confidence_level * 100)} %: {signed(st.ci_lower, d)} a {signed(st.ci_upper, d)} · {TEST_LABEL[st.test_method] ?? st.test_method}: p = {fmtP(st.p_value)}
+            </p>
+          )}
           <TrendChart run={q.data} unit={unit} anomaly={false} theme={theme} />
-          {st.warnings.length > 0 && <ul className="warn">{st.warnings.slice(0, 2).map((w) => <li key={w}>{w}</li>)}</ul>}
         </>
       )}
       <p className="card-links">
         <Link href={detail}>Ver detalle</Link>
-        {dataset && <button type="button" className="linkish" aria-expanded={showProv} onClick={() => setShowProv((s) => !s)}>Fuente y cobertura</button>}
+        {dataset && <button type="button" className="linkish" aria-expanded={showProv} onClick={() => setShowProv((s) => !s)}>Fuente y detalles</button>}
       </p>
       {showProv && dataset && (
         <>
           <Provenance dataset={dataset} />
           <p className="small muted">Disponible desde {dataset.temporal_coverage_start} · versión {dataset.version} · {dataset.license}.
-            {q.data && ` run_id ${q.data.run_id}.`}</p>
+            {st && ` Años con dato: ${st.n_observations} de ${st.n_observations + st.n_missing}.`}{q.data && ` run_id ${q.data.run_id}.`}</p>
+          {st && st.warnings.length > 0 && <ul className="warn">{st.warnings.map((w) => <li key={w}>{w}</li>)}</ul>}
         </>
       )}
     </section>
   );
 }
 
-function TerritoryPicker({ geo, onPick }: { geo?: Geography & { children: Geography[] }; onPick: (geoId: string) => void }) {
+export function TerritoryPicker({ geo, onPick }: { geo?: Geography & { children: Geography[] }; onPick: (geoId: string) => void }) {
   const [q, setQ] = useState("");
   const iso3 = geo?.iso3 && geo.iso3.length === 3 ? geo.iso3 : null;
   const term = q.trim();
@@ -243,7 +229,7 @@ function TerritoryPicker({ geo, onPick }: { geo?: Geography & { children: Geogra
       <p className="crumb">{geo ? [...(geo.path ?? []), geo.name].join(" › ") : "…"}</p>
       <div className="search-wrap">
         <input className="search" type="search" value={q} onChange={(e) => setQ(e.target.value)}
-          placeholder="Buscar país o división" aria-label="Buscar territorio (cualquier país)" />
+          placeholder="Buscar país o región" aria-label="Buscar territorio (cualquier país)" />
         {term.length >= 2 && (
           <ul className="results" role="listbox" aria-label="Resultados">
             {items.length === 0 && !countries.isPending && <li className="muted">Sin resultados.</li>}

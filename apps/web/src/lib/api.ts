@@ -1,5 +1,5 @@
 import type { Capabilities } from "./methods";
-import type { AtlasResult, CostEstimate, SlopeDifference, CaseAssociationResult, CaseBacktest, CaseEnfen, CaseSummary, CaseEvents, CompareResult, Dataset, FeatureCollection, Geography, Problem, Run, Seasonal, Variable } from "./types";
+import type { AtlasResult, CostEstimate, SlopeDifference, CompareResult, Dataset, FeatureCollection, Geography, Problem, Run, Seasonal, Variable } from "./types";
 
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1").replace(/\/$/, "");
 
@@ -45,16 +45,9 @@ export const api = {
   capabilities: () => call<Capabilities>("catalog/capabilities"),
   geography: (geoId: string) => call<Geography & { children: Geography[]; attribution: string }>(`geographies/${encodeURIComponent(geoId)}`),
   features: (geoId: string) => call<FeatureCollection>(`geographies/${encodeURIComponent(geoId)}/features`),
-  caseEvents: (geoId: string, from: number, to: number) =>
-    call<CaseEvents>(`cases/trujillo-el-nino/events?geo_id=${encodeURIComponent(geoId)}&year_from=${from}&year_to=${to}`),
-  caseSummary: () => call<CaseSummary>("cases/trujillo-el-nino"),
-  caseAssociation: (body: object) =>
-    call<CaseAssociationResult>("cases/trujillo-el-nino/association", { method: "POST", body: JSON.stringify(body) }),
   difference: (a: object, b: object) =>
     call<SlopeDifference>("analyses/difference", { method: "POST", body: JSON.stringify({ a, b }) }),
   atlas: (body: object) => call<AtlasResult>("atlas", { method: "POST", body: JSON.stringify(body) }),
-  caseBacktest: () => call<CaseBacktest>("cases/trujillo-el-nino/backtest"),
-  caseEnfen: (from: number, to: number) => call<CaseEnfen>(`cases/trujillo-el-nino/enfen?year_from=${from}&year_to=${to}`),
   seasonal: (runId: string) => call<Seasonal>(`analyses/${encodeURIComponent(runId)}/seasonal`),
   estimateCost: (spec: object) =>
     call<{ cost: CostEstimate; allowed: boolean }>("analyses/estimate-cost", { method: "POST", body: JSON.stringify(spec) }),

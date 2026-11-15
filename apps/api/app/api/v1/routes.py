@@ -631,9 +631,13 @@ def get_seasonal(run_id: str, store=Depends(get_store)):
 
 
 # ---------------------------------------------------------------- casos (plan §9): capas nacionales opcionales
+# Casos de estudio locales (p. ej. Trujillo): NO forman parte de la plataforma general. Solo se montan si
+# ENABLE_CASE_STUDIES=true (app.main); por defecto no aparecen en la API pública ni en su documentación.
+cases_router = APIRouter(prefix="/api/v1")
 
 
-@router.get("/cases", tags=["cases"])
+
+@cases_router.get("/cases", tags=["cases"])
 def list_cases():
     try:
         s = trujillo.summary()
@@ -648,7 +652,7 @@ def _case(case_id: str) -> None:
         raise Problem(404, "unknown_case", f"Caso no encontrado: {case_id}")
 
 
-@router.get("/cases/{case_id}", tags=["cases"])
+@cases_router.get("/cases/{case_id}", tags=["cases"])
 def get_case(case_id: str):
     _case(case_id)
     try:
@@ -657,7 +661,7 @@ def get_case(case_id: str):
         raise Problem(503, "case_not_ingested", str(e)) from e
 
 
-@router.get("/cases/{case_id}/events", tags=["cases"])
+@cases_router.get("/cases/{case_id}/events", tags=["cases"])
 def get_case_events(case_id: str, geo_id: str | None = None, year_from: int | None = Query(None, ge=1990),
                     year_to: int | None = Query(None, le=2100), focal: bool = True, geos=Depends(get_geographies)):
     """Registros SINPAD del caso. `geo_id` (pe-ign2020:UBIGEO de la provincia o un distrito) filtra por territorio."""
@@ -676,14 +680,14 @@ def get_case_events(case_id: str, geo_id: str | None = None, year_from: int | No
             "note": "Reporte administrativo ≠ fenómeno físico único; ausencia de registro ≠ ausencia de evento."}
 
 
-@router.get("/cases/{case_id}/enfen", tags=["cases"])
+@cases_router.get("/cases/{case_id}/enfen", tags=["cases"])
 def get_case_enfen(case_id: str, year_from: int | None = Query(None, ge=1950), year_to: int | None = Query(None, le=2100)):
     """Serie oficial ICEN y episodios El Niño/La Niña Costera derivados con la regla operacional declarada."""
     _case(case_id)
     return trujillo.enfen(year_from, year_to)
 
 
-@router.get("/cases/{case_id}/backtest", tags=["cases"])
+@cases_router.get("/cases/{case_id}/backtest", tags=["cases"])
 def get_case_backtest(case_id: str):
     """Escena 5 (plan §9.2): ¿habría dado una alerta? Reglas de lluvia diaria IMERG por distrito, umbrales fijados en
     2017–2021 y evaluados fuera de muestra en 2022–2025 (VP/FP/FN/VN, POD con IC de Wilson, falsas alarmas).
@@ -710,7 +714,7 @@ class AssociationRequest(BaseModel):
     seed: int = 2026
 
 
-@router.post("/cases/{case_id}/association", tags=["cases"])
+@cases_router.post("/cases/{case_id}/association", tags=["cases"])
 def case_association(case_id: str, req: AssociationRequest, identity: Identity = Depends(get_identity),
                      store=Depends(get_store), adapters=Depends(get_adapters), geos=Depends(get_geographies),
                      limiter=Depends(get_limiter), gate=Depends(get_gate)):

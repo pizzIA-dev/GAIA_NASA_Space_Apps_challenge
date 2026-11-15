@@ -2,8 +2,8 @@
 // Serie temporal + tendencia + abanico de pendientes del IC (plan §8). No calcula estadística: usa la del run.
 import { useEffect, useRef } from "react";
 import { cssVar } from "@/lib/colors";
-import { fmt, signed } from "@/lib/format";
-import type { CaseEvent, EnfenEpisode, Run } from "@/lib/types";
+import { digitsFor, fmt, signed } from "@/lib/format";
+import type { Run } from "@/lib/types";
 
 const decYear = (iso: string) => {
   const d = new Date(iso);
@@ -19,17 +19,8 @@ const median = (a: number[]) => {
   return n % 2 ? s[(n - 1) / 2]! : (s[n / 2 - 1]! + s[n / 2]!) / 2;
 };
 
-const EVENT_COLOR: Record<CaseEvent["display_class"], string> = {
-  atribucion_verificada: "--event-verified", coincidencia_el_nino: "--event-coincidence", fuera_de_el_nino: "--event-outside",
-};
-const CONTEXT_LABEL: Record<string, string> = {
-  coincidencia_el_nino_costero: "durante El Niño Costero (coincidencia temporal, no prueba causa)",
-  coincidencia_la_nina_costera: "durante La Niña Costera", fuera_de_episodio: "fuera de episodios ENFEN",
-};
-
-export function TrendChart({ run, unit, anomaly, theme, onReady, events, episodes }:
-  { run: Run; unit: string; anomaly: boolean; theme: string; onReady?: (c: import("echarts").ECharts | null) => void;
-    events?: CaseEvent[]; episodes?: EnfenEpisode[] }) {
+export function TrendChart({ run, unit, anomaly, theme, onReady }:
+  { run: Run; unit: string; anomaly: boolean; theme: string; onReady?: (c: import("echarts").ECharts | null) => void }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -79,33 +70,6 @@ export function TrendChart({ run, unit, anomaly, theme, onReady, events, episode
         }
       }
       const vals = run.series.map((p) => p.value).filter((v): v is number => v != null);
-      // Capa de contexto local (caso Trujillo): bandas de episodios ENFEN y marcadores SINPAD sobre el gráfico.
-      if (episodes?.length) {
-        const monthEnd = (ym: string) => { const [y, m] = ym.split("-").map(Number); return Date.UTC(y!, m!, 1); };
-        (series[0] as { markArea?: unknown }).markArea = {
-          silent: true,
-          data: episodes.map((e) => [
-            { xAxis: Date.parse(`${e.start}-01T00:00:00Z`), name: e.id,
-              itemStyle: { color: cssVar(e.kind === "el_nino_costero" ? "--episode-nino" : "--episode-nina") },
-              label: { show: e.kind === "el_nino_costero", position: "insideTop", color: cssVar("--muted"), fontSize: 11,
-                       formatter: e.ongoing ? `${e.id} (en curso)` : e.id } },
-            { xAxis: monthEnd(e.end) },
-          ]),
-        };
-      }
-      if (events?.length && vals.length) {
-        const top = Math.max(...vals), span = top - Math.min(...vals, 0) || 1;
-        const seen: Record<string, number> = {};
-        series.push({
-          name: "eventos", type: "scatter", z: 6,
-          data: events.filter((e) => e.date).map((e) => {
-            const k = e.date!.slice(0, 7), n = (seen[k] = (seen[k] ?? 0) + 1);
-            return { value: [Date.parse(e.date!), top + span * (0.06 + 0.07 * (n - 1))], event: e,
-                     symbol: e.hazard === "huaico" ? "triangle" : "circle", symbolSize: 11,
-                     itemStyle: { color: cssVar(EVENT_COLOR[e.display_class]), borderColor: cssVar("--event-stroke"), borderWidth: 1.2 } };
-          }),
-        });
-      }
       chart.setOption({
         animation: false,
         aria: { enabled: true, label: { description: `Serie de ${run.series.length} puntos con tendencia ${st.estimator === "ols" ? "OLS" : "Theil–Sen"}` } },
@@ -119,15 +83,12 @@ export function TrendChart({ run, unit, anomaly, theme, onReady, events, episode
         tooltip: {
           trigger: "axis", backgroundColor: cssVar("--ink"), borderWidth: 0, textStyle: { color: cssVar("--paper"), fontSize: 13 },
           formatter: (params: unknown) => {
-            const all = params as { seriesName: string; value: [number, number | null]; data?: { event?: CaseEvent } }[];
-            const evs = all.filter((x) => x.seriesName === "eventos" && x.data?.event).map((x) => x.data!.event!);
-            const evHtml = evs.map((e) => `<br><b>${e.hazard === "huaico" ? "Huaico" : "Inundación"}</b> · ${e.district} · ${e.date}<br>` +
-              `SINPAD ${e.sinpad_code} · ${CONTEXT_LABEL[e.enfen.context] ?? e.enfen.context}`).join("");
-            const p = all.find((x) => !["tendencia", "IC de la pendiente", "eventos"].includes(x.seriesName));
-            if (!p) return evHtml.replace(/^<br>/, "");
+            const all = params as { seriesName: string; value: [number, number | null] }[];
+            const p = all.find((x) => !["tendencia", "IC de la pendiente"].includes(x.seriesName));
+            if (!p) return "";
             const d = new Date(p.value[0]);
             const when = anomaly ? d.toLocaleDateString("es-PE", { month: "long", year: "numeric", timeZone: "UTC" }) : String(d.getUTCFullYear());
-            return `<b>${when}</b><br>${p.value[1] == null ? "sin dato (no es cero)" : `${anomaly ? signed(p.value[1], 1) : fmt(p.value[1], 0)} ${unit}`}${evHtml}`;
+            return `<b>${when}</b><br>${p.value[1] == null ? "sin dato (no es cero)" : `${anomaly ? signed(p.value[1], 1) : fmt(p.value[1], digitsFor(p.value[1]))} ${unit}`}`;
           },
         },
         series,
@@ -140,7 +101,7 @@ export function TrendChart({ run, unit, anomaly, theme, onReady, events, episode
     mq.addEventListener("change", onScheme);
     return () => { disposed = true; ro?.disconnect(); mq.removeEventListener("change", onScheme); onReady?.(null); chart?.dispose(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [run, unit, anomaly, theme, events, episodes]);
+  }, [run, unit, anomaly, theme]);
 
   return <div ref={ref} className="chart" role="img" aria-label="Serie temporal con tendencia" />;
 }
