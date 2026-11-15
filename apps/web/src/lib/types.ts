@@ -120,3 +120,12 @@ export interface CaseAssociationResult {
   results: AssociationLag[]; warnings: string[]; n_units: number; resamples: number; seed: number;
   events_used: number; events_excluded_no_geometry: number; interpretation: string;
 }
+
+export interface CaseSummary {
+  id: string; title: string; description: string; province_geo_id: string;
+  sources: { kind: string; name: string; url: string; license?: string; reference?: string }[];
+  enfen_rule: { status: string; note: string };
+  counts: { province_records: number; focal_records: number; focal_2017_2025: number; focal_by_display_class: Record<string, number>; focal_by_year: Record<string, number> };
+  reconciliation: { reference: string; official_2017_2025: number; official_districts_2017_2025: string[]; status: string; note: string };
+  limitations: string[]; ingested_at: string;
+}
