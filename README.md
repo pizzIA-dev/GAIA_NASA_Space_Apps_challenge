@@ -1,12 +1,59 @@
-# Earth Trend Studio *(nombre provisional)*
+# GaIA
 
-Laboratorio visual para investigar cómo cambia la Tierra con datos NASA (vía Google Earth Engine):
-**¿qué cambia?, ¿dónde?, ¿cuánto? y ¿es estadísticamente significativo?** — NASA Space Apps Challenge 2026,
-*Be An Earth System Trend Detective!*
+Plataforma web, API REST y SDK de Python para detectar **tendencias del sistema terrestre con datos NASA** en cualquier
+territorio del mundo: **¿qué cambia?, ¿dónde?, ¿cuánto? y ¿es estadísticamente significativo?**
+NASA Space Apps Challenge 2026 · *Be An Earth System Trend Detective!*
 
-Web, API REST v1 y SDK Python comparten un único motor científico. Especificación completa:
-[PLAN_MAESTRO_PLATAFORMA_TENDENCIAS_NASA_WEB.md](PLAN_MAESTRO_PLATAFORMA_TENDENCIAS_NASA_WEB.md).
-Estado actual: [ESTADO_PROYECTO.md](ESTADO_PROYECTO.md).
+| | |
+|---|---|
+| **Web** | https://gaia-chi-five.vercel.app |
+| **API REST v1** | https://gaia-api-sk9y.onrender.com/api/v1 |
+| **Documentación de la API (OpenAPI)** | https://gaia-api-sk9y.onrender.com/docs |
+
+> Alojamiento gratuito: si nadie la usó en los últimos 15 minutos, la primera visita tarda 1–2 minutos mientras el
+> servidor despierta. Lima (Perú) está precargada; otros territorios se calculan la primera vez y quedan guardados.
+
+## Qué hace
+
+- **Panel:** eliges territorio (búsqueda mundial), periodo, variables, método de tendencia y nivel de confianza (90/95/99 %);
+  cada variable muestra su serie anual, la tendencia por década, el intervalo de confianza, la prueba y si hay evidencia.
+- **Atlas:** mapa de tendencias por subdivisiones del territorio. **Análisis avanzado:** compara territorios (corrección
+  por pruebas múltiples, diferencia de pendientes con su propio intervalo). **Fuentes** y **Métodos** documentan todo.
+- La web, la API y el SDK usan **el mismo motor estadístico**: la misma especificación da el mismo resultado (`run_id`).
+
+## Fuentes de datos
+
+| Variable en GaIA | Producto NASA | Colección en Google Earth Engine |
+|---|---|---|
+| Lluvia | GPM IMERG Final Monthly V07 (NASA GES DISC) | [`NASA/GPM_L3/IMERG_MONTHLY_V07`](https://developers.google.com/earth-engine/datasets/catalog/NASA_GPM_L3_IMERG_MONTHLY_V07) |
+| Temperatura del aire, vapor de agua, viento | MERRA-2 M2T1NXSLV (NASA GMAO) | [`NASA/GSFC/MERRA/slv/2`](https://developers.google.com/earth-engine/datasets/catalog/NASA_GSFC_MERRA_slv_2) |
+| Humedad del suelo, temperatura cerca del suelo | GLDAS Noah V2.1 (NASA GES DISC) | [`NASA/GLDAS/V021/NOAH/G025/T3H`](https://developers.google.com/earth-engine/datasets/catalog/NASA_GLDAS_V021_NOAH_G025_T3H) |
+| Vegetación (verdor, NDVI) | MODIS Terra MOD13Q1 v061 (NASA LP DAAC) | [`MODIS/061/MOD13Q1`](https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1) |
+| Temperatura del mar | MODIS-Aqua L3SMI SST (NASA OB.DAAC) | [`NASA/OCEANDATA/MODIS-Aqua/L3SMI`](https://developers.google.com/earth-engine/datasets/catalog/NASA_OCEANDATA_MODIS-Aqua_L3SMI) |
+
+Fronteras: [geoBoundaries gbOpen v6.0.0](https://www.geoboundaries.org) (mundial, CC BY 4.0; Runfola et al. 2020) e
+Instituto Geográfico Nacional del Perú vía [OCHA HDX COD-AB](https://data.humdata.org/dataset/cod-ab-per) (CC BY-IGO).
+Earth Engine se usa solo desde el servidor (proyecto registrado para uso no comercial); ninguna credencial está en el
+repositorio ni en el navegador.
+
+**Métodos:** Theil–Sen, Mann–Kendall, OLS con HAC, tamaño muestral efectivo AR(1) (Santer et al. 2000, por defecto),
+bootstrap por bloques y Benjamini–Hochberg. Su cobertura real se midió por simulación:
+[`scientific/reports/cobertura_ic.md`](scientific/reports/cobertura_ic.md). Decisiones: [`docs/decisions/`](docs/decisions/).
+
+## SDK de Python
+
+```python
+from earth_trend_client import EarthTrendClient   # pip install -e packages/python-sdk
+c = EarthTrendClient(base_url="https://gaia-api-sk9y.onrender.com/api/v1")
+run = c.analyses.run({"data": {"dataset_id": "nasa-gpm-imerg-monthly-v07", "variable_id": "precipitation_mm_month"},
+                      "geography": {"geo_ids": ["pe-ign2020:15"]},
+                      "time": {"start": "2003-01-01", "end_exclusive": "2025-01-01", "granularity": "year"}})
+print(run.id, c.analyses.statistics(run.id))
+```
+
+Estructura: `apps/api` (FastAPI + motor estadístico), `apps/web` (Next.js), `packages/python-sdk` (SDK),
+`scripts/` (ingesta y validación), `scientific/` (fixtures, informes), `docs/` (decisiones y guías). Despliegue gratuito:
+[`docs/runbooks/despliegue-gratuito.md`](docs/runbooks/despliegue-gratuito.md).
 
 ## Backend (FastAPI) — desarrollo local
 
