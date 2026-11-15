@@ -1,14 +1,14 @@
 "use client";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { cssVar } from "@/lib/colors";
 import { exportCsv, exportJson, exportPng, exportSvg } from "@/lib/export";
 import { divergentStops } from "@/lib/colors";
-import { digitsFor, fmt, signed, TEST_LABEL, unitPerDecade, verdictOf } from "@/lib/format";
+import { digitsFor, fmt, fmtP, signed, TEST_LABEL, unitPerDecade, verdictOf } from "@/lib/format";
 import { buildSpec, METHOD_LABEL, readStudyFromUrl, studyToUrl, useStudy, type Method } from "@/lib/study";
-import type { Dataset, Geography, Run, Variable } from "@/lib/types";
+import type { CompareResult, Dataset, Geography, Run, Variable } from "@/lib/types";
 import { useResolvedTheme } from "@/lib/theme";
 import { TerritoryMap, type UnitResult } from "./TerritoryMap";
 import { TrendChart } from "./TrendChart";
@@ -55,18 +55,18 @@ export function Explorer() {
   const [mapRequested, setMapRequested] = useState<string>("");
   const mapKey = `${study.focus}|${study.datasetId}|${study.variableId}|${study.method}|${study.start}|${study.end}`;
   const mapEnabled = main.isSuccess && (autoMap || mapRequested === mapKey);
-  const unitRuns = useQueries({
-    queries: units.map((u) => {
-      const s = buildSpec(study, u.geo_id, "annual");
-      return { queryKey: ["run", s], queryFn: () => api.analyze(s), enabled: mapEnabled };
-    }),
+  // Una sola llamada /analyses/compare para todas las unidades (q-valores BH-FDR de la familia incluidos).
+  const unitSpecs = useMemo(() => units.map((u) => buildSpec(study, u.geo_id, "annual")), [units, study]);
+  const unitFamily = useQuery<CompareResult, ApiError>({
+    queryKey: ["compare", unitSpecs], queryFn: () => api.compare(unitSpecs, `mapa:${study.focus}`),
+    enabled: mapEnabled && unitSpecs.length > 0,
   });
   const results: Record<string, UnitResult> = {};
   units.forEach((u, i) => {
-    const q = unitRuns[i];
-    results[u.geo_id] = { geoId: u.geo_id, st: q?.data?.statistics, error: q?.error instanceof ApiError ? q.error.problem.title : undefined };
+    const it = unitFamily.data?.items[i];
+    results[u.geo_id] = { geoId: u.geo_id, st: it?.statistics, error: it?.error?.code };
   });
-  const mapDone = unitRuns.filter((q) => q.isSuccess || q.isError).length;
+  const mapDone = unitFamily.data ? units.length : 0;
 
   const selectedGeo: Geography | undefined =
     study.selected === study.focus ? focus.data : units.find((u) => u.geo_id === study.selected);
@@ -178,7 +178,8 @@ export function Explorer() {
                 <button type="button" className="btn" onClick={() => setMapRequested(mapKey)}>Calcular pendientes por unidad</button>
               </p>
             )}
-            {mapEnabled && mapDone < units.length && <p className="hint" role="status">Calculando {mapDone} de {units.length} unidades…</p>}
+            {mapEnabled && mapDone < units.length && !unitFamily.error && <p className="hint" role="status">Calculando {units.length} unidades en una sola consulta…</p>}
+            {unitFamily.error && <p className="hint" role="alert">{unitFamily.error.problem.detail}</p>}
             <MapLegend pixelKm2={pixelKm2} theme={theme} />
           </section>
           <section className="panel" aria-label="Calidad y procedencia">
@@ -245,7 +246,7 @@ function Verdict({ run, geo, quantity, anomaly, start, end }:
         <dl className="facts">
           <div><dt>Cambio estimado</dt><dd className="num">{signed(st.estimate, d)} {unitPerDecade(st.estimate_unit)}</dd></div>
           <div><dt>IC {Math.round(st.confidence_level * 100)} %</dt><dd className="num">{signed(st.ci_lower, d)} a {signed(st.ci_upper, d)}</dd></div>
-          <div><dt>Prueba</dt><dd className="num">{TEST_LABEL[st.test_method] ?? st.test_method}, p = {fmt(st.p_value, 2)}</dd></div>
+          <div><dt>Prueba</dt><dd className="num">{TEST_LABEL[st.test_method] ?? st.test_method}, p = {fmtP(st.p_value)}</dd></div>
           <div><dt>{anomaly ? "Meses con dato" : "Años con dato"}</dt><dd className="num">{st.n_observations} de {st.n_observations + st.n_missing}</dd></div>
         </dl>
       )}
@@ -297,7 +298,7 @@ function MapLegend({ pixelKm2, theme }: { pixelKm2: number; theme: string }) {
     <div className="map-legend">
       <div className="ramp">{stops.map((c) => <span key={c} style={{ background: c }} />)}</div>
       <div className="ramp-labels"><span>disminuye</span><span>0</span><span>aumenta</span></div>
-      <p><span className="key hatch-k" />Rayado: sin evidencia de cambio (p ≥ 0,05 o el IC incluye 0)</p>
+      <p><span className="key hatch-k" />Rayado: sin evidencia de cambio (q ≥ 0,05 tras corregir por las unidades comparadas, o el IC incluye 0)</p>
       <p><span className="key sub-k" />Borde discontinuo: unidad menor que un píxel del producto (~{fmt(pixelKm2, 0)} km²)</p>
     </div>
   );

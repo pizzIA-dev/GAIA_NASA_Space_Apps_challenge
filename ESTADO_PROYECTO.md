@@ -9,6 +9,7 @@
 - `e1f3c8c` F2 — geografías geoBoundaries v6 + fronteras oficiales Perú (IGN), ingesta y manifiesto.
 - `3c32d82` F2 — adaptadores GLDAS/MERRA-2/NDVI/SST, SDK, notebook 01, coste/tokens/límites.
 - `16c59ae` F1 — dirección «Cuaderno de campo», tokens, web Explorar con API real.
+- `b3644af` F1 — tema, exportación, Fuentes/Métodos, Playwright, contraste.
 - (lista completa: `git log --oneline`)
 
 ## Qué funciona (verificado con datos reales)
@@ -70,6 +71,11 @@
   página honesta «aún no disponible». **Playwright 8/8** (`npm --prefix apps/web run test:e2e`, Edge `msedge`, sin
   descargar navegadores): paridad web↔API, exportaciones, URL, error 401 honesto, tema, Fuentes/Métodos, 1024/768/390 px.
   **Contraste WCAG 2.1 AA 26/26** (`npm --prefix apps/web run check:contrast`).
+- **Estudio + comparaciones** (ADR-0007): `POST /analyses/compare` (≤12 specs, BH-FDR, errores por ítem, cuota de familia
+  previa), SDK `analyses.compare()`. Explorar: mapa por unidades en 1 llamada. **/estudio**: paneles = variables, líneas =
+  territorios (≤4, color + patrón), tooltips sincronizados, arrastrar (dnd-kit puntero/teclado) + botones Añadir/Subir/Bajar/
+  Quitar, estado en URL. **Veredicto usa q cuando hay familia** (caso real: NDVI Laredo p=0,04 → q=0,06 → no concluyente;
+  Moche −0,033/década q<0,001 → disminución). Tests: backend 79, Playwright 12/12, contraste 34/34.
 - API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
 - Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
 - **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
@@ -79,11 +85,12 @@
 `data/_downloads/` (descargas crudas) y `.cache/` (índices, geometrías, extracciones, runs) son regenerables.
 
 ## Siguiente
-1. **Cierre F1 / inicio F4:** Estudio (lienzo con arrastrar variables y comparar territorios, plan §4.3/§5.3),
-   `POST /analyses/compare` (también reduce las N llamadas del mapa), lector de pantalla, CI (GitHub Actions) con
-   pytest + tsc + Playwright + contraste.
-2. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).
-3. MK corregido por autocorrelación, Kendall estacional. Docker pospuesto (no necesario aún).
+1. **CI** (GitHub Actions: pytest + tsc + Playwright con datos simulados + contraste) y prueba con lector de pantalla.
+2. **F4 restante:** Atlas (mapas de tendencia por variable), brush temporal, heatmap año×mes y climatología en la web,
+   diferencia de pendientes con IC (bootstrap conjunto) para comparaciones.
+3. **F5 caso Trujillo:** ingesta SINPAD/ENFEN, capa de eventos (colores reservados), cartografía INEI con Alto Trujillo.
+4. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).
+5. MK corregido por autocorrelación, Kendall estacional. Docker pospuesto (no necesario aún).
 
 ## Pendiente para el caso Trujillo (F5)
 - Cartografía distrital INEI reciente que incluya Alto Trujillo (130112) como nuevo `boundary_set_id`.

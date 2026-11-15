@@ -1,4 +1,4 @@
-import type { Dataset, FeatureCollection, Geography, Problem, Run, Variable } from "./types";
+import type { CompareResult, Dataset, FeatureCollection, Geography, Problem, Run, Variable } from "./types";
 
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1").replace(/\/$/, "");
 
@@ -37,4 +37,6 @@ export const api = {
   geography: (geoId: string) => call<Geography & { children: Geography[]; attribution: string }>(`geographies/${encodeURIComponent(geoId)}`),
   features: (geoId: string) => call<FeatureCollection>(`geographies/${encodeURIComponent(geoId)}/features`),
   analyze: (spec: object) => call<Run>("analyses", { method: "POST", body: JSON.stringify(spec) }),
+  compare: (specs: object[], familyId?: string) =>
+    call<CompareResult>("analyses/compare", { method: "POST", body: JSON.stringify({ specs, multiple_testing: "BH_FDR", family_id: familyId }) }),
 };

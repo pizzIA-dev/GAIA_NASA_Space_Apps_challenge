@@ -66,8 +66,9 @@ export function Methods() {
 
       <h2>Cómo leer el veredicto</h2>
       <p>
-        «Evidencia de aumento» o «de disminución» exige que la prueba dé p &lt; 0,05 y que el intervalo excluya el cero. En cualquier
-        otro caso el resultado es «no concluyente». En el mapa, las unidades sin evidencia se rayan en lugar de ocultarse.
+        «Evidencia de aumento» o «de disminución» exige que la prueba dé p &lt; 0,05 y que el intervalo excluya el cero. Cuando se
+        comparan varios territorios o unidades a la vez (Estudio, mapa por distritos), se usa el q-valor corregido por pruebas
+        múltiples (Benjamini–Hochberg) en lugar de p. En cualquier otro caso el resultado es «no concluyente». En el mapa, las unidades sin evidencia se rayan en lugar de ocultarse.
         Una tendencia describe el periodo elegido: no es un pronóstico ni una alerta.
       </p>
 

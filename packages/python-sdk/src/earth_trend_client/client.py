@@ -65,6 +65,13 @@ class Analyses(_Resource):
         headers = {"Idempotency-Key": idempotency_key} if idempotency_key else None
         return Run.from_api(self._c._post("analyses", json=spec, headers=headers))
 
+    def compare(self, specs: list[dict], multiple_testing: str = "BH_FDR", family_id: str | None = None) -> dict:
+        """Familia de análisis (territorios/variables) con q-valores BH-FDR; cada ítem tiene su propio estado."""
+        body = {"specs": specs, "multiple_testing": multiple_testing}
+        if family_id:
+            body["family_id"] = family_id
+        return self._c._post("analyses/compare", json=body)
+
     def estimate_cost(self, spec: dict) -> dict:
         """Complejidad estimada y si tu token/identidad puede ejecutarlo (no consume cupo ni toca Earth Engine)."""
         return self._c._post("analyses/estimate-cost", json=spec)

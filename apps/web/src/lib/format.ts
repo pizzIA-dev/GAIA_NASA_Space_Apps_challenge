@@ -21,7 +21,9 @@ export function verdictOf(st: Statistics): { kind: VerdictKind; label: string; p
   if (st.status === "insufficient_evidence" || st.estimate == null) {
     return { kind: "none", label: "sin inferencia", phrase: "no tiene datos suficientes para estimar una tendencia" };
   }
-  const sig = st.p_value != null && st.p_value < 0.05 && st.ci_lower != null && st.ci_upper != null &&
+  // Con varias pruebas (familia) manda el q-valor corregido BH-FDR; con una sola, el p-valor (plan §7.5).
+  const evidence = st.q_value ?? st.p_value;
+  const sig = evidence != null && evidence < 0.05 && st.ci_lower != null && st.ci_upper != null &&
     (st.ci_lower > 0 || st.ci_upper < 0);
   if (!sig) return { kind: "nc", label: "no concluyente", phrase: "no muestra un cambio distinguible de cero" };
   return st.estimate > 0
@@ -32,3 +34,7 @@ export function verdictOf(st: Statistics): { kind: VerdictKind; label: string; p
 export const TEST_LABEL: Record<string, string> = {
   mann_kendall: "Mann–Kendall", ols_hac_t: "t con errores HAC", ols_t: "t clásica", none: "sin prueba",
 };
+
+/** p/q legibles: nunca «0,00» (sugiere certeza); por debajo de 0,001 se escribe «< 0,001». */
+export const fmtP = (v: number | null | undefined) =>
+  v == null ? "sin dato" : v < 0.001 ? `< ${fmt(0.001, 3)}` : v < 0.01 ? fmt(v, 3) : fmt(v, 2);

@@ -73,3 +73,12 @@ export interface FeatureCollection {
 }
 
 export interface Problem { status: number; title: string; detail: string; cost?: CostEstimate }
+
+export interface CompareItem {
+  index: number; geo_id: string; status: "succeeded" | "failed";
+  run_id?: string; statistics?: Statistics; series?: SeriesPoint[];
+  geography?: Run["geography"]; source_versions?: SourceVersion[]; cache_hit?: boolean;
+  error?: { status: number; code: string; detail: string };
+}
+
+export interface CompareResult { family_id: string | null; multiple_testing: string; family_size: number; items: CompareItem[]; note: string }

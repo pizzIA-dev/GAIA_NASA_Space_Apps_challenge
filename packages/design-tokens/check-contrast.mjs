@@ -34,6 +34,10 @@ const PAIRS = [
   ["focus", "bg", 3.0, "anillo de foco (componente no textual)"],
   ["trend", "paper", 3.0, "línea de tendencia (gráfico)"],
   ["series", "paper", 3.0, "línea de la serie (gráfico)"],
+  ["cat-1", "paper", 3.0, "territorio 1 en comparaciones (línea)"],
+  ["cat-2", "paper", 3.0, "territorio 2 en comparaciones (línea)"],
+  ["cat-3", "paper", 3.0, "territorio 3 en comparaciones (línea)"],
+  ["cat-4", "paper", 3.0, "territorio 4 en comparaciones (línea)"],
 ];
 
 let failed = 0;

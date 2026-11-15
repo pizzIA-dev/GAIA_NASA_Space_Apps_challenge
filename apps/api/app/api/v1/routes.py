@@ -5,6 +5,7 @@ from typing import Literal
 
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.core.limits import ExtractionGate, RateLimited, SlidingWindowLimiter
 from app.core.security import ApiKeyStore, Identity, InvalidToken
@@ -15,9 +16,10 @@ from app.services.earth_engine.client import EarthEngineUnavailable
 from app.services.geographies import geoboundaries as gb
 from app.services.geographies import registry as reg
 from app.services.geographies.peru_ign import BoundariesNotIngested
-from app.services.statistics.trend_core import IncompatibleMethodError
+from app.services.statistics.trend_core import IncompatibleMethodError, benjamini_hochberg
 
 router = APIRouter(prefix="/api/v1")
+COMPARE_MAX_SPECS = 12
 
 
 def problem(status: int, code: str, detail: str, request: Request | None = None) -> JSONResponse:
@@ -274,6 +276,82 @@ def create_analysis(spec: AnalysisSpec, identity: Identity = Depends(get_identit
     except EarthEngineUnavailable as e:
         raise Problem(503, "source_unavailable", str(e)) from e
     return run | {"cost": est.to_dict()}
+
+
+class CompareRequest(BaseModel):
+    """Familia de análisis comparados (territorios y/o variables). Plan §12A.1 «Comparar territorios»."""
+
+    model_config = ConfigDict(extra="forbid")
+    specs: list[AnalysisSpec] = Field(min_length=1, max_length=COMPARE_MAX_SPECS)
+    multiple_testing: Literal["none", "BH_FDR"] = "BH_FDR"
+    family_id: str | None = Field(None, max_length=120)
+
+
+@router.post("/analyses/compare", tags=["analyses"])
+def compare_analyses(req: CompareRequest, identity: Identity = Depends(get_identity), store=Depends(get_store),
+                     adapters=Depends(get_adapters), geos=Depends(get_geographies), limiter=Depends(get_limiter),
+                     gate=Depends(get_gate)):
+    """Ejecuta varios análisis con la misma política de coste/cuota y corrige por pruebas múltiples (BH-FDR).
+
+    Cada ítem falla o tiene éxito por separado (p. ej. un distrito sin píxeles no invalida a los demás).
+    No estima la diferencia entre pendientes: compárense los IC de cada ítem (pendiente futura del plan §12A.1).
+    """
+    slots: list[dict] = []
+    for i, spec in enumerate(req.specs):
+        geo_id = spec.geography.geo_ids[0] if spec.geography.geo_ids else "custom_roi"
+        try:
+            p = _prepare(spec, store, adapters, geos)
+            est = cost.estimate(p)
+            _authorize(identity, est)
+            slots.append({"index": i, "geo_id": geo_id, "prepared": p, "cost": est})
+        except Problem as e:
+            slots.append({"index": i, "geo_id": geo_id, "error": {"status": e.status, "code": e.code, "detail": e.detail}})
+    # Cuota: se verifica para toda la familia ANTES de consumir, para no dejar comparaciones a medias.
+    new = [s for s in slots if "prepared" in s and s["prepared"].needs_extraction]
+    limit = _extraction_limit(identity)
+    if len(new) > limiter.remaining(identity.subject, limit):
+        raise Problem(429, "quota_exceeded",
+                      f"La comparación requiere {len(new)} extracciones nuevas y tu cupo restante esta hora es "
+                      f"{limiter.remaining(identity.subject, limit)}. Usa un token o menos territorios.", retry_after=60)
+    for s in new:
+        try:
+            limiter.check_and_add(identity.subject, limit)
+        except RateLimited as e:
+            raise Problem(429, "quota_exceeded", e.detail, retry_after=e.retry_after) from e
+
+    items: list[dict] = []
+    for s in slots:
+        if "error" in s:
+            items.append({"index": s["index"], "geo_id": s["geo_id"], "status": "failed", "error": s["error"]})
+            continue
+        try:
+            run = runner.execute(s["prepared"], extraction_gate=gate.slot())
+            items.append({"index": s["index"], "geo_id": s["geo_id"], "status": "succeeded", "run_id": run["run_id"],
+                          "analysis_spec_hash": run["analysis_spec_hash"], "statistics": dict(run["statistics"]),
+                          "series": run["series"], "geography": run.get("geography"),
+                          "source_versions": run["source_versions"], "cache_hit": run.get("cache_hit", False),
+                          "cost": s["cost"].to_dict()})
+        except RateLimited as e:
+            raise Problem(503, "source_busy", e.detail, retry_after=e.retry_after) from e
+        except (runner.AnalysisError, IncompatibleMethodError, EarthEngineUnavailable) as e:
+            err = ({"status": e.status, "code": e.code, "detail": e.detail} if isinstance(e, runner.AnalysisError)
+                   else {"status": 409 if isinstance(e, IncompatibleMethodError) else 503,
+                         "code": "incompatible_method" if isinstance(e, IncompatibleMethodError) else "source_unavailable",
+                         "detail": str(e)})
+            items.append({"index": s["index"], "geo_id": s["geo_id"], "status": "failed", "error": err})
+
+    ok = [it for it in items if it["status"] == "succeeded"]
+    if req.multiple_testing == "BH_FDR":
+        qs = benjamini_hochberg([it["statistics"]["p_value"] for it in ok])
+        for it, q in zip(ok, qs, strict=True):
+            it["statistics"]["q_value"] = q
+            it["statistics"]["multiple_tests_family"] = req.family_id or "comparacion"
+    return {
+        "family_id": req.family_id, "multiple_testing": req.multiple_testing, "family_size": len(ok),
+        "items": sorted(items, key=lambda it: it["index"]),
+        "note": "q-valores BH-FDR sobre los ítems con p-valor de esta familia. La diferencia entre pendientes no se "
+                "estima aquí: un solapamiento de IC no equivale a una prueba de diferencia.",
+    }
 
 
 def _run(run_id: str, store) -> dict:

@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
-import { Upcoming } from "@/components/pages/Upcoming";
+import { Suspense } from "react";
+import { Studio } from "@/components/studio/Studio";
 
 export const metadata: Metadata = { title: "Estudio · Earth Trend Studio" };
 
-export default function Page() {
-  return <Upcoming title="Estudio" description="Un lienzo para comparar variables y territorios lado a lado, arrastrando variables a los ejes." />;
+export default function EstudioPage() {
+  return (
+    <Suspense>
+      <Studio />
+    </Suspense>
+  );
 }
