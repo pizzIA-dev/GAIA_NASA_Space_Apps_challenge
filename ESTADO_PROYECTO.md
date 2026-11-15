@@ -97,6 +97,11 @@
   calendario, desfases 0–3, BH-FDR, avisos de episodios) + panel en Explorar. Real IMERG 2003–2024: **mismo mes +22,2 mm
   (q<0,001); meses previos sin diferencia** → coincidencia con lluvia, sin anticipación. Fixtures CI regenerados (27 series).
   Tests: backend 96, Playwright 25 (también sin EE).
+- **Historia guiada** `/historias/trujillo-el-nino` (config declarativa `apps/web/src/stories/trujillo-el-nino.json`):
+  6 escenas con números de la API en tiempo real — (1) lluvia no concluyente, **NDVI aumento**, SST océano +0,44 °C/década
+  no concluyente; (2) 11/11 distritos negativos, 0 con evidencia tras BH; 6 menores que un píxel; (3) 22 registros, 11
+  durante El Niño, marzo 2017 = 140 mm; (4) asociación; (5) alerta «en preparación» (falta IMERG diario y motor
+  retrospectivo); (6) límites y conciliación. Playwright 29 (axe incluye la historia), fixtures 29 series.
 - API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
 - Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
 - **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
@@ -109,8 +114,8 @@
 1. Prueba con lector de pantalla (NVDA).
 2. **F4 restante:** Atlas (mapas de tendencia por variable), brush temporal,
    diferencia de pendientes con IC (bootstrap conjunto) para comparaciones.
-3. **F5 restante:** historia guiada 6 escenas en /historias (§9.2; escenas 1–4 ya tienen motor), escena 5 alerta
-   retrospectiva con falsos positivos, umbral ENFEN (PDF NT 01-2024, el usuario decidió seguir sin él), INEI Alto Trujillo.
+3. **F5 restante:** escena 5 (IMERG diario + evaluación retrospectiva con falsos positivos), umbral ENFEN (PDF NT
+   01-2024, el usuario decidió seguir sin él), cartografía INEI con Alto Trujillo.
 4. Base de datos (PostgreSQL/PostGIS) cuando se despliegue: usar skill local `sql-code-review` (del usuario).
 5. MK corregido por autocorrelación, Kendall estacional. Docker pospuesto (no necesario aún).
 

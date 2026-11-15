@@ -8,6 +8,7 @@ const PAGES = [
   { path: "/estudio", ready: ".compare-table tbody tr" },
   { path: "/fuentes", ready: "article.source" },
   { path: "/metodos", ready: ".table tbody tr" },
+  { path: "/historias/trujillo-el-nino", ready: ".assoc-table tbody tr" },
 ];
 
 for (const theme of ["light", "dark"] as const) {

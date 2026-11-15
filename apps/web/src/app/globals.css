@@ -97,6 +97,28 @@ code { background: var(--paper-2); padding: 1px 6px; border-radius: 3px; font-si
 .table th, .table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
 .table thead th { color: var(--muted); font-weight: 600; }
 .glossary { display: grid; gap: 10px; } .glossary dt { font-weight: 600; } .glossary dd { margin: 2px 0 0; max-width: 72ch; color: var(--muted); }
+/* Historias */
+.story { max-width: 1120px; margin: 0 auto; padding: 32px 24px 64px; }
+.story-head h1 { font-family: var(--font-serif); font-weight: 500; font-size: clamp(2rem, 4vw, 2.8rem); line-height: 1.12; margin: 6px 0 10px; max-width: 24em; }
+.story-head .lead { font-size: 1.15rem; color: var(--muted); max-width: 60ch; }
+.scene-nav { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 18px 0 8px; font-size: var(--text-small); }
+.scene-nav a { color: var(--accent); }
+.scene { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 8px 20px; padding: 36px 0; border-top: 1px solid var(--rule); }
+.scene-num { font-family: var(--font-serif); font-size: 2.6rem; line-height: 1; color: var(--muted); margin: 0; }
+.scene h2 { font-family: var(--font-serif); font-weight: 500; font-size: 1.7rem; margin: 0 0 8px; }
+.scene .lead { color: var(--muted); max-width: 70ch; margin: 0 0 14px; }
+.scene .finding { font-size: 1.05rem; max-width: 72ch; margin: 0 0 14px; }
+.scene-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.trend-card h3 { margin: 0; font-size: 1.05rem; }
+.trend-card .fact { font-size: 1.4rem; font-weight: 500; margin: 6px 0 2px; }
+.trend-card .tag { display: inline-block; font-size: var(--text-caption); font-weight: 600; padding: 1px 8px; border-radius: 3px; border: 1px solid; margin-top: 6px; }
+.trend-card .chart { height: 220px; }
+.small { font-size: var(--text-small); } .story .table .tag { display: inline-block; font-size: var(--text-caption); font-weight: 600; padding: 1px 8px; border-radius: 3px; border: 1px solid; }
+.limits { padding-left: 20px; max-width: 75ch; } .limits li { margin-bottom: 8px; }
+.pending-scene { border-style: dashed; }
+.story-card h2 a { color: var(--ink); }
+@media (max-width: 780px) { .scene { grid-template-columns: 1fr; } .scene-num { font-size: 1.8rem; } .story { padding: 20px 16px 48px; } .story .table { display: block; overflow-x: auto; } }
+
 /* Contexto local: eventos SINPAD y episodios ENFEN (colores reservados, plan §8.1) */
 .check { display: flex; gap: 8px; align-items: flex-start; font-size: var(--text-small); cursor: pointer; }
 .check input { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--accent); }

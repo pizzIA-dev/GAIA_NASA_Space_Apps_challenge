@@ -1,19 +1,24 @@
 "use client";
 // Escena 4 del caso (plan §9.2): ¿relación o coincidencia? Se calcula en la API (11 análisis), solo a pedido.
 import { useMutation } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 import { api, ApiError } from "@/lib/api";
 import { fmt, fmtP, signed } from "@/lib/format";
 import type { CaseAssociationResult } from "@/lib/types";
 
-export function CaseAssociation({ datasetId, variableId, quantity, start, end }:
-  { datasetId: string; variableId: string; quantity: string; start: number; end: number }) {
+export function CaseAssociation({ datasetId, variableId, quantity, start, end, auto = false, heading = true }:
+  { datasetId: string; variableId: string; quantity: string; start: number; end: number; auto?: boolean; heading?: boolean }) {
   const m = useMutation<CaseAssociationResult, ApiError>({
     mutationFn: () => api.caseAssociation({ dataset_id: datasetId, variable_id: variableId, year_from: start, year_to: end }),
   });
+  const started = useRef(false);
+  useEffect(() => {
+    if (auto && !started.current) { started.current = true; m.mutate(); }
+  }, [auto, m]);
   const r = m.data;
   return (
     <section className="panel case-assoc" aria-label="Relación o coincidencia">
-      <h2>¿Relación o coincidencia?</h2>
+      {heading && <h2>¿Relación o coincidencia?</h2>}
       <p className="hint">
         Compara la anomalía de {quantity} en los meses de cada distrito con registro SINPAD frente a los meses sin registro
         del mismo mes calendario, en el mismo mes y hasta 3 meses antes. Requiere un análisis por distrito de la provincia.

@@ -10,11 +10,12 @@ const CLASS_LABEL = {
   fuera_de_el_nino: "Fuera de El Niño Costero",
 } as const;
 
-export function CaseEventsPanel({ data, enfen, place }: { data: CaseEvents; enfen?: CaseEnfen; place: string }) {
+export function CaseEventsPanel({ data, enfen, place, nested = false }: { data: CaseEvents; enfen?: CaseEnfen; place: string; nested?: boolean }) {
+  const H = nested ? "h3" : "h2";
   const by = (k: keyof typeof CLASS_LABEL) => data.items.filter((e) => e.display_class === k).length;
   return (
     <section className="panel case-events" aria-label="Eventos SINPAD y episodios ENFEN">
-      <h2>Contexto local: emergencias registradas en {place}</h2>
+      <H>Contexto local: emergencias registradas en {place}</H>
       <p className="hint">
         {data.count} registros SINPAD de huaico o inundación en el periodo. {by("coincidencia_el_nino")} ocurrieron durante un
         episodio El Niño Costero, {by("fuera_de_el_nino")} fuera de él y {by("atribucion_verificada")} tienen atribución causal
