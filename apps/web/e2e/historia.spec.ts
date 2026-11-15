@@ -16,9 +16,16 @@ test("seis escenas en orden y cada hallazgo coincide con la API", async ({ page,
   await expect(page.locator("#anios-2017-2023 .finding")).toContainText("ninguno tiene atribución causal verificada");
   // Escena 1: tres tarjetas con veredicto
   await expect(page.locator(".trend-card .tag")).toHaveCount(3);
-  // Escena 4 se calcula sola; escena 5 declara honestamente que está en preparación
+  // Escena 4 se calcula sola
   await expect(page.locator("#relacion .assoc-table tbody tr")).toHaveCount(4);
-  await expect(page.locator("#alerta")).toContainText("En preparación");
+  // Escena 5: la regla principal y su resultado fuera de muestra = API (incluye contar falsas alarmas)
+  const bt = await (await request.get(`${API}/cases/trujillo-el-nino/backtest`)).json();
+  const t = bt.primary.test_out_of_sample;
+  await expect(page.locator("#alerta .finding")).toContainText(`${t.events_anticipated} de ${t.events_evaluable}`);
+  await expect(page.locator("#alerta .finding")).toContainText(`percentil ${bt.primary.rule.percentile}`);
+  await expect(page.locator("#alerta .contingency td.num").nth(1)).toHaveText(new Intl.NumberFormat("es-PE").format(t.contingency.fp));
+  await expect(page.locator("#alerta .sensitivity tbody tr")).toHaveCount(bt.grid.length);
+  await expect(page.locator("#alerta .warn")).toContainText("anticipación POTENCIAL retrospectiva");
   // Escena 6: límites desde la API
   const s = await (await request.get(`${API}/cases/trujillo-el-nino`)).json();
   await expect(page.locator("#limites .limits li")).toHaveCount(s.limitations.length);

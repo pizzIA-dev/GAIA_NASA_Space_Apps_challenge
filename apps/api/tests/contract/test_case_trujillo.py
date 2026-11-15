@@ -86,3 +86,25 @@ def test_association_endpoint_with_simulated_series(tmp_path):
         assert c.post("/api/v1/cases/trujillo-el-nino/association", json={"lags": [20]}).status_code == 422
     finally:
         app.dependency_overrides.clear()
+
+
+def test_backtest_is_out_of_sample_and_counts_false_alarms():
+    """Escena 5: regla principal declarada, umbrales de 2017–2021, prueba 2022–2025, tabla completa (no solo aciertos)."""
+    r = c.get("/api/v1/cases/trujillo-el-nino/backtest")
+    assert r.status_code == 200
+    b = r.json()
+    assert b["primary_declared_before_results"] is True
+    rule = b["primary"]["rule"]
+    assert (rule["percentile"], rule["window_days"], rule["horizon_days"]) == trujillo.BACKTEST_PRIMARY
+    assert b["periods"] == {"calibration": list(trujillo.BACKTEST_TRAIN), "test": list(trujillo.BACKTEST_TEST)}
+    t = b["primary"]["test_out_of_sample"]
+    k = t["contingency"]
+    assert k["tp"] + k["fp"] + k["fn"] + k["tn"] == t["unit_days_evaluated"] > 10000  # 11 distritos × 4 años
+    assert all(e["date"] >= "2022-01-01" for e in t["events_detail"])
+    # Los registros 2022–2025 con polígono IGN: Simbal 2023, Moche 2024, Víctor Larco Herrera 2025 (control v12)
+    assert {(e["date"], e["unit"]) for e in t["events_detail"]} == {("2023-04-07", "130110"), ("2024-07-14", "130107"),
+                                                                    ("2025-01-09", "130111")}
+    assert any(e["district"] == "Alto Trujillo" and e["reason"] == "sin polígono IGN" for e in b["events_excluded"])
+    assert len(b["grid"]) == 27
+    assert any("POTENCIAL retrospectiva" in w for w in b["warnings"])
+    assert any("Solo 3 registros" in w for w in b["warnings"])

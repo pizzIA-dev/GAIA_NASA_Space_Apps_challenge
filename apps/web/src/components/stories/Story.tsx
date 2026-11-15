@@ -11,6 +11,7 @@ import type { CompareResult, Run } from "@/lib/types";
 import story from "@/stories/trujillo-el-nino.json";
 import { CaseAssociation } from "../explorer/CaseAssociation";
 import { CaseEventsPanel } from "../explorer/CaseEventsPanel";
+import { CaseBacktest } from "./CaseBacktest";
 import { TrendChart } from "../explorer/TrendChart";
 
 type Scene = (typeof story.scenes)[number];
@@ -186,9 +187,7 @@ export function Story() {
             <CaseAssociation auto heading={false} datasetId="nasa-gpm-imerg-monthly-v07" variableId="precipitation_mm_month"
               quantity="precipitación" start={P.start} end={P.end} />
           )}
-          {"status" in scene && scene.status === "en_preparacion" && (
-            <div className="panel pending-scene"><p><b>En preparación.</b> {(scene as { why: string }).why}</p></div>
-          )}
+          {scene.id === "alerta" && <CaseBacktest />}
           {scene.id === "limites" && <Scene6 />}
         </SceneShell>
       ))}

@@ -40,9 +40,7 @@
     {
       "id": "alerta",
       "title": "¿Habría dado una alerta?",
-      "lead": "Probar una regla de alerta exige datos diarios, separar periodos de calibración y prueba, y contar también los días sin desastre.",
-      "status": "en_preparacion",
-      "why": "La plataforma aún no tiene el adaptador IMERG diario ni el motor de evaluación retrospectiva (verdaderos y falsos positivos). La escena 4 ya muestra que la lluvia de meses anteriores no anticipa los registros. El estudio previo encontró muchas falsas alarmas: no se publicará un resultado de alerta hasta poder reproducirlo con datos oficiales."
+      "lead": "Probar una regla de alerta exige lluvia diaria, fijar el umbral con unos años y evaluarlo en otros, y contar también los días de alerta sin desastre."
     },
     {
       "id": "limites",

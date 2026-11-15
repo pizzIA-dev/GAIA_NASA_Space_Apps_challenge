@@ -115,7 +115,9 @@ code { background: var(--paper-2); padding: 1px 6px; border-radius: 3px; font-si
 .trend-card .chart { height: 220px; }
 .small { font-size: var(--text-small); } .story .table .tag { display: inline-block; font-size: var(--text-caption); font-weight: 600; padding: 1px 8px; border-radius: 3px; border: 1px solid; }
 .limits { padding-left: 20px; max-width: 75ch; } .limits li { margin-bottom: 8px; }
-.pending-scene { border-style: dashed; }
+.contingency { max-width: 360px; } .contingency caption, .backtest .table caption { text-align: left; font-weight: 600; padding-bottom: 6px; }
+.sensitivity { margin: 12px 0; } .sensitivity summary { cursor: pointer; font-weight: 600; }
+.backtest tr[data-primary] th, .backtest tr[data-primary] td { background: var(--accent-soft); }
 .story-card h2 a { color: var(--ink); }
 @media (max-width: 780px) { .scene { grid-template-columns: 1fr; } .scene-num { font-size: 1.8rem; } .story { padding: 20px 16px 48px; } .story .table { display: block; overflow-x: auto; } }
 

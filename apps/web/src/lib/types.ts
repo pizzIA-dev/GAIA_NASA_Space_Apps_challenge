@@ -129,3 +129,28 @@ export interface CaseSummary {
   reconciliation: { reference: string; official_2017_2025: number; official_districts_2017_2025: string[]; status: string; note: string };
   limitations: string[]; ingested_at: string;
 }
+
+export interface BacktestEventDetail {
+  date: string; unit: string; label: string | null; evaluable: boolean; anticipated: boolean | null;
+  lead_days: number | null; signal_mm: number | null; threshold_mm: number | null;
+}
+export interface BacktestPeriod {
+  label: string; start: string; end: string; unit_days_evaluated: number; unit_days_excluded_incomplete: number;
+  contingency: { tp: number; fp: number; fn: number; tn: number }; far: number | null; far_ci95: (number | null)[];
+  alert_rate: number | null; alert_unit_days_per_year: number | null; alerts_per_unit_per_year: number | null;
+  events: number; events_evaluable: number; events_anticipated: number; pod: number | null; pod_ci95: (number | null)[];
+  pod_random_expected: number | null; events_detail: BacktestEventDetail[];
+}
+export interface BacktestRule { signal: string; window_days: number; percentile: number; horizon_days: number; threshold_basis: string; min_signal_mm: number }
+export interface BacktestGridRow {
+  percentile: number; window_days: number; horizon_days: number;
+  test: Pick<BacktestPeriod, "pod" | "pod_ci95" | "events_evaluable" | "events_anticipated" | "far" | "alerts_per_unit_per_year" | "pod_random_expected" | "contingency">;
+  calibration: Pick<BacktestPeriod, "pod" | "events_evaluable" | "events_anticipated" | "far" | "alerts_per_unit_per_year">;
+}
+export interface CaseBacktest {
+  algorithm_version: string; unit: string; periods: { calibration: [string, string]; test: [string, string] };
+  primary: { rule: BacktestRule; thresholds_mm: Record<string, number | null>; calibration_in_sample: BacktestPeriod; test_out_of_sample: BacktestPeriod };
+  grid: BacktestGridRow[]; warnings: string[];
+  events_excluded: { date: string; district: string; ubigeo: string; hazard: string; reason: string }[];
+  source: { dataset: string; provenance: string; file: string }; unit_names: Record<string, string>;
+}
