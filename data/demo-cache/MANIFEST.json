@@ -1,0 +1,321 @@
+{
+  "purpose": "Caché de demostración: extracciones NASA reales (Earth Engine) de los ejemplos por defecto de la web; se siembran en cada compilación para que la portada cargue al instante.",
+  "generated_at": "2026-11-15T20:58:23.506635+00:00",
+  "extractions": [
+    {
+      "file": "34283d7ba322b093ec11cbead5b23c3e5b30c491c377e3a282de1179646520c4.json",
+      "geo_id": "pe-ign2020:15",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "run_id": "run_8d2838c364ba0d5beb12"
+    },
+    {
+      "file": "0c47ee966b9f4b8191909f586a4df81503bf9d379d28d23d61eded6be973a641.json",
+      "geo_id": "pe-ign2020:15",
+      "dataset": "nasa-merra2-slv",
+      "variable": "air_temperature_2m_c",
+      "run_id": "run_e27a1d5df8ce7eb24393"
+    },
+    {
+      "file": "d95f08b539c0d9a75b675d3e37ce89d4dbd9ff71c282797ea3a24e7da0fefaa6.json",
+      "geo_id": "pe-ign2020:15",
+      "dataset": "nasa-gldas-noah-v21-3h",
+      "variable": "soil_moisture_0_10cm_kgm2",
+      "run_id": "run_6eed29f55a5e9bfca520"
+    },
+    {
+      "file": "0888f453e53be8898ea7f74f1612cee343204dc444f0465a39a4c75fe9df6139.json",
+      "geo_id": "pe-ign2020:15",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "run_id": "run_5269b79f34fd6df6c01e"
+    },
+    {
+      "file": "59c3dc43bd79accf0580558cc4b482ad797101f9768166d1c528454a5909090f.json",
+      "geo_id": "pe-ign2020:1502",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "run_id": "run_750434b5ccaf984d3d7b"
+    },
+    {
+      "file": "e0d99b82bf2b19aafe1f8ae47206294ba17d0a87675800363c6c4201f75e8413.json",
+      "geo_id": "pe-ign2020:1502",
+      "dataset": "nasa-merra2-slv",
+      "variable": "air_temperature_2m_c",
+      "run_id": "run_103dd23cd914f0d61133"
+    },
+    {
+      "file": "5fb763f301d1ce126b3cf0f44a4806cd1dc2dd9ca36212398b3c8b543077cef7.json",
+      "geo_id": "pe-ign2020:1502",
+      "dataset": "nasa-gldas-noah-v21-3h",
+      "variable": "soil_moisture_0_10cm_kgm2",
+      "run_id": "run_d22e92751c993a799a50"
+    },
+    {
+      "file": "321ad0726b8b6176f910909191d7de3f4d7186c8f768882fa9f2fb54a78c885b.json",
+      "geo_id": "pe-ign2020:1502",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "run_id": "run_60a8d2deb3d106561a51"
+    },
+    {
+      "file": "adc491b0e11527530ec8236178d11a69e8ce4571b60e47a752f47519279ea769.json",
+      "geo_id": "pe-ign2020:1503",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "run_id": "run_29a89c91f61b35276ff6"
+    },
+    {
+      "file": "7099e6ec47f0a8e285516bccbd42c6bbbb450581537c8fda0720702521dd3442.json",
+      "geo_id": "pe-ign2020:1503",
+      "dataset": "nasa-merra2-slv",
+      "variable": "air_temperature_2m_c",
+      "run_id": "run_47eaa3cb1160a5792638"
+    },
+    {
+      "file": "9b9185f18b42eec0b6698e61f88c8b84f3489cc97d8845c0ca703159dbc7ba89.json",
+      "geo_id": "pe-ign2020:1503",
+      "dataset": "nasa-gldas-noah-v21-3h",
+      "variable": "soil_moisture_0_10cm_kgm2",
+      "run_id": "run_6d6977817c3f98f30a5e"
+    },
+    {
+      "file": "48076ccf15ae30de4f6a567642d08f8ee3f67597ede2cca776ecc9aafcdc981d.json",
+      "geo_id": "pe-ign2020:1503",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "run_id": "run_9cc7b88f03a9be6b09dd"
+    },
+    {
+      "file": "bd4395c2df34c62abc2f749306abcd5e18f74972d8c2a2ccbaa3d51153be7093.json",
+      "geo_id": "pe-ign2020:1505",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "run_id": "run_8d0fc47065723247a0f5"
+    },
+    {
+      "file": "74bfa229d5e949d20583731e8e32c58db04da7b6a578168fc85ee1fe7a1b91e2.json",
+      "geo_id": "pe-ign2020:1505",
+      "dataset": "nasa-merra2-slv",
+      "variable": "air_temperature_2m_c",
+      "run_id": "run_ee0bfce0431029c9572f"
+    },
+    {
+      "file": "94fbb92e03a676ec4e4886434b081616d2d7b677333817bce08cdad7e380f4a7.json",
+      "geo_id": "pe-ign2020:1505",
+      "dataset": "nasa-gldas-noah-v21-3h",
+      "variable": "soil_moisture_0_10cm_kgm2",
+      "run_id": "run_0b2c82be6c747bbf8c5d"
+    },
+    {
+      "file": "6c451d5d450182b4de552e39f203e6ab679417534f278c3f5aa997a25703e964.json",
+      "geo_id": "pe-ign2020:1505",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "run_id": "run_2ce0186805056856667d"
+    },
+    {
+      "file": "6977aa70c35c10d266abb8b55f1124701abca6ae7b59d6e861601d57a14dd0e6.json",
+      "geo_id": "pe-ign2020:1504",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "run_id": "run_e641934339dd6d6f1b4e"
+    },
+    {
+      "file": "1d7647abc34a8ff2a450e5c1f34cb7334395308f811e705862bad5e6697418a8.json",
+      "geo_id": "pe-ign2020:1504",
+      "dataset": "nasa-merra2-slv",
+      "variable": "air_temperature_2m_c",
+      "run_id": "run_74ed5acf823ce5973088"
+    },
+    {
+      "file": "904f7b6f07aeae8e59514a57bd14fdd62a8bed0501e7743d6424dfd4edf0cf54.json",
+      "geo_id": "pe-ign2020:1504",
+      "dataset": "nasa-gldas-noah-v21-3h",
+      "variable": "soil_moisture_0_10cm_kgm2",
+      "run_id": "run_02479f07b184098586fd"
+    },
+    {
+      "file": "7db7f8a680bc6cd8eceebc7495d699aee53f86b79cd2a75b17bb7a3a936075f8.json",
+      "geo_id": "pe-ign2020:1504",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "run_id": "run_768d8eae2ae7d2a71367"
+    },
+    {
+      "file": "d06ae3b13ad40fe91e93f105ebd12e1e70df8835ebdf24b111bdde0fe6ddace1.json",
+      "geo_id": "pe-ign2020:1506",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "run_id": "run_8bdad217a0233005a462"
+    },
+    {
+      "file": "ef392bd3829a4747ac1a771020a817404023cc991e0d97ab193e339ab339c07e.json",
+      "geo_id": "pe-ign2020:1506",
+      "dataset": "nasa-merra2-slv",
+      "variable": "air_temperature_2m_c",
+      "run_id": "run_aa4c5f62b98ff171073d"
+    },
+    {
+      "file": "16e0994d43191debd19c105ac8f5003121d9fdc8fc943fc11b7d84fdabce8ae6.json",
+      "geo_id": "pe-ign2020:1506",
+      "dataset": "nasa-gldas-noah-v21-3h",
+      "variable": "soil_moisture_0_10cm_kgm2",
+      "run_id": "run_f21799e8f2e56ce0c91a"
+    },
+    {
+      "file": "a66932576ff5780941686cd5a61ac53467028fd75f0a552bbc884cefa7716bd8.json",
+      "geo_id": "pe-ign2020:1506",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "run_id": "run_955017e211dc6323814e"
+    },
+    {
+      "file": "0866d302230d585db15aff2b62bfd16f44b6b7cbf20dddc8ffb0b45203773b2c.json",
+      "geo_id": "pe-ign2020:1507",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "run_id": "run_b60f662664b4c7187c35"
+    },
+    {
+      "file": "eff14537cd9aad0eb7d0d7722e4313fc96a4df00b2e6bffd1fbc789e27854a0b.json",
+      "geo_id": "pe-ign2020:1507",
+      "dataset": "nasa-merra2-slv",
+      "variable": "air_temperature_2m_c",
+      "run_id": "run_7c1486f2d4440c6f8bd6"
+    },
+    {
+      "file": "d8c98eb10fd17f43df7b9175f53072d8a145a6a5dd3c0efd30f93bfed039f93e.json",
+      "geo_id": "pe-ign2020:1507",
+      "dataset": "nasa-gldas-noah-v21-3h",
+      "variable": "soil_moisture_0_10cm_kgm2",
+      "run_id": "run_2813bffbdc6f18ae1ab0"
+    },
+    {
+      "file": "489f55952d43900b331dc1db685f3492d7df39e4ba9211443363dce11679d5dc.json",
+      "geo_id": "pe-ign2020:1507",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "run_id": "run_045ee3c6d95332c34e3a"
+    },
+    {
+      "file": "65314ebe4f75b003596c0e097215dafef5405a1787917e0f06993ca149a57c73.json",
+      "geo_id": "pe-ign2020:1508",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "run_id": "run_43c25f6e96adafdebb1e"
+    },
+    {
+      "file": "a1396fed3bcc1526658354a20b0d197461bb41ad653a5585ebbac1623fa7d096.json",
+      "geo_id": "pe-ign2020:1508",
+      "dataset": "nasa-merra2-slv",
+      "variable": "air_temperature_2m_c",
+      "run_id": "run_f074728a5d8e51491e35"
+    },
+    {
+      "file": "6cc42e5c92a36a4ab24fe9d86162592c19f77890a9d8fb330d05a912fb47db72.json",
+      "geo_id": "pe-ign2020:1508",
+      "dataset": "nasa-gldas-noah-v21-3h",
+      "variable": "soil_moisture_0_10cm_kgm2",
+      "run_id": "run_1720c96660f2728f1d30"
+    },
+    {
+      "file": "b3d0b97ac8653b20a323267312a555e5fea488c9528dde66cb857b48ce4bf959.json",
+      "geo_id": "pe-ign2020:1508",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "run_id": "run_733aa293cca22030ac89"
+    },
+    {
+      "file": "886df5d5e92b300672298c658520e5129209f0fe4124fb7e8c80d2e7f17cc6d3.json",
+      "geo_id": "pe-ign2020:1501",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "run_id": "run_5bc0707d7c2fe09f9d22"
+    },
+    {
+      "file": "b013de55f9add92947481f33c1289d14cf5ac39ebe1bfe781b1f99c1e5f3146b.json",
+      "geo_id": "pe-ign2020:1501",
+      "dataset": "nasa-merra2-slv",
+      "variable": "air_temperature_2m_c",
+      "run_id": "run_2190fdf91704d6afe35a"
+    },
+    {
+      "file": "d56b7d47a18fe307368d7003e8ba2f2b8d491afae97e2d71740ca9b873967d41.json",
+      "geo_id": "pe-ign2020:1501",
+      "dataset": "nasa-gldas-noah-v21-3h",
+      "variable": "soil_moisture_0_10cm_kgm2",
+      "run_id": "run_013dee42c203ce424b1a"
+    },
+    {
+      "file": "569f7f6e23769720b7e46eabb0740ba4837735fd8ebeec644e522ff331ac22b8.json",
+      "geo_id": "pe-ign2020:1501",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "run_id": "run_aa75da77195f5a1acb8b"
+    },
+    {
+      "file": "4d17461af33bd012de423d374beddb6d811f155827ce74905ea6779290d66428.json",
+      "geo_id": "pe-ign2020:1509",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "run_id": "run_13f618d4c625630d654f"
+    },
+    {
+      "file": "4485fa9d5a5b11b65398886a9ed7a49bd0f227f7a886d9f27e3c7f96d19bdffc.json",
+      "geo_id": "pe-ign2020:1509",
+      "dataset": "nasa-merra2-slv",
+      "variable": "air_temperature_2m_c",
+      "run_id": "run_517144e54cb40a2925e5"
+    },
+    {
+      "file": "2ba137359fde90818a86a76126800280389a3b25eace21c982982249e0b8dfeb.json",
+      "geo_id": "pe-ign2020:1509",
+      "dataset": "nasa-gldas-noah-v21-3h",
+      "variable": "soil_moisture_0_10cm_kgm2",
+      "run_id": "run_090cd328bd8e8e9449de"
+    },
+    {
+      "file": "232dfea34b93502b8f1ab006efc12984512257dcf9914c06fbcdae5c77bf8e69.json",
+      "geo_id": "pe-ign2020:1509",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "run_id": "run_b528d30d43311ae89040"
+    },
+    {
+      "file": "5a7a745cfc4b61ca600fea63f46deb30fffea6c04cc05de136f73b7dc97b44fa.json",
+      "geo_id": "pe-ign2020:1510",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "run_id": "run_b40e300dac0f563fef42"
+    },
+    {
+      "file": "a19adb8b4808ea0eefad1b54d9ce6db27eed3c201e02748bd14b562c5e50ff23.json",
+      "geo_id": "pe-ign2020:1510",
+      "dataset": "nasa-merra2-slv",
+      "variable": "air_temperature_2m_c",
+      "run_id": "run_99b28ce8d22d18173242"
+    },
+    {
+      "file": "8bf1b2e0a5111b20abb26e8c3cbf55246d2bde0d97ec519e5e0dbf211d98ce9a.json",
+      "geo_id": "pe-ign2020:1510",
+      "dataset": "nasa-gldas-noah-v21-3h",
+      "variable": "soil_moisture_0_10cm_kgm2",
+      "run_id": "run_519abbf7b4d5b83a340c"
+    },
+    {
+      "file": "0bed0a761b5d1a826f789c8d58ecd5d67fa110a46a568754d54a8f066671a1b4.json",
+      "geo_id": "pe-ign2020:1510",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "run_id": "run_fc81515e3b14ef8b3e6e"
+    },
+    {
+      "file": "fa157026df3cfa5daf073ee5f5548f02066f88fd42f47f9c0c3e5b8ef0b9421b.json",
+      "geo_id": "pe-ign2020:04",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "run_id": "run_1b4fa400d859de6c90b4"
+    }
+  ]
+}
