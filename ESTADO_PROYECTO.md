@@ -10,6 +10,7 @@
 - `3c32d82` F2 — adaptadores GLDAS/MERRA-2/NDVI/SST, SDK, notebook 01, coste/tokens/límites.
 - `16c59ae` F1 — dirección «Cuaderno de campo», tokens, web Explorar con API real.
 - `b3644af` F1 — tema, exportación, Fuentes/Métodos, Playwright, contraste.
+- `977b629` F4 — Estudio comparativo, /analyses/compare, veredicto por q.
 - (lista completa: `git log --oneline`)
 
 ## Qué funciona (verificado con datos reales)
@@ -76,6 +77,10 @@
   territorios (≤4, color + patrón), tooltips sincronizados, arrastrar (dnd-kit puntero/teclado) + botones Añadir/Subir/Bajar/
   Quitar, estado en URL. **Veredicto usa q cuando hay familia** (caso real: NDVI Laredo p=0,04 → q=0,06 → no concluyente;
   Moche −0,033/década q<0,001 → disminución). Tests: backend 79, Playwright 12/12, contraste 34/34.
+- **CI** (`.github/workflows/ci.yml`, runbook `docs/runbooks/ci.md`): jobs api (ruff+pytest, instala desde pyproject),
+  web (contraste, tsc, build) y e2e (Playwright Chromium, **Earth Engine deshabilitado**, caché sembrada con fixtures NASA
+  reales `scientific/fixtures/e2e`, 3 MB, generados con `scripts/e2e_fixtures.py`). Reproducido en local (venv limpio
+  79/79, `npm ci` + build OK, e2e 12/12 sin EE). **No ejecutado aún en GitHub: el repo no tiene remoto.**
 - API: CORS (`ALLOWED_ORIGINS`), `GET /geographies/{id}/features` (FeatureCollection) y `path` en `/geographies/{id}`.
 - Servidores: `.claude/launch.json` (api :8000, web :3000) o `npm --prefix apps/web run dev`.
 - **73 tests verdes** (backend) (`cd apps/api && .venv/Scripts/python -m pytest -q`).
@@ -85,7 +90,7 @@
 `data/_downloads/` (descargas crudas) y `.cache/` (índices, geometrías, extracciones, runs) son regenerables.
 
 ## Siguiente
-1. **CI** (GitHub Actions: pytest + tsc + Playwright con datos simulados + contraste) y prueba con lector de pantalla.
+1. Subir el repo a GitHub (decisión del usuario) para que corra el CI; prueba con lector de pantalla (NVDA).
 2. **F4 restante:** Atlas (mapas de tendencia por variable), brush temporal, heatmap año×mes y climatología en la web,
    diferencia de pendientes con IC (bootstrap conjunto) para comparaciones.
 3. **F5 caso Trujillo:** ingesta SINPAD/ENFEN, capa de eventos (colores reservados), cartografía INEI con Alto Trujillo.

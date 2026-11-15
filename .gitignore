@@ -42,3 +42,5 @@ apps/web/next-env.d.ts
 # Playwright
 apps/web/test-results/
 apps/web/playwright-report/
+.cache_e2e/
+.cache_ci/

@@ -42,6 +42,7 @@ Backend: venv `apps/api/.venv` (pip). Tests: `cd apps/api && .venv/Scripts/pytho
 Web: `apps/web` (npm; Next 16, TS 5.9). `npm --prefix apps/web run dev` (genera tokens y copia worker MapLibre) ·
 `npx tsc --noEmit` · `npx next build` · `npm run test:e2e` (Playwright, Edge) · `npm run check:contrast`. Servidores para el panel del navegador: `.claude/launch.json` (api, web).
 Earth Engine: cuenta de servicio (ruta en `.env`, clave fuera del repo); diagnóstico `scripts/check_ee_auth.py`.
+CI: `.github/workflows/ci.yml` sin EE (fixtures reales en `scientific/fixtures/e2e`); ver `docs/runbooks/ci.md`.
 
 ## Documentación
 - `ESTADO_PROYECTO.md` — estado vivo: qué está hecho, qué sigue, bloqueos. **Actualizar al cerrar cada sesión.**

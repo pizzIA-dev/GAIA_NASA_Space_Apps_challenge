@@ -1,0 +1,127 @@
+{
+  "purpose": "Fixtures de E2E/CI: series mensuales NASA reales (Earth Engine) usadas por apps/web/e2e. No son datos sintéticos.",
+  "generated_at": "2026-11-15T03:53:41.020680+00:00",
+  "boundaries": "IGN Perú vía OCHA HDX COD-AB v01 (CC BY-IGO): índice completo + geometrías de la provincia de Trujillo",
+  "extractions": [
+    {
+      "file": "06351924fe002cd3903f0a4e57c6e0eff6927cfb2b92e5697cd9d0d055bd5fd1.json",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T03:52:56.111172+00:00"
+    },
+    {
+      "file": "1274a267628ffdf00b8526c076f77e3324fae00cf8d8943c53a0569787f04a68.json",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T03:53:34.354132+00:00"
+    },
+    {
+      "file": "355b5f68c86620a466dc3c0be7c0daeb22ed7713684ac1b0076433742e827dd8.json",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T03:53:28.632004+00:00"
+    },
+    {
+      "file": "4cda37359bfff6bbc7b2ac66a8d30bee0f907ba63cc0a85186454a8c0201b5b6.json",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T03:53:21.324810+00:00"
+    },
+    {
+      "file": "5e9a536ba95eddfca2cd20334da6039645191f3cbbcf544bfb3dac816884cf0f.json",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T03:53:33.721466+00:00"
+    },
+    {
+      "file": "705ffc1cc4176e66813a696f0d33e63897c0a4e1c1f89aef572c3406c070b022.json",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T03:53:25.172549+00:00"
+    },
+    {
+      "file": "72d05e7c580a25f0b9804197c835c7731e666ad83b22862b50c85898e79e88ee.json",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T03:53:09.498405+00:00"
+    },
+    {
+      "file": "855165bcf233446d9e645171c4f020cc581c2374542bbe3bccb6aeedbea85348.json",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T03:53:30.680986+00:00"
+    },
+    {
+      "file": "870adba698161c088ce1f1bf738bcb45c55d73d5ad6742edbe7c5ea3fc0ae0a4.json",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T03:53:23.777186+00:00"
+    },
+    {
+      "file": "ac07aeb473bc11806b969cd5ca4557f54d83e8e06a0cbdcd552e7841bcfbdf34.json",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T03:52:56.912195+00:00"
+    },
+    {
+      "file": "b40869726bc2763ec6f8cce2c467a36ed8b0df39a2c4917329081ce71b5d19e5.json",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T03:53:27.813927+00:00"
+    },
+    {
+      "file": "bb48ce3bfa19739f951feed631df35db75c96427abfccf74733a6310de86b89d.json",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T03:53:32.195165+00:00"
+    },
+    {
+      "file": "c15bda727245cf97cced83c3279d3839365c6f9f2c7a287cbdbfdabf67ba5e52.json",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T03:53:29.349673+00:00"
+    },
+    {
+      "file": "cac594ec096f3a8626f81a8e293d93f45ae53f42bf74a406b462a9986afa35d3.json",
+      "dataset": "nasa-gpm-imerg-monthly-v07",
+      "variable": "precipitation_mm_month",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T03:53:26.480723+00:00"
+    },
+    {
+      "file": "e1f13c2694b4a59c2a28c46b7ed5fa4f82701aef040fb737890806eef76ea102.json",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "months": 264,
+      "valid": 263,
+      "extracted_at": "2026-11-15T03:53:14.321221+00:00"
+    }
+  ]
+}
