@@ -82,3 +82,35 @@ def estimate(p: PreparedRun) -> CostEstimate:
         return CostEstimate("heavy", "none", estimated_seconds=round(seconds, 1),
                             reason="Extracción pesada en Earth Engine (requiere token de API)", **common)
     return CostEstimate("light", "none", estimated_seconds=round(seconds, 1), reason="Extracción ligera", **common)
+
+
+def estimate_batch(preps: list[PreparedRun]) -> CostEstimate:
+    """Coste de un atlas: los límites se aplican a la SUMA de píxel-imágenes de las unidades con extracción nueva
+    (las demás ya están en caché), no a cada unidad por separado."""
+    new = [p for p in preps if p.needs_extraction]
+    if not new:
+        e = estimate(preps[0]) if preps else None
+        return CostEstimate("cached", "extraction", months=e.months if e else 0, source_images=e.source_images if e else 0,
+                            roi_area_km2=None, pixels_at_extraction_scale=0.0, pixel_images=0.0,
+                            extraction_scale_m=e.extraction_scale_m if e else 0.0, estimated_seconds=1.0,
+                            reason="Todas las series del atlas están en caché")
+    one = [estimate(p) for p in new]
+    images = one[0].source_images
+    pixels = sum(e.pixels_at_extraction_scale for e in one)
+    pixel_images = images * pixels
+    # Extracciones individuales en paralelo: el tiempo es ~la suma dividida por el paralelismo (orientativo; los
+    # polígonos oficiales muy detallados, p. ej. departamentos IGN, tardan más de lo que predice el modelo).
+    seconds = sum(e.estimated_seconds for e in one) / max(1, settings.atlas_parallel_extractions)
+    common = {"months": one[0].months, "source_images": images,
+              "roi_area_km2": round(sum(e.roi_area_km2 or 0.0 for e in one), 1),
+              "pixels_at_extraction_scale": round(pixels, 1), "pixel_images": float(f"{pixel_images:.3g}"),
+              "extraction_scale_m": one[0].extraction_scale_m, "estimated_seconds": round(seconds, 1)}
+    s = settings
+    if any(e.tier == "too_large" for e in one) or images > s.heavy_max_images or pixel_images > s.heavy_max_pixel_images:
+        return CostEstimate("too_large", "none", reason="El atlas supera el límite por extracción: menos unidades, "
+                            "periodo más corto o un producto de malla más gruesa", **common)
+    if images > s.light_max_images or pixel_images > s.light_max_pixel_images:
+        return CostEstimate("heavy", "none",
+                            reason=f"Atlas pesado ({len(new)} unidades nuevas): requiere token de API", **common)
+    return CostEstimate("light", "none", reason=f"Atlas ligero ({len(new)} unidades nuevas)",
+                        **common)

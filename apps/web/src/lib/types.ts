@@ -154,3 +154,15 @@ export interface CaseBacktest {
   events_excluded: { date: string; district: string; ubigeo: string; hazard: string; reason: string }[];
   source: { dataset: string; provenance: string; file: string }; unit_names: Record<string, string>;
 }
+
+export interface AtlasItem {
+  geo_id: string; name: string; admin_level: string; area_km2: number | null; status: "succeeded" | "failed";
+  run_id?: string; statistics?: Statistics; error?: { status: number; code: string; detail: string };
+}
+export interface AtlasResult {
+  parent: { geo_id: string; name: string; admin_level: string };
+  variable: { dataset_id: string; variable_id: string; unit: string; physical_quantity: string };
+  period: [number, number]; n_units: number; n_succeeded: number; new_extractions: number;
+  scale: { center: number; max_abs_estimate: number | null }; pixel_km2: number;
+  cost: { tier: string; estimated_seconds: number; source_images: number }; items: AtlasItem[]; note: string;
+}

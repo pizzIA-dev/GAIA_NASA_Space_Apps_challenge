@@ -9,6 +9,7 @@ const PAGES = [
   { path: "/fuentes", ready: "article.source" },
   { path: "/metodos", ready: ".table tbody tr" },
   { path: "/historias/trujillo-el-nino", ready: ".assoc-table tbody tr" },
+  { path: "/atlas?territorio=pe-ign2020%3A1301", ready: ".atlas-summary" },
 ];
 
 for (const theme of ["light", "dark"] as const) {

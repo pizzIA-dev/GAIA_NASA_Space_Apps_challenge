@@ -1,6 +1,6 @@
 {
   "purpose": "Fixtures de E2E/CI: series mensuales NASA reales (Earth Engine) usadas por apps/web/e2e. No son datos sintéticos.",
-  "generated_at": "2026-11-15T05:32:13.178382+00:00",
+  "generated_at": "2026-11-15T06:28:37.961257+00:00",
   "boundaries": "IGN Perú vía OCHA HDX COD-AB v01 (CC BY-IGO): índice completo + geometrías de la provincia de Trujillo",
   "extractions": [
     {
@@ -20,12 +20,28 @@
       "extracted_at": "2026-11-15T05:30:23.039337+00:00"
     },
     {
+      "file": "252a9425b32d61e4d4aeabb9ee9279d735d84365a0f61ab8d9d27a594fa5d7e0.json",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T06:26:42.915999+00:00"
+    },
+    {
       "file": "2ee15d1e22accd157f70e69dfb7058a753825a41bcb4276e8398cdf6c92d9563.json",
       "dataset": "nasa-gpm-imerg-monthly-v07",
       "variable": "precipitation_mm_month",
       "months": 276,
       "valid": 276,
       "extracted_at": "2026-11-15T05:30:43.327351+00:00"
+    },
+    {
+      "file": "303cb6c7ec9634c26408b40c0ddb3e3217fe7e74aec15f6841aab806b6337813.json",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "months": 264,
+      "valid": 258,
+      "extracted_at": "2026-11-15T06:26:52.766568+00:00"
     },
     {
       "file": "355b5f68c86620a466dc3c0be7c0daeb22ed7713684ac1b0076433742e827dd8.json",
@@ -60,12 +76,28 @@
       "extracted_at": "2026-11-15T05:31:10.374196+00:00"
     },
     {
+      "file": "4ad7e025f23dbe365600023ec52e87cd4184aa816586e737bdbc2a205677a2e9.json",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "months": 264,
+      "valid": 263,
+      "extracted_at": "2026-11-15T06:26:48.511916+00:00"
+    },
+    {
       "file": "4cda37359bfff6bbc7b2ac66a8d30bee0f907ba63cc0a85186454a8c0201b5b6.json",
       "dataset": "nasa-modis-mod13q1-061",
       "variable": "ndvi",
       "months": 264,
       "valid": 264,
-      "extracted_at": "2026-11-15T05:31:48.821447+00:00"
+      "extracted_at": "2026-11-15T01:12:15.065972+00:00"
+    },
+    {
+      "file": "5990991c379b86409d4c17c577672f9b20e72d85ed37a0559836598adcac093f.json",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T06:26:43.231095+00:00"
     },
     {
       "file": "5e9a536ba95eddfca2cd20334da6039645191f3cbbcf544bfb3dac816884cf0f.json",
@@ -105,7 +137,15 @@
       "variable": "ndvi",
       "months": 264,
       "valid": 264,
-      "extracted_at": "2026-11-15T05:31:34.519890+00:00"
+      "extracted_at": "2026-11-15T01:43:58.501303+00:00"
+    },
+    {
+      "file": "7c5544b8b8daa8ae49d305f6a650130652b8b4a4ce3fdca54f043456878836e2.json",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T06:26:43.051160+00:00"
     },
     {
       "file": "7f412765db19dc4975cbd11009bde1935bd65dea144d7aca182f54a7c241a766.json",
@@ -154,6 +194,22 @@
       "months": 276,
       "valid": 276,
       "extracted_at": "2026-11-15T05:30:46.355611+00:00"
+    },
+    {
+      "file": "a713a9904fe47468df209c9f695b5cb9fbb6e8496250845c9d51bf987c590007.json",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "months": 264,
+      "valid": 263,
+      "extracted_at": "2026-11-15T06:26:40.517394+00:00"
+    },
+    {
+      "file": "a7bb4e6a427bad06bb725b1391161a3027f69a3a5bf9cfeabca52519b33557a8.json",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "months": 264,
+      "valid": 264,
+      "extracted_at": "2026-11-15T06:26:44.402438+00:00"
     },
     {
       "file": "a9e377fb8a1bd350966056d886c99f3c72b9bcced088e9db14f15f429e09fbaa.json",
@@ -212,12 +268,20 @@
       "extracted_at": "2026-11-15T05:30:13.802226+00:00"
     },
     {
+      "file": "d6619dea83eff76e0101acfdbc0cfdbd3c85252c6afaf7113a06a29a3bf7b380.json",
+      "dataset": "nasa-modis-mod13q1-061",
+      "variable": "ndvi",
+      "months": 264,
+      "valid": 259,
+      "extracted_at": "2026-11-15T06:26:42.097662+00:00"
+    },
+    {
       "file": "e1f13c2694b4a59c2a28c46b7ed5fa4f82701aef040fb737890806eef76ea102.json",
       "dataset": "nasa-modis-mod13q1-061",
       "variable": "ndvi",
       "months": 264,
       "valid": 263,
-      "extracted_at": "2026-11-15T05:31:40.744522+00:00"
+      "extracted_at": "2026-11-15T01:44:06.529558+00:00"
     },
     {
       "file": "e560156ca1a652bfc3e3e073d7d8a4d97f1ca4dbc847ce51977b6a3152f2df93.json",

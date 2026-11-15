@@ -72,6 +72,14 @@ class Analyses(_Resource):
             body["family_id"] = family_id
         return self._c._post("analyses/compare", json=body)
 
+    def atlas(self, parent_geo_id: str, dataset_id: str, variable_id: str, start_year: int = 2003,
+              end_year: int = 2024, method: str = "sen") -> dict:
+        """Pendiente anual de todas las subunidades de un territorio (misma spec que un análisis individual),
+        con q-valores BH-FDR sobre las unidades. Cada unidad tiene su propio estado."""
+        return self._c._post("atlas", json={"parent_geo_id": parent_geo_id, "dataset_id": dataset_id,
+                                            "variable_id": variable_id, "start_year": start_year,
+                                            "end_year": end_year, "method": method})
+
     def estimate_cost(self, spec: dict) -> dict:
         """Complejidad estimada y si tu token/identidad puede ejecutarlo (no consume cupo ni toca Earth Engine)."""
         return self._c._post("analyses/estimate-cost", json=spec)
