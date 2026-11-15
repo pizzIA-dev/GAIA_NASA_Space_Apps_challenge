@@ -10,11 +10,11 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
-import { digitsFor, fmt, fmtP, signed, verdictOf } from "@/lib/format";
+import { digitsFor, fmt, fmtP, signed, unitPerDecade, verdictOf } from "@/lib/format";
 import { buildSpec, METHOD_LABEL, type Method } from "@/lib/study";
 import { LINE_TYPES, MAX_PANELS, MAX_TERRITORIES, splitKey, studioFromUrl, studioToUrl, useStudio } from "@/lib/studio";
 import { useResolvedTheme } from "@/lib/theme";
-import type { CompareResult, Geography, Variable } from "@/lib/types";
+import type { CompareResult, Geography, SlopeDifference, Variable } from "@/lib/types";
 import { CompareChart } from "./CompareChart";
 
 const cleanQuantity = (q: string) => q.replace(/\s*\(.*?\)\s*/g, " ").trim();
@@ -244,9 +244,63 @@ function StudioPanel({ index, total, variable, panelKey, names, theme }:
               })}
             </tbody>
           </table>
+          <SlopeDiff specs={specs} items={fam.data.items} names={names} method={st.method} />
           <p className="hint">{fam.data.note} <Link href="/metodos">Cómo leer estos resultados</Link>.</p>
         </>
       )}
     </>
+  );
+}
+
+function SlopeDiff({ specs, items, names, method }:
+  { specs: object[]; items: CompareResult["items"]; names: Record<string, string>; method: string }) {
+  const ok = items.map((it, i) => ({ it, i })).filter((x) => x.it.statistics?.estimate != null);
+  const [pick, setPick] = useState<[number, number]>([0, 1]);
+  const ia = ok[pick[0]]?.i ?? ok[0]?.i, ib = ok[pick[1]]?.i ?? ok[1]?.i;
+  const enabled = method !== "ols" && ia != null && ib != null && ia !== ib;
+  const q = useQuery<SlopeDifference, ApiError>({ queryKey: ["difference", specs[ia ?? 0], specs[ib ?? 0]],
+    queryFn: () => api.difference(specs[ia!]!, specs[ib!]!), enabled });
+  if (ok.length < 2) return null;
+  const name = (i: number) => names[items[i]!.geo_id] ?? items[i]!.geo_id;
+  const d = q.data?.difference, dg = digitsFor(d?.estimate);
+  const excludes0 = d?.ci_lower != null && d?.ci_upper != null && (d.ci_lower > 0 || d.ci_upper < 0);
+  return (
+    <section className="slope-diff" aria-label="Diferencia de pendientes">
+      <h3>Diferencia de pendientes</h3>
+      {method === "ols" ? (
+        <p className="hint">La diferencia de pendientes solo se ofrece con Theil–Sen: con series anuales cortas, los
+          intervalos de OLS cubren bastante menos del 95 % declarado. Cambia el método para compararlas.</p>
+      ) : (
+        <>
+          <div className="diff-pick">
+            {(["A", "B"] as const).map((lbl, k) => (
+              <label key={lbl}>{lbl}{" "}
+                <select value={pick[k]} onChange={(e) => setPick((p) => (k === 0 ? [Number(e.target.value), p[1]] : [p[0], Number(e.target.value)]))}>
+                  {ok.map((x, j) => <option key={x.it.geo_id} value={j}>{name(x.i)}</option>)}
+                </select>
+              </label>
+            ))}
+          </div>
+          {ia === ib && <p className="hint">Elige dos territorios distintos.</p>}
+          {q.isPending && enabled && <p className="state" role="status">Calculando la diferencia con su propio intervalo…</p>}
+          {q.error && <p className="state" role="alert">{q.error.problem.detail}</p>}
+          {d && d.status === "ok" && (
+            <>
+              <p className="diff-result">
+                <b className="num">{signed(d.estimate, dg)} {unitPerDecade(d.estimate_unit)}</b>{" "}
+                (IC 95 % <span className="num">{signed(d.ci_lower, dg)} a {signed(d.ci_upper, dg)}</span>, p ≈ {fmtP(d.p_value)}):{" "}
+                {excludes0
+                  ? `${name(ia!)} ${d.estimate! > 0 ? "cambia más (hacia arriba)" : "cambia más hacia abajo"} que ${name(ib!)}.`
+                  : `no hay evidencia de que ${name(ia!)} y ${name(ib!)} cambien a ritmos distintos.`}
+              </p>
+              <p className="hint">{d.n_paired_observations} años comparados · {d.ci_method}.{" "}
+                {d.residual_correlation != null && `Correlación entre territorios: ${fmt(d.residual_correlation, 2)}. `}
+                {q.data!.interpretation}</p>
+            </>
+          )}
+          {d && d.status !== "ok" && <p className="state">{d.warnings.join(" ")}</p>}
+        </>
+      )}
+    </section>
   );
 }

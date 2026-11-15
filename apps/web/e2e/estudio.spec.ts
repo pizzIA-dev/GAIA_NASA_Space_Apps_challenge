@@ -69,3 +69,21 @@ test("en una familia de comparaciones el veredicto usa q (BH-FDR), no p", async 
   await expect(laredo.locator(".tag")).toHaveText("no concluyente");
   await expect(page.locator(".compare-table tbody tr", { hasText: "Moche" }).locator(".tag")).toHaveText("evidencia de disminución");
 });
+
+test("diferencia de pendientes A − B con IC propio: el texto coincide con la API", async ({ page }) => {
+  const resp = page.waitForResponse((r) => r.url().includes("/analyses/difference") && r.request().method() === "POST");
+  await page.goto("/estudio");
+  const body = await (await resp).json();
+  const d = body.difference;
+  expect(d.status).toBe("ok");
+  const block = page.locator(".slope-diff").first();
+  await expect(block.locator(".diff-result")).toBeVisible();
+  await expect(block).toContainText(`${d.n_paired_observations} años comparados`);
+  await expect(block).toContainText("pares de periodos");
+  const sign = (v: number) => (v > 0 ? "+" : v < 0 ? "−" : "");
+  const txt = await block.locator(".diff-result b").textContent();
+  expect(txt).toContain(sign(d.estimate));
+  expect(txt).toContain("por década");
+  const excludes0 = d.ci_lower > 0 || d.ci_upper < 0;
+  await expect(block.locator(".diff-result")).toContainText(excludes0 ? "cambia más" : "no hay evidencia");
+});
