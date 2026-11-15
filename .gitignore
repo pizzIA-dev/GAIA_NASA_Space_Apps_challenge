@@ -35,7 +35,7 @@ data/_downloads/
 build/
 # Web: archivos generados en build/dev
 apps/web/public/maplibre/
-apps/web/src/styles/tokens.css
+# apps/web/src/styles/tokens.css se versiona: copia generada para compilar la web sola en Vercel (ADR-0014)
 apps/web/next-env.d.ts
 *.tsbuildinfo
 
@@ -44,3 +44,6 @@ apps/web/test-results/
 apps/web/playwright-report/
 .cache_e2e/
 .cache_ci/
+
+# Vercel CLI (vínculo local del proyecto y salida compilada)
+.vercel/

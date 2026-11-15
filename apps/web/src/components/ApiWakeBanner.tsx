@@ -7,14 +7,20 @@ import { API_URL } from "@/lib/api";
 export function ApiWakeBanner() {
   const [state, setState] = useState<"ok" | "waking" | "down">("ok");
   useEffect(() => {
-    let alive = true;
+    let alive = true, answered = false;
     const started = Date.now();
-    const slow = setTimeout(() => { if (alive) setState((s) => (s === "ok" ? "waking" : s)); }, 4000);
+    // Solo se avisa si /health tarda más de 4 s; si ya respondió, el temporizador no debe mostrar nada.
+    const slow = setTimeout(() => { if (alive && !answered) setState("waking"); }, 4000);
     const ping = async () => {
       while (alive) {
         try {
           const r = await fetch(`${API_URL}/health`, { cache: "no-store" });
-          if (r.ok && (r.headers.get("content-type") ?? "").includes("json")) { if (alive) setState("ok"); return; }
+          if (r.ok && (r.headers.get("content-type") ?? "").includes("json")) {
+            answered = true;
+            clearTimeout(slow);
+            if (alive) setState("ok");
+            return;
+          }
         } catch { /* sigue despertando */ }
         if (Date.now() - started > 180_000) { if (alive) setState("down"); return; }
         await new Promise((res) => setTimeout(res, 5000));

@@ -4,7 +4,7 @@
   "private": true,
   "description": "Interfaz web de Earth Trend Studio (nombre provisional). No calcula estadística: consume la API v1.",
   "scripts": {
-    "tokens": "node ../../packages/design-tokens/build.mjs",
+    "tokens": "node scripts/sync-tokens.mjs",
     "predev": "npm run tokens && npm run assets",
     "dev": "next dev --port 3000",
     "prebuild": "npm run tokens && npm run assets",

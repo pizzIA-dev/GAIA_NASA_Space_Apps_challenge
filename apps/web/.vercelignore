@@ -1,0 +1,7 @@
+# Despliegue con la CLI desde apps/web (compilación remota en Vercel). Solo el código de la web.
+.env*
+e2e
+test-results
+playwright-report
+node_modules
+.next
