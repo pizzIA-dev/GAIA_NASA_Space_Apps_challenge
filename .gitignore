@@ -47,3 +47,4 @@ apps/web/playwright-report/
 
 # Vercel CLI (vínculo local del proyecto y salida compilada)
 .vercel/
+.cache_demo_test/

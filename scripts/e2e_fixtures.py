@@ -71,7 +71,12 @@ def seed(cache: Path) -> None:
         raise SystemExit("No hay fixtures: genera con subset/collect")
     shutil.copytree(FIXTURES / "extractions", cache / "extractions", dirs_exist_ok=True)
     shutil.copytree(FIXTURES / "boundaries", cache / "boundaries", dirs_exist_ok=True)
-    print(f"Caché sembrada en {cache} desde {FIXTURES}")
+    # Caché de demostración de los ejemplos por defecto de la web (scripts/demo_cache.py): la portada carga al instante
+    # aunque el alojamiento gratuito haya borrado la caché. Solo añade extracciones; no pisa fronteras.
+    demo = ROOT / "data" / "demo-cache" / "extractions"
+    if demo.is_dir():
+        shutil.copytree(demo, cache / "extractions", dirs_exist_ok=True)
+    print(f"Caché sembrada en {cache} desde {FIXTURES}" + (f" y {demo.parent}" if demo.is_dir() else ""))
 
 
 if __name__ == "__main__":
