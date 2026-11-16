@@ -48,3 +48,14 @@ apps/web/playwright-report/
 # Vercel CLI (vínculo local del proyecto y salida compilada)
 .vercel/
 .cache_demo_test/
+
+# Archivos internos de trabajo (agentes, skills, configuración local, plan y estado de sesión).
+# Existen en local pero no se publican: el repositorio solo muestra lo necesario para la plataforma.
+.agents/
+.claude/
+CLAUDE.md
+ESTADO_PROYECTO.md
+PLAN_MAESTRO_*.md
+opencode.json
+skills-lock.json
+docs/skills/

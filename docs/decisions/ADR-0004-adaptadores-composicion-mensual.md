@@ -21,7 +21,7 @@
 - **Agregación anual:** solo `mean` para estas variables (`total` → 409).
 - **SST:** debe usarse sobre una región oceánica; sobre tierra no hay píxeles → `insufficient_coverage`. El polígono
   oceánico del caso Trujillo se documentará en F5 como ROI del caso, no se impone en el adaptador.
-- **Validación:** `scripts/validate_adapters_vs_reference.py` (resultados en ESTADO_PROYECTO.md / bitácora).
+- **Validación:** `scripts/validate_adapters_vs_reference.py` (resultados en la bitácora del equipo).
 
 ## Resultado de la validación (2026-11-14)
 Misma geometría que el estudio previo, 2003–2024 (264 meses):
