@@ -1,6 +1,7 @@
 "use client";
 // Estado del estudio (plan §14.3: «estado de estudio en JSON y restauración desde URL»). Zustand + query string.
 import { create } from "zustand";
+import { tr } from "./i18n";
 
 export type View = "annual" | "anomaly";
 export type Method = "sen" | "ols" | "sen_boot";
@@ -64,9 +65,9 @@ const METHODS: Record<Method, object> = {
   sen_boot: { estimator: "theil_sen", interval_method: "moving_block_bootstrap", significance_test: "mann_kendall_ar1", seed: 2026 },
 };
 
-export const METHOD_LABEL: Record<Method, string> = {
-  sen: "Theil–Sen", ols: "OLS (n efectivo)", sen_boot: "Theil–Sen + bootstrap",
-};
+export const METHODS_ORDER: Method[] = ["sen", "ols", "sen_boot"];
+export const methodLabel = (m: Method) =>
+  m === "sen" ? "Theil–Sen" : m === "ols" ? tr("OLS (n efectivo)", "OLS (effective n)") : "Theil–Sen + bootstrap";
 
 /** Especificación canónica (§11.2) que la web envía a la API: la misma que usaría el SDK. */
 export function buildSpec(s: StudyState, geoId: string = s.selected, view: View = s.view): object {

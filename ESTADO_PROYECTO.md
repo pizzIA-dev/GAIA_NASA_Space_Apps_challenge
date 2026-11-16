@@ -24,6 +24,9 @@ nota «Historial tecnico hasta 2026-11-15». Decisiones: `docs/decisions/ADR-000
 - **Análisis avanzado** (`/estudio`): hasta 4 territorios, paneles arrastrables, q-valores BH-FDR, diferencia de
   pendientes A − B con IC propio (solo Theil–Sen).
 - **Fuentes** (nombres técnicos, productos, bandas, licencias) y **Métodos** (matriz de compatibilidad, glosario).
+- **Idioma ES/EN** (selector en la cabecera; español por defecto, se recuerda en el navegador, mismas URL). Textos en
+  pares `t("es", "en")` junto a su uso (`lib/i18n.ts`); los textos de la API se traducen en la web con `apiText()`
+  (la API sigue en español). Todo componente que muestre texto llama a `useT()`/`useLang()` (hidratación segura).
 - **Sin caso de estudio en la plataforma:** el caso Trujillo/ENFEN lo trabajan los usuarios. Los endpoints `/cases`
   existen pero están desactivados por defecto (`ENABLE_CASE_STUDIES=true` para activarlos; las pruebas lo hacen).
 
@@ -57,7 +60,7 @@ nota «Historial tecnico hasta 2026-11-15». Decisiones: `docs/decisions/ADR-000
 
 ## Desarrollo local
 - API: `cd apps/api && .venv/Scripts/python -m pytest -q` (**124** pruebas) · servidor: `.claude/launch.json` (api :8000).
-- Web: `npm --prefix apps/web run dev` · `npx tsc --noEmit` · `npx playwright test` (**31** E2E, Edge local) ·
+- Web: `npm --prefix apps/web run dev` · `npx tsc --noEmit` · `npx playwright test` (**33** E2E, Edge local) ·
   `npm run check:contrast` (WCAG 2.1 AA).
 - Las E2E usan el territorio de prueba `pe-ign2020:1301` explícito en la URL (fixtures de CI sin Earth Engine); no
   aparece en la plataforma.

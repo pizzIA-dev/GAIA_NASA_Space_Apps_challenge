@@ -1,5 +1,6 @@
 "use client";
 // Exportación reproducible (plan §8.2): todo archivo lleva run_id, fuente y especificación. Nada se recalcula aquí.
+import { tr } from "./i18n";
 import type { Run } from "./types";
 
 function download(name: string, blob: Blob) {
@@ -28,7 +29,8 @@ export function exportCsv(run: Run, unit: string) {
 
 export function exportJson(run: Run) {
   const payload = {
-    note: "Resultado de GaIA. Reproducible por API (GET /api/v1/analyses/{run_id}) o SDK Python con el run_id.",
+    note: tr("Resultado de GaIA. Reproducible por API (GET /api/v1/analyses/{run_id}) o SDK Python con el run_id.",
+      "GaIA result. Reproducible via the API (GET /api/v1/analyses/{run_id}) or the Python SDK with the run_id."),
     exported_at: new Date().toISOString(),
     run_id: run.run_id,
     analysis_spec_hash: run.analysis_spec_hash,

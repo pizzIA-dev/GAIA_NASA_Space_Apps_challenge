@@ -3,8 +3,10 @@
 // en 4 s, se avisa con una franja; las consultas se reintentan solas (providers.tsx) y la franja desaparece al responder.
 import { useEffect, useState } from "react";
 import { API_URL } from "@/lib/api";
+import { useT } from "@/lib/i18n";
 
 export function ApiWakeBanner() {
+  const t = useT();
   const [state, setState] = useState<"ok" | "waking" | "down">("ok");
   useEffect(() => {
     let alive = true, answered = false;
@@ -34,8 +36,10 @@ export function ApiWakeBanner() {
   return (
     <div className="wake-banner" role="status">
       {state === "waking"
-        ? "Despertando el servidor gratuito de GaIA: la primera visita tras un rato sin uso tarda 1–2 minutos. Los datos aparecerán solos."
-        : "No hay conexión con el servidor de GaIA. Vuelve a intentarlo en unos minutos."}
+        ? t("Despertando el servidor gratuito de GaIA: la primera visita tras un rato sin uso tarda 1–2 minutos. Los datos aparecerán solos.",
+          "Waking up GaIA's free server: the first visit after a while without use takes 1–2 minutes. The data will appear on their own.")
+        : t("No hay conexión con el servidor de GaIA. Vuelve a intentarlo en unos minutos.",
+          "There is no connection to the GaIA server. Please try again in a few minutes.")}
     </div>
   );
 }
