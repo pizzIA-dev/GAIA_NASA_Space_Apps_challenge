@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { cssVar, divergent } from "@/lib/colors";
 import type { FeatureCollection, Statistics } from "@/lib/types";
 import { verdictOf } from "@/lib/format";
+import { apiText, useLang, useT } from "@/lib/i18n";
 
 export interface UnitResult { geoId: string; st?: Statistics; error?: string }
 
@@ -26,6 +27,8 @@ function hatchImage(color: string): ImageData {
 }
 
 export function TerritoryMap({ fc, results, selected, pixelKm2, onSelect }: Props) {
+  const t = useT();
+  const lang = useLang(); // la atribución del mapa se redibuja al cambiar de idioma
   const ref = useRef<HTMLDivElement>(null);
   const mapRef = useRef<import("maplibre-gl").Map | null>(null);
   const onSelectRef = useRef(onSelect);
@@ -62,7 +65,7 @@ export function TerritoryMap({ fc, results, selected, pixelKm2, onSelect }: Prop
       const map = new maplibre.Map({
         container: ref.current,
         style: { version: 8, sources: {}, layers: [{ id: "bg", type: "background", paint: { "background-color": cssVar("--paper") } }] },
-        attributionControl: { compact: true, customAttribution: fc.attribution },
+        attributionControl: { compact: true, customAttribution: apiText(fc.attribution) },
         dragRotate: false, pitchWithRotate: false,
       });
       map.touchZoomRotate.disableRotation();
@@ -93,7 +96,7 @@ export function TerritoryMap({ fc, results, selected, pixelKm2, onSelect }: Prop
     return () => { cancelled = true; mapRef.current?.remove(); mapRef.current = null; };
     // El mapa se crea una vez por colección de fronteras; los datos se actualizan en el efecto siguiente.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fc]);
+  }, [fc, lang]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -106,7 +109,8 @@ export function TerritoryMap({ fc, results, selected, pixelKm2, onSelect }: Prop
       ref={ref}
       className="map"
       role="group"
-      aria-label="Mapa de unidades coloreadas por pendiente; usa la lista de territorios para elegir con teclado"
+      aria-label={t("Mapa de unidades coloreadas por pendiente; usa la lista de territorios para elegir con teclado",
+        "Map of units coloured by slope; use the territory list to choose with the keyboard")}
     />
   );
 }

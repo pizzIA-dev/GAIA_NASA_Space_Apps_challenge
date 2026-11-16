@@ -15,8 +15,8 @@ header.top { display: flex; align-items: baseline; gap: 28px; padding: 14px 24px
 nav.primary { display: flex; gap: 18px; flex-wrap: wrap; }
 nav.primary a { text-decoration: none; color: var(--muted); padding-bottom: 2px; }
 nav.primary a:hover { color: var(--ink); }
-.seg.theme { margin-left: auto; align-self: center; }
-.seg.theme button { min-height: 30px; padding: 4px 10px; }
+.top-tools { margin-left: auto; align-self: center; display: flex; gap: 10px; flex-wrap: wrap; }
+.seg.theme button, .seg.lang button { min-height: 30px; padding: 4px 10px; }
 
 .layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: calc(100vh - 60px); }
 .rail { border-right: 1px solid var(--rule); background: var(--paper); padding: var(--space-5); display: flex; flex-direction: column; gap: 22px; }

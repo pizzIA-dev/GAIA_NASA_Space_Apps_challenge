@@ -4,6 +4,7 @@
 import { useEffect, useRef } from "react";
 import { cssVar } from "@/lib/colors";
 import { fmt } from "@/lib/format";
+import { tr, useLang } from "@/lib/i18n";
 import { LINE_TYPES } from "@/lib/studio";
 import type { CompareItem } from "@/lib/types";
 
@@ -17,6 +18,7 @@ const fromDec = (t: number) => { const y = Math.floor(t); return Date.UTC(y, 0, 
 export function CompareChart({ items, names, unit, theme, label }:
   { items: CompareItem[]; names: Record<string, string>; unit: string; theme: string; label: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const lang = useLang();
   useEffect(() => {
     let disposed = false, chart: import("echarts").ECharts | undefined;
     (async () => {
@@ -39,7 +41,7 @@ export function CompareChart({ items, names, unit, theme, label }:
           const valid = it.series.filter((p) => p.value != null).map((p) => decYear(p.time_start_utc));
           const t0 = Math.min(...valid), t1 = Math.max(...valid);
           const per = st.estimate_unit.endsWith("/decade") ? st.estimate / 10 : st.estimate;
-          series.push({ name: `${name} (tendencia)`, type: "line", silent: true, symbol: "none",
+          series.push({ name: `${name} (trend)`, type: "line", silent: true, symbol: "none",
             data: [[fromDec(t0), st.intercept + per * t0], [fromDec(t1), st.intercept + per * t1]],
             lineStyle: { color, width: 2.4, type, opacity: 0.85 } });
         }
@@ -51,18 +53,18 @@ export function CompareChart({ items, names, unit, theme, label }:
         grid: { left: 56, right: 16, top: 28, bottom: 30 },
         legend: { show: false },
         xAxis: { type: "time", axisLabel: { color: cssVar("--muted") }, axisLine: { lineStyle: { color: cssVar("--rule") } } },
-        yAxis: { type: "value", name: `${unit} (valor anual)`, nameTextStyle: { align: "left", color: cssVar("--muted") },
+        yAxis: { type: "value", name: tr(`${unit} (valor anual)`, `${unit} (annual value)`), nameTextStyle: { align: "left", color: cssVar("--muted") },
           min: vals.length && Math.min(...vals) >= 0 ? Math.floor(Math.min(...vals) * 0.85) : undefined,
           axisLabel: { color: cssVar("--muted") }, splitLine: { lineStyle: { color: cssVar("--grid") } } },
         tooltip: {
           trigger: "axis", backgroundColor: cssVar("--ink"), borderWidth: 0, textStyle: { color: cssVar("--paper"), fontSize: 13 },
           formatter: (params: unknown) => {
             const ps = (params as { seriesName: string; value: [number, number | null]; color: string }[])
-              .filter((p) => !p.seriesName.endsWith("(tendencia)"));
+              .filter((p) => !p.seriesName.endsWith("(trend)"));
             if (!ps.length) return "";
             const year = new Date(ps[0]!.value[0]).getUTCFullYear();
             return `<b>${year}</b><br>` + ps.map((p) =>
-              `${p.seriesName}: ${p.value[1] == null ? "sin dato" : `${fmt(p.value[1], Math.abs(p.value[1]) < 10 ? 2 : 0)} ${unit}`}`).join("<br>");
+              `${p.seriesName}: ${p.value[1] == null ? tr("sin dato", "no data") : `${fmt(p.value[1], Math.abs(p.value[1]) < 10 ? 2 : 0)} ${unit}`}`).join("<br>");
           },
         },
         series,
@@ -71,6 +73,6 @@ export function CompareChart({ items, names, unit, theme, label }:
     const ro = new ResizeObserver(() => chart?.resize());
     if (ref.current) ro.observe(ref.current);
     return () => { disposed = true; ro.disconnect(); chart?.dispose(); };
-  }, [items, names, unit, theme, label]);
+  }, [items, names, unit, theme, label, lang]);
   return <div ref={ref} className="chart compare" role="img" aria-label={label} />;
 }
